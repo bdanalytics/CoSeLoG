@@ -1,0 +1,46 @@
+---
+title: "Dutch Environmental Permit Application Process: CoSeLoG"
+author: "bdanalytics"
+#date: "December 9, 2014"
+#output: pdf_document
+output: 
+    pdf_document:
+        toc: true
+        number_sections: true
+        highlight: zenburn
+---
+#### Date: `r format(Sys.time(), "(%a) %b %d, %Y")`    
+
+```{r, echo=FALSE}
+print("a blank line")   
+```
+Data: Originates from the CoSeLoG project executed under NWO project number 638.001.211. Within the CoSeLoG project the (dis)similarities between several processes of different municipalities in the Netherlands has been investigated. This event log contains the records of the execution of the receiving phase of the building permit application process in an anonymous municipality.
+
+Source: http://data.3tu.nl/repository/uuid:a07386a5-7be3-4367-9535-70bc9e77dbe6
+
+Time period: 2010-10-02 to 2012-01-23
+
+### Synopsis:
+
+#### Potential next steps include:
+
+```{r set_global_options, echo=FALSE}
+rm(list=ls())
+set.seed(12345)
+#source("~/Dropbox/datascience/R/mydsutils.R")
+#source("~/Dropbox/datascience/R/myplot.R")
+# Gather all package requirements here
+#suppressPackageStartupMessages(require())
+
+#require(sos); findFn("pinv", maxPages=2, sortby="MaxScore")
+```
+
+```{r set_global_options_wd, echo=FALSE}
+setwd("~/Documents/Work/Courses/Coursera/process-mining/Projects/PM_Assignment")
+```
+
+### Step 01: import data
+```{r import_data, cache=TRUE}
+
+
+```
