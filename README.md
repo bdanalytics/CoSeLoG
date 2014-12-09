@@ -1,0 +1,4 @@
+CoSeLoG
+=======
+
+Process Mining Assignment
