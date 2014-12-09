@@ -1,0 +1,149 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% Set line spacing
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+% Redefine \includegraphics so that, unless explicit options are
+% given, the image width will not exceed the width of the page.
+% Images get their normal width if they fit onto the page, but
+% are scaled down if they would overflow the margins.
+\makeatletter
+\def\ScaleIfNeeded{%
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+\let\Oldincludegraphics\includegraphics
+{%
+ \catcode`\@=11\relax%
+ \gdef\includegraphics{\@ifnextchar[{\Oldincludegraphics}{\Oldincludegraphics[width=\ScaleIfNeeded]}}%
+}%
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={bdanalytics},
+            pdftitle={Dutch Environmental Permit Application Process: CoSeLoG},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{5}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+\setlength{\droptitle}{-2em}
+  \title{Dutch Environmental Permit Application Process: CoSeLoG}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{bdanalytics}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \date{}
+  \predate{}\postdate{}
+
+
+
+
+\begin{document}
+
+\maketitle
+
+
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\textbf{Date: (Tue) Dec 09, 2014}
+
+Data: Originates from the CoSeLoG project executed under NWO project
+number 638.001.211. Within the CoSeLoG project the (dis)similarities
+between several processes of different municipalities in the Netherlands
+has been investigated. This event log contains the records of the
+execution of the receiving phase of the building permit application
+process in an anonymous municipality.
+
+Source:
+\url{http://data.3tu.nl/repository/uuid:a07386a5-7be3-4367-9535-70bc9e77dbe6}
+
+Time period: 2010-10-02 to 2012-01-23
+
+\subsubsection{Synopsis:}\label{synopsis}
+
+\paragraph{Potential next steps
+include:}\label{potential-next-steps-include}
+
+\subsubsection{Template:}\label{template}
+
+\textbf{Approach I used}:\\Describe exactly what you did (e.g.~which
+plug-ins did you use, which settings did you change), in such a way that
+others can easily reproduce your results. You only need to describe
+where/if you deviated from the provided instructions.
+
+\textbf{What I saw}:\\Briefly describe the resulting analysis screen
+(also include this as a screenshot, see explanation below), explain what
+we see, without including observations or conclusions.
+
+\textbf{My analysis}:\\What can you conclude from the analysis result?
+How do you interpret the result? What is the answer to the question?
+
+\subsubsection{Step 01: import event log in
+Disco}\label{step-01-import-event-log-in-disco}
+
+\textbf{Approach I used}:\\1. Import the event log into Disco.\\2.
+Switch to ``Statistics'' tab / view\\3. Click on ``Overview'' button in
+the left pane under ``Statistics views''\\4. Click on ``Events per
+case'' button to the left of the graph
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_01_Q_01.png}
+
+The graph pane displays a histogram (Number of cases) of Events per case
+in this event log. The event log contains 8,577 events in 1,434 cases
+with 27 activities.
+
+\textbf{My analysis}:\\There are 6 events on average per case. This
+information can be gathered by hovering the mouse on the tallest bar.
+
+By clicking on ``Variants'' button on top of the table, we can see that
+there are only 116 variants amongst the 1,434 cases.
+
+The main observation from the `Events over time' graph is that the
+maximum number of events (33) occured on May 2, 2011 across cases.
+
+\end{document}

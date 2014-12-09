@@ -1,19 +1,17 @@
 ---
-title: "Dutch Environmental Permit Application Process: CoSeLoG"
+title: 'Dutch Environmental Permit Application Process: CoSeLoG'
 author: "bdanalytics"
-#date: "December 9, 2014"
-#output: pdf_document
-output: 
-    pdf_document:
-        toc: true
-        number_sections: true
-        highlight: zenburn
+output:
+  pdf_document:
+    fig_width: 8
+    highlight: zenburn
+    #keep_md: yes
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
 ---
-#### Date: `r format(Sys.time(), "(%a) %b %d, %Y")`    
+**Date: `r format(Sys.time(), "(%a) %b %d, %Y")`**    
 
-```{r, echo=FALSE}
-print("a blank line")   
-```
 Data: Originates from the CoSeLoG project executed under NWO project number 638.001.211. Within the CoSeLoG project the (dis)similarities between several processes of different municipalities in the Netherlands has been investigated. This event log contains the records of the execution of the receiving phase of the building permit application process in an anonymous municipality.
 
 Source: http://data.3tu.nl/repository/uuid:a07386a5-7be3-4367-9535-70bc9e77dbe6
@@ -23,6 +21,16 @@ Time period: 2010-10-02 to 2012-01-23
 ### Synopsis:
 
 #### Potential next steps include:
+
+### Template:
+**Approach I used**:     
+Describe exactly what you did (e.g. which plug-ins did you use, which settings did you change), in such a way that others can easily reproduce your results. You only need to describe where/if you deviated from the provided instructions.
+
+**What I saw**:   
+Briefly describe the resulting analysis screen (also include this as a screenshot, see explanation below), explain what we see, without including observations or conclusions.
+
+**My analysis**:   
+What can you conclude from the analysis result? How do you interpret the result? What is the answer to the question?
 
 ```{r set_global_options, echo=FALSE}
 rm(list=ls())
@@ -39,8 +47,22 @@ set.seed(12345)
 setwd("~/Documents/Work/Courses/Coursera/process-mining/Projects/PM_Assignment")
 ```
 
-### Step 01: import data
-```{r import_data, cache=TRUE}
+### Step 01: import event log in Disco
+**Approach I used**:  
+1. Import the event log into Disco.  
+2. Switch to "Statistics" tab / view  
+3. Click on "Overview" button in the left pane under "Statistics views"  
+4. Click on "Events per case" button to the left of the graph  
 
+**What I saw**: 
 
-```
+![](CoSeLoG_Step_01_Q_01.png)
+
+The graph pane displays a histogram (Number of cases) of Events per case in this event log. The event log contains 8,577 events in 1,434 cases with 27 activities.
+
+**My analysis**:  
+There are 6 events on average per case. This information can be gathered by hovering the mouse on the tallest bar.
+
+By clicking on "Variants" button on top of the table, we can see that there are only 116 variants amongst the 1,434 cases.
+
+The main observation from the 'Events over time' graph is that the maximum number of events (33) occured on May 2, 2011 across cases.  
