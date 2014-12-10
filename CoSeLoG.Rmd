@@ -66,3 +66,44 @@ There are 6 events on average per case. This information can be gathered by hove
 By clicking on "Variants" button on top of the table, we can see that there are only 116 variants amongst the 1,434 cases.
 
 The main observation from the 'Events over time' graph is that the maximum number of events (33) occured on May 2, 2011 across cases.  
+
+### Step 02: import event log in Disco
+**Approach I used**:  
+1. Click on "Map" tab in the window header  
+2. Set "Activities" slider to 0% & "Paths" slider to 50% to make the process map fit on one screen and still be readable.  
+
+**What I saw**: 
+
+![](CoSeLoG_Step_02.png)
+
+
+**My analysis**:  
+
+The 6 most frequent activities between the initiation and termination of cases in the process map include:  
+A. Confirmation of receipt  
+B. Check confirmation of receipt  
+C. Determine confirmation of receipt  
+D. Print and send confirmation of receipt
+E. Determine necessity of stop advice  
+F. Determine necessity to stop indication
+
+The most frequent activity paths traced by the cases include (this is supposed to display as a table, but doesn't work properly) :  
+
+                              Activity Path | # of Cases  
+------------------------------------------- | -----------  
+                          Start -> A -> End |     116  
+           Start -> A -> B -> C -> D -> End |     400  
+ Start -> A -> B -> C -> D -> E -> F -> End |     828  
+                                            |    
+          Total cases displayed in this map |    1,344  
+                                Total cases |    1,434  
+              % cases displayed in this map |     94%   
+
+### Step nn: step title
+**Approach I used**:  
+
+**What I saw**: 
+
+![](dummy.png)
+
+**My analysis**:  
