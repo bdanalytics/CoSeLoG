@@ -107,20 +107,6 @@ Time period: 2010-10-02 to 2012-01-23
 \paragraph{Potential next steps
 include:}\label{potential-next-steps-include}
 
-\subsubsection{Template:}\label{template}
-
-\textbf{Approach I used}:\\Describe exactly what you did (e.g.~which
-plug-ins did you use, which settings did you change), in such a way that
-others can easily reproduce your results. You only need to describe
-where/if you deviated from the provided instructions.
-
-\textbf{What I saw}:\\Briefly describe the resulting analysis screen
-(also include this as a screenshot, see explanation below), explain what
-we see, without including observations or conclusions.
-
-\textbf{My analysis}:\\What can you conclude from the analysis result?
-How do you interpret the result? What is the answer to the question?
-
 \subsubsection{Step 01: import event log in
 Disco}\label{step-01-import-event-log-in-disco}
 
@@ -162,7 +148,7 @@ to make the process map fit on one screen and still be readable.
 The 6 most frequent activities between the initiation and termination of
 cases in the process map include:\\A. Confirmation of receipt\\B. T02
 Check confirmation of receipt\\C. T04 Determine confirmation of
-receipt\\D. T05 Print and send confirmation of receipt E. T06 Determine
+receipt\\D. T05 Print and send confirmation of receipt\\E. T06 Determine
 necessity of stop advice\\F. T10 Determine necessity to stop indication
 
 The most frequent activity paths traced by the cases include (this is
@@ -186,7 +172,7 @@ Do not understand why if `` Confirmation of receipt'' is complete, there
 is a need for ``T02 Check confirmation of receipt''. Additionally, there
 are 4 activities (TA, T02, T04 \& T05) regarding confirmation of
 receipts. Maybe these activities are not named appropriately ? and/or We
-need to understand the intermediate activities (e.g.~T01, T03) to get a
+need to inspect the intermediate activities (e.g.~T01, T03) to get a
 better understanding ?
 
 \subsubsection{Step 03: inspect process performance in
@@ -378,14 +364,18 @@ the control-flow.
 \item
   Click on ``Start'' button.
 \item
-  Select the default options and Click ``Finish'' button.
+  Select the ``Number of places'' option to ``Before \& After
+  Transition'' instead of ``Per Causal Dependency'' to ensure clear
+  ``End'' states \& minimize number of arcs.
+\item
+  Click ``Finish'' button.
 \end{enumerate}
 
 \textbf{What I saw}:
 
 \includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_ILP.png}
 
-The ILP algorithm has also discovered 9 transactions \& 9 places.
+The ILP algorithm has discovered 9 transactions \& 8 places.
 Additionally, the ILP Petri net handles transactions T06, T07-1 \& T10
 better by not isolating them from the control-flow.
 
@@ -393,7 +383,7 @@ better by not isolating them from the control-flow.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{26}
+\setcounter{enumi}{29}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
   Click on ``Actions'' icon.\\
@@ -429,7 +419,7 @@ T07-1 \& T11 are grayed out due to low case frequency (\textless{}= 55).
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{29}
+\setcounter{enumi}{39}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
   Click on ``Workspace'' icon.\\
@@ -455,7 +445,7 @@ be a clear ``End'' place.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{34}
+\setcounter{enumi}{44}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
   Click on ``Workspace'' icon.\\
@@ -488,10 +478,93 @@ transactions \& 21 places.
 
 \textbf{My analysis}:
 
-Argue why one of the Petri nets is better.
+In my opinion, the ILP discovered Petri net is the best based on the
+following criteria:
 
-Explain the (best) Petri net, what is the main process and what are
-notable parts of the Petri net?
+`+' Clear Start \& End states (ILP, Alpha \& Inductive; some combination
+of options in the Heuristics plug-ins might generate a clear End state
+too which I did not try due to too many steps).\\`+' Integrate all event
+log transactions into the control-flow (ILP, Heuristics \&
+Inductive).\\`+' No silent transactions (ILP \& Alpha).\\`+' Less arcs
+(ILP \& Heuristics).
+
+Since the analysis objective / goal is not known yet, these criteria
+might be modified when that becomes clear.
+
+\includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_ILP.png}
+
+The main traces include:\\\textbf{1}. Start -\textgreater{} TA
+-\textgreater{} T02 -\textgreater{} T05 -\textgreater{} End01 with 2
+tokens remaining in ILP3 (between TA \& T10) and ILP5 (between TA \&
+T07-1)
+
+\textbf{2}. Start -\textgreater{} TA -\textgreater{} T10 -\textgreater{}
+T11 -\textgreater{} End02 with 1 token remaining in ILP1 (between TA \&
+T02)
+
+The traces with some loops include:\\\textbf{1A}. Start -\textgreater{}
+TA -\textgreater{} T02 -\textgreater{} {[}T04{]}* -\textgreater{} T05
+-\textgreater{} End01\\ After T02, there might be any number of T04
+firings
+
+\textbf{1B}. Start -\textgreater{} TA -\textgreater{} T02
+-\textgreater{} {[}T03 -\textgreater{} T02{]}* -\textgreater{} T05
+-\textgreater{} End01\\ After T02, there might be any number of T03
+-\textgreater{} T02 loops
+
+\textbf{1AB}. Start -\textgreater{} TA -\textgreater{} T02
+-\textgreater{} {[}T04{]}* -\textgreater{} {[}T03 -\textgreater{}
+T02{]}* -\textgreater{} T05 -\textgreater{} End01\\ After T02, there
+might be any number of T04 firings and/or T03 -\textgreater{} T02 loops
+
+\textbf{2A}. Start -\textgreater{} TA -\textgreater{} {[}T06{]}*
+-\textgreater{} T10 -\textgreater{} T11 -\textgreater{} End02
+
+\textbf{2B}. Start -\textgreater{} TA -\textgreater{} {[}T07-1{]}*
+-\textgreater{} T10 -\textgreater{} T11 -\textgreater{} End02
+
+\textbf{2AB}. Start -\textgreater{} TA -\textgreater{} {[}T06{]}*
+-\textgreater{} {[}T07-1{]}* -\textgreater{} T10 -\textgreater{} T11
+-\textgreater{} End02
+
+\textbf{2C1a}. Start -\textgreater{} TA -\textgreater{} T10
+-\textgreater{} T02 -\textgreater{} {[}T04{]}* -\textgreater{} {[}T03
+-\textgreater{} T02{]}* -\textgreater{} T05 -\textgreater{}
+End01\\\textbf{2C1b}. Start -\textgreater{} TA -\textgreater{} T10
+-\textgreater{} T11 -\textgreater{} T02 -\textgreater{} {[}T04{]}*
+-\textgreater{} {[}T03 -\textgreater{} T02{]}* -\textgreater{} T05
+-\textgreater{} End01
+
+\textbf{2AC1a}. Start -\textgreater{} TA -\textgreater{} {[}T06{]}*
+-\textgreater{} T10 -\textgreater{} T02 -\textgreater{} {[}T04{]}*
+-\textgreater{} {[}T03 -\textgreater{} T02{]}* -\textgreater{} T05
+-\textgreater{} End01\\\textbf{2AC1b}. Start -\textgreater{} TA
+-\textgreater{} {[}T06{]}* -\textgreater{} T10 -\textgreater{} T11
+-\textgreater{} T02 -\textgreater{} {[}T04{]}* -\textgreater{} {[}T03
+-\textgreater{} T02{]}* -\textgreater{} T05 -\textgreater{} End01
+
+\textbf{2BC1a}. Start -\textgreater{} TA -\textgreater{} {[}T07-1{]}*
+-\textgreater{} T10 -\textgreater{} T02 -\textgreater{} {[}T04{]}*
+-\textgreater{} {[}T03 -\textgreater{} T02{]}* -\textgreater{} T05
+-\textgreater{} End01\\\textbf{2BC1b}. Start -\textgreater{} TA
+-\textgreater{} {[}T07-1{]}* -\textgreater{} T10 -\textgreater{} T11
+-\textgreater{} T02 -\textgreater{} {[}T04{]}* -\textgreater{} {[}T03
+-\textgreater{} T02{]}* -\textgreater{} T05 -\textgreater{} End01
+
+\textbf{2ABC1a}. Start -\textgreater{} TA -\textgreater{} {[}T06{]}*
+-\textgreater{} {[}T07-1{]}* -\textgreater{} T10 -\textgreater{} T02
+-\textgreater{} {[}T04{]}* -\textgreater{} {[}T03 -\textgreater{}
+T02{]}* -\textgreater{} T05 -\textgreater{} End01\\\textbf{2ABC1b}.
+Start -\textgreater{} TA -\textgreater{} {[}T06{]}* -\textgreater{}
+{[}T07-1{]}* -\textgreater{} T10 -\textgreater{} T11 -\textgreater{} T02
+-\textgreater{} {[}T04{]}* -\textgreater{} {[}T03 -\textgreater{}
+T02{]}* -\textgreater{} T05 -\textgreater{} End01
+
+All the traces that end in End01 have 2 tokens remaining as described
+for Trace 1.\\All the traces that end in End02 have 1 token remaining as
+described for Trace 2.
+
+These traces should be in a table for better comprehension ?
 
 \subsubsection{Step nn: step title}\label{step-nn-step-title}
 
