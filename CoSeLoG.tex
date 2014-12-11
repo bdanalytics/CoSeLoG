@@ -263,6 +263,236 @@ There are some minor fluctuations which is difficult to quantify
 For the more recent cases there are a lot less events / activities
 occuring close to case initiation compared to the earlier cases.
 
+\subsubsection{Step 05: discover Petri net in
+Disco}\label{step-05-discover-petri-net-in-disco}
+
+\textbf{Approach I used}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Click on ``Actions'' icon.\\
+\item
+  Add imported event log to ``Input''.\\
+\item
+  Search for ``Alpha'' plug-in.\\
+\item
+  Select ``Mine for a Petri Net using Alpha-algorithm''.
+\item
+  Click on ``Start'' button.
+\end{enumerate}
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_05.png}
+
+This is clearly difficult to work with. Let's filter the event log to
+make it more comprehensible.
+
+\textbf{Approach I used}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Click on ``Actions'' icon.\\
+\item
+  Search for ``Filter Log''.\\
+\item
+  Select ``Filter Log using Simple Heuristics''.\\
+\item
+  Click on ``Start'' button.
+\item
+  Change Log name to ``CoSeLoG (filtered on simple heuristics)''.\\
+\item
+  Click on ``Next'' button.
+\item
+  Select ``Select top percentage'' to 100\% because there is only 1
+  Start event.
+\item
+  Click on ``Next'' button.
+\item
+  Select ``Select top percentage'' to 100\% because ideally keeping all
+  End events would be critical in understanding the process.\\
+\item
+  Click on ``Next'' button.
+\item
+  Select ``Select top percentage'' to 96\% because this Event filter
+  criterion discards many events and therefore many arcs in the
+  resulting Petri net.
+\item
+  Change Log name to ``CoSeLoG (96\% filtered on simple heuristics)''.\\
+\item
+  Click on ``Finish'' button.
+\end{enumerate}
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_05_Filter96.png}
+
+The number of Event classes has gone down from 27 to 9. The number of
+Events has reduced from 8,577 to 8,252 but number of Cases remain the
+same.
+
+\textbf{Approach I used}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{18}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Click on ``Workspace'' icon.
+\item
+  Select ``CoSeLoG (filtered\ldots{}''.\\
+\item
+  Click on ``Actions'' icon.\\
+\item
+  Repeat tasks numbered 1-5 listed earlier in this Step. For task 2,
+  select ``CoSeLoG (96\% filtered\ldots{})'' log to ``Input''.
+\end{enumerate}
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_Alpha.png}
+
+The Alpha algorithm has discovered 9 transactions \& 9 places. However,
+transactions T06, T07-1 \& T10 are not integrated well into the rest of
+the control-flow.
+
+\textbf{Approach I used}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{22}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Click on ``Actions'' icon.\\
+\item
+  Add ``CoSeLoG (96\% filtered\ldots{})'' log to ``Input''.\\
+\item
+  Search for ``ILP'' plug-in.\\
+\item
+  Select ``Mine for a Petri Net using ILP''.
+\item
+  Click on ``Start'' button.
+\item
+  Select the default options and Click ``Finish'' button.
+\end{enumerate}
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_ILP.png}
+
+The ILP algorithm has also discovered 9 transactions \& 9 places.
+Additionally, the ILP Petri net handles transactions T06, T07-1 \& T10
+better by not isolating them from the control-flow.
+
+\textbf{Approach I used}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{26}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Click on ``Actions'' icon.\\
+\item
+  Add ``CoSeLoG (96\% filtered\ldots{})'' log to ``Input''.\\
+\item
+  Search for ``Heuristics'' plug-in.\\
+\item
+  Select ``Mine for a Heuristics Net using Heuristics Miner''.
+\item
+  Click on ``Start'' button.
+\item
+  Select the default options and Click ``Continue'' button.
+\item
+  Click on ``Zoom'' button to the left of the graphic.\\
+\item
+  Select zoom level next to ``Fit \textgreater{}'' on the slider to view
+  the net in its entirety.
+\item
+  Capture screen image.\\
+\item
+  Select zoom level to 50\% to make the net more readable.
+\end{enumerate}
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_05_Filter96_Heuristics_Net.png}
+
+9 transactions are discovered with a fitness score of 0.63 but T03,
+T07-1 \& T11 are grayed out due to low case frequency (\textless{}= 55).
+
+\textbf{Approach I used}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{29}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Click on ``Workspace'' icon.\\
+\item
+  Select ``Mined Models'' of type ``HeuristicsNet''.\\
+\item
+  Click on ``Actions'' icon.\\
+\item
+  Select ``Convert Heuristics net into Petri net'' plug-in.\\
+\item
+  Click on ``Start'' button.
+\end{enumerate}
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_Heuristics.png}
+
+This approach has discovered 9 transactions again, 14 ``hidden'' /
+``silent'' transactions and 18 places. However, there does not seem to
+be a clear ``End'' place.
+
+\textbf{Approach I used}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{34}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Click on ``Workspace'' icon.\\
+\item
+  Select ``CoSeLoG (96\% filtered\ldots{})'' log.\\
+\item
+  Click on ``Actions'' icon.\\
+\item
+  Search for ``Inductive'' plug-in.\\
+\item
+  Select ``Mine Petri net with Inductive Miner'' plug-in.\\
+\item
+  Click on ``Start'' button.
+\item
+  Change ``Variant'' option from default of ``Inductive Miner -
+  infrequent'' to ``Inductive Miner'' because the default option drops
+  T04 transaction probably due to infrequent cases containing it. We
+  want to keep this transaction so that we can compare the different
+  Petri nets with the same set of transactions.\\
+\item
+  Click ``Finish'' button.
+\end{enumerate}
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_Inductive.png}
+
+This approach discovered 9 transactions, 25 ``hidden'' / ``silent''
+transactions \& 21 places.
+
+\textbf{My analysis}:
+
+Argue why one of the Petri nets is better.
+
+Explain the (best) Petri net, what is the main process and what are
+notable parts of the Petri net?
+
 \subsubsection{Step nn: step title}\label{step-nn-step-title}
 
 \textbf{Approach I used}:

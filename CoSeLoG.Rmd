@@ -143,6 +143,128 @@ The arrival of the new cases is fairly constant evidenced by the -45 degree slop
 
 For the more recent cases there are a lot less events / activities occuring close to case initiation compared to the earlier cases. 
 
+### Step 05: discover Petri net in Disco
+
+**Approach I used**:  
+  
+1. Click on "Actions" icon.  
+2. Add imported event log to "Input".  
+3. Search for "Alpha" plug-in.  
+4. Select "Mine for a Petri Net using Alpha-algorithm". 
+5. Click on "Start" button.  
+
+**What I saw**: 
+
+![](CoSeLoG_Step_05.png)  
+
+This is clearly difficult to work with. Let's filter the event log to make it more comprehensible.  
+
+**Approach I used**:  
+
+6. Click on "Actions" icon.  
+7. Search for "Filter Log".  
+8. Select "Filter Log using Simple Heuristics".  
+9. Click on "Start" button. 
+10. Change Log name to "CoSeLoG (filtered on simple heuristics)".  
+11. Click on "Next" button.
+12. Select "Select top percentage" to 100% because there is only 1 Start event.
+13. Click on "Next" button. 
+14. Select "Select top percentage" to 100% because ideally keeping all End events would be critical in understanding the process.   
+15. Click on "Next" button.
+16. Select "Select top percentage" to 96% because this Event filter criterion discards many events and therefore many arcs in the resulting Petri net.
+17. Change Log name to "CoSeLoG (96% filtered on simple heuristics)".  
+18. Click on "Finish" button.  
+
+**What I saw**: 
+
+![](CoSeLoG_Step_05_Filter96.png) 
+
+The number of Event classes has gone down from 27 to 9. The number of Events has reduced from 8,577 to 8,252 but number of Cases remain the same.
+
+**Approach I used**:  
+
+19. Click on "Workspace" icon. 
+20. Select "CoSeLoG (filtered...".  
+21. Click on "Actions" icon.  
+22. Repeat tasks numbered 1-5 listed earlier in this Step. For task 2, select  "CoSeLoG (96% filtered...)" log to "Input".   
+
+**What I saw**: 
+
+![](CoSeLoG_Step_05_Filter96_PetriNet_Alpha.png)  
+  
+The Alpha algorithm has discovered 9 transactions & 9 places. However, transactions T06, T07-1 & T10 are not integrated well into the rest of the control-flow.     
+
+**Approach I used**:  
+
+23. Click on "Actions" icon.  
+24. Add "CoSeLoG (96% filtered...)" log to "Input".  
+25. Search for "ILP" plug-in.  
+24. Select "Mine for a Petri Net using ILP". 
+25. Click on "Start" button.
+26. Select the default options and Click "Finish" button.  
+
+**What I saw**: 
+
+![](CoSeLoG_Step_05_Filter96_PetriNet_ILP.png)
+
+The ILP algorithm has also discovered 9 transactions & 9 places. Additionally, the ILP Petri net handles transactions T06, T07-1 & T10 better by not isolating them from the control-flow. 
+
+**Approach I used**:  
+
+27. Click on "Actions" icon.  
+28. Add "CoSeLoG (96% filtered...)" log to "Input".  
+29. Search for "Heuristics" plug-in.  
+24. Select "Mine for a Heuristics Net using Heuristics Miner". 
+25. Click on "Start" button.
+26. Select the default options and Click "Continue" button.
+27. Click on "Zoom" button to the left of the graphic.  
+28. Select zoom level next to "Fit >" on the slider to view the net in its entirety.
+29. Capture screen image.  
+29. Select zoom level to 50% to make the net more readable.  
+
+**What I saw**: 
+
+![](CoSeLoG_Step_05_Filter96_Heuristics_Net.png)
+
+9 transactions are discovered with a fitness score of 0.63 but T03, T07-1 & T11 are grayed out due to low case frequency (<= 55).  
+
+**Approach I used**:  
+
+30. Click on "Workspace" icon.  
+31. Select "Mined Models" of type "HeuristicsNet".  
+32. Click on "Actions" icon.  
+33. Select "Convert Heuristics net into Petri net" plug-in.  
+34. Click on "Start" button.  
+
+**What I saw**: 
+
+![](CoSeLoG_Step_05_Filter96_PetriNet_Heuristics.png)
+
+This approach has discovered 9 transactions again, 14 "hidden" / "silent" transactions and 18 places. However, there does not seem to be a clear "End" place.  
+
+**Approach I used**:  
+
+35. Click on "Workspace" icon.  
+36. Select "CoSeLoG (96% filtered...)" log.  
+37. Click on "Actions" icon.  
+38. Search for "Inductive" plug-in.  
+39. Select "Mine Petri net with Inductive Miner" plug-in.  
+40. Click on "Start" button. 
+41. Change "Variant" option from default of "Inductive Miner - infrequent" to "Inductive Miner" because the default option drops T04 transaction probably due to infrequent cases containing it. We want to keep this transaction so that we can compare the different Petri nets with the same set of transactions.  
+42. Click "Finish" button.
+
+**What I saw**: 
+
+![](CoSeLoG_Step_05_Filter96_PetriNet_Inductive.png)
+
+This approach discovered 9 transactions, 25 "hidden" / "silent" transactions & 21 places. 
+
+**My analysis**:  
+
+Argue why one of the Petri nets is better.
+
+Explain the (best) Petri net, what is the main process and what are notable parts of the Petri net?
+
 ### Step nn: step title
 
 **Approach I used**:  
