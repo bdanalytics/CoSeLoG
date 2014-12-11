@@ -122,13 +122,26 @@ Analysis of other metrics (median, mean & max duration) highlighted arcs with ve
 
 ### Step 04: inspect event log in ProM
 
-**Approach I used**:  
+**Approach I used**:
+   
+1. Click on "import..." icon on the upper right hand side of the "Workspace" pane.  
+2. Click on eye icon (the one associated with the log in the middle; NOT the top one).    
+3. Click on "Create new..." droplist in the top center of the window.  
+4. Select "XDotted Chart" by scrolling down the list.
+5. Select "Dotted Chart" tab on the left.
+6. Select "Occurence of first event" from the droplist for "Case order:" option.  
+7. Click on "Apply Settings" button.  
 
 **What I saw**: 
 
-![](dummy.png)
+![](CoSeLoG_Step_04.png)
+
+Events for each case are plotted across time and color-coded. Did not see the 'size shows # of events'-option. Zooming in does not make the timeline any more readable / discernible (e.g. do events initiate on weekends ?) 
 
 **My analysis**:  
+The arrival of the new cases is fairly constant evidenced by the -45 degree slope of the (approx) line of blue dots. There are some minor fluctuations which is difficult to quantify (clicking on the dots does not display any additional information). 
+
+For the more recent cases there are a lot less events / activities occuring close to case initiation compared to the earlier cases. 
 
 ### Step nn: step title
 

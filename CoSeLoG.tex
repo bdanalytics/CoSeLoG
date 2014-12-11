@@ -88,7 +88,7 @@
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
-\textbf{Date: (Wed) Dec 10, 2014}
+\textbf{Date: (Thu) Dec 11, 2014}
 
 Data: Originates from the CoSeLoG project executed under NWO project
 number 638.001.211. Within the CoSeLoG project the (dis)similarities
@@ -194,12 +194,12 @@ Disco}\label{step-03-inspect-process-performance-in-disco}
 
 \textbf{Approach I used}:\\1. Click on ``Performance'' bar / button in
 the ``Detail'' pane (right above the ``Copy'' / ``Delete'' / ``Export''
-icons). 2. Select ``Total Duration'' in the ``Performance'' pane to
-display. 3. Select ``Case frequency'' as the secondary metric in the
+icons).\\2. Select ``Total Duration'' in the ``Performance'' pane to
+display.\\3. Select ``Case frequency'' as the secondary metric in the
 ``Performance'' pane to ensure that we don't use outliers (e.g.~low case
-frequency) to make broad conclusions about the process. 4. Cycle through
-different metrics in the button next to ``Show:'' in the Performance
-pane.
+frequency) to make broad conclusions about the process.\\4. Cycle
+through different metrics in the button next to ``Show:'' in the
+Performance pane.
 
 \textbf{What I saw}:
 
@@ -217,6 +217,51 @@ elapsed days per month). The next bottleneck seems to be TA
 
 Analysis of other metrics (median, mean \& max duration) highlighted
 arcs with very low case frequency.
+
+\subsubsection{Step 04: inspect event log in
+ProM}\label{step-04-inspect-event-log-in-prom}
+
+\textbf{Approach I used}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Click on ``import\ldots{}'' icon on the upper right hand side of the
+  ``Workspace'' pane.\\
+\item
+  Click on eye icon (the one associated with the log in the middle; NOT
+  the top one).\\
+\item
+  Click on ``Create new\ldots{}'' droplist in the top center of the
+  window.\\
+\item
+  Select ``XDotted Chart'' by scrolling down the list.
+\item
+  Select ``Dotted Chart'' tab on the left.
+\item
+  Select ``Occurence of first event'' from the droplist for ``Case
+  order:'' option.\\
+\item
+  Click on ``Apply Settings'' button.
+\end{enumerate}
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_04.png}
+
+Events for each case are plotted across time and color-coded. Did not
+see the `size shows \# of events'-option. Zooming in does not make the
+timeline any more readable / discernible (e.g.~do events initiate on
+weekends ?)
+
+\textbf{My analysis}:\\The arrival of the new cases is fairly constant
+evidenced by the -45 degree slope of the (approx) line of blue dots.
+There are some minor fluctuations which is difficult to quantify
+(clicking on the dots does not display any additional information).
+
+For the more recent cases there are a lot less events / activities
+occuring close to case initiation compared to the earlier cases.
 
 \subsubsection{Step nn: step title}\label{step-nn-step-title}
 
