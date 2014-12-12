@@ -22,6 +22,9 @@ Time period: 2010-10-02 to 2012-01-23
 
 #### Potential next steps include:
 
+1. Step 05: Add conformance fitness (filtered vs. unfiltered log) to Petri net selection criteria
+2. Step 05: Add place names to discovered Petri nets.  
+
 ```{r set_global_options, echo=FALSE}
 rm(list=ls())
 set.seed(12345)
@@ -259,6 +262,8 @@ In my opinion, the ILP discovered Petri net is the best based on the following c
 '+' No silent transactions (ILP & Alpha).  
 '+' Less arcs (ILP & Heuristics). 
 
+This should be displayed in a table for better readability ?
+
 Since the analysis objective / goal is not known yet, these criteria might be modified when that becomes clear.   
 
 ![](CoSeLoG_Step_05_Filter96_PetriNet_ILP.png)
@@ -300,6 +305,43 @@ All the traces that end in End01 have 2 tokens remaining as described for Trace 
 All the traces that end in End02 have 1 token remaining as described for Trace 2.            
 
 These traces should be in a table for better comprehension ?
+
+### Step 06: inspect conformance with normative model in ProM
+
+**Approach I used**: 
+
+1. Click on "Workspace" icon.  
+2. Click on "import..." button.  
+3. Select the normative model file.  
+4. Select the 'PNML Petri net files' importer.  
+5. Click on "Actions" icon.  
+6. Search for "Replay" plug-in.  
+7. Select ‘Replay a Log on Petri Net for Conformance Analysis’ (not the variant with performance!) plug-in.
+8. Add original event log to "Input".  
+9. Click on "Start" button.  
+10. Click 'yes' in the 'No Final Marking' pop-up.
+11. Select the 'sink' place on the left (note: do not select '0-sink' etc.) and click the button 'Add Place >>' to add the place 'sink' to the candidate final marking list. 
+12. Click 'Finish' in the mapping wizard.  
+13. Click 'Finish' .  
+14. Click 'No, I've mapped all necessary event classes' to indicate that some events are not present in the normative model.  
+15. Click 'Next'.  
+16. Click 'Finish'.  
+
+**What I saw**: 
+
+![](CoSeLoG_Step_06_PetriNet_Normative_Conformance.png)
+
+*Transitions*: Most of the traces pass through very few "labeled" (tau are "silent") transitions: TA -> T06 -> T10 & TA -> T04 -> T05. The color darkness or "fill" of the transition boxes is based on the number of traces in the event log that fire them. The numbers underneath the label in the transition boxes refer to the number of synchronous moves vs. "move on model". T13 & T18 are never fired in this event log.  
+
+*Places*: Place size displays "move on log" frequency. Places where move log occured are colored yellow. However, size of "source" & "sink" are not adjusted. Clicking on the place displays the underlying label. Size of places going to silent transitions are not adjusted with frequency but are colored yellow when there are move(s) on log.  
+
+*Arcs*: The thickness of the arcs seems proportional to the frequency of event log traces.   
+
+**My analysis**:  
+
+The replay fitness (the 'trace fitness' statistic) of the event log on the normative process model is 0.8425. T10 has the maximum deviations (151). T06 has the minimum (125). 
+
+The transition 'T06 Determine necessity of stop advice+complete' (on the top left of the model) was tested with 1,434 traces in the event log. Out of those 1,309 (91%) were synchronous moves in both the model & log. Amongst those 1,309 traces, T06 was fired synchronously for 1,327 times (i.e. some traces fired T06 fired multiple times). For 125 traces, T06 was fired in the model only. 
 
 ### Step nn: step title
 

@@ -88,7 +88,7 @@
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
-\textbf{Date: (Thu) Dec 11, 2014}
+\textbf{Date: (Fri) Dec 12, 2014}
 
 Data: Originates from the CoSeLoG project executed under NWO project
 number 638.001.211. Within the CoSeLoG project the (dis)similarities
@@ -106,6 +106,16 @@ Time period: 2010-10-02 to 2012-01-23
 
 \paragraph{Potential next steps
 include:}\label{potential-next-steps-include}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Step 05: Add conformance fitness (filtered vs.~unfiltered log) to
+  Petri net selection criteria
+\item
+  Step 05: Add place names to discovered Petri nets.
+\end{enumerate}
 
 \subsubsection{Step 01: import event log in
 Disco}\label{step-01-import-event-log-in-disco}
@@ -488,6 +498,8 @@ log transactions into the control-flow (ILP, Heuristics \&
 Inductive).\\`+' No silent transactions (ILP \& Alpha).\\`+' Less arcs
 (ILP \& Heuristics).
 
+This should be displayed in a table for better readability ?
+
 Since the analysis objective / goal is not known yet, these criteria
 might be modified when that becomes clear.
 
@@ -565,6 +577,85 @@ for Trace 1.\\All the traces that end in End02 have 1 token remaining as
 described for Trace 2.
 
 These traces should be in a table for better comprehension ?
+
+\subsubsection{Step 06: inspect conformance with normative model in
+ProM}\label{step-06-inspect-conformance-with-normative-model-in-prom}
+
+\textbf{Approach I used}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Click on ``Workspace'' icon.\\
+\item
+  Click on ``import\ldots{}'' button.\\
+\item
+  Select the normative model file.\\
+\item
+  Select the `PNML Petri net files' importer.\\
+\item
+  Click on ``Actions'' icon.\\
+\item
+  Search for ``Replay'' plug-in.\\
+\item
+  Select `Replay a Log on Petri Net for Conformance Analysis' (not the
+  variant with performance!) plug-in.
+\item
+  Add original event log to ``Input''.\\
+\item
+  Click on ``Start'' button.\\
+\item
+  Click `yes' in the `No Final Marking' pop-up.
+\item
+  Select the `sink' place on the left (note: do not select `0-sink'
+  etc.) and click the button `Add Place \textgreater{}\textgreater{}' to
+  add the place `sink' to the candidate final marking list.
+\item
+  Click `Finish' in the mapping wizard.\\
+\item
+  Click `Finish' .\\
+\item
+  Click `No, I've mapped all necessary event classes' to indicate that
+  some events are not present in the normative model.\\
+\item
+  Click `Next'.\\
+\item
+  Click `Finish'.
+\end{enumerate}
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_06_PetriNet_Normative_Conformance.png}
+
+\emph{Transitions}: Most of the traces pass through very few ``labeled''
+(tau are ``silent'') transitions: TA -\textgreater{} T06 -\textgreater{}
+T10 \& TA -\textgreater{} T04 -\textgreater{} T05. The color darkness or
+``fill'' of the transition boxes is based on the number of traces in the
+event log that fire them. The numbers underneath the label in the
+transition boxes refer to the number of synchronous moves / move on
+model. T13 \& T18 are never fired in this event log.
+
+\emph{Places}: Place size displays move on log frequency. Places where
+move log occured are colored yellow. However, size of ``source'' \&
+``sink'' are not adjusted. Clicking on the place displays the underlying
+label. Size of places going to silent transitions are not adjusted with
+frequency but are colored yellow when there are move(s) on log.
+
+\emph{Arcs}: The thickness of the arcs seems proportional to the
+frequency of event log traces.
+
+\textbf{My analysis}:
+
+T10 has the maximum deviations (151). T06 has the minimum (125). The
+replay fitness (the `trace fitness' statistic) of the event log on the
+normative process model is 0.8425.\\The transition `T06 Determine
+necessity of stop advice+complete' (on the top left of the model) was
+tested with 1,434 traces in the event log. Out of those 1,309 (91\%)
+were synchronous moves in both the model \& log. Amongst those 1,309
+traces, T06 was fired synchronously for 1,327 times (i.e.~some traces
+fired T06 fired multiple times). For 125 traces, T06 was fired in the
+model only.
 
 \subsubsection{Step nn: step title}\label{step-nn-step-title}
 
