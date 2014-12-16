@@ -88,7 +88,7 @@
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
-\textbf{Date: (Fri) Dec 12, 2014}
+\textbf{Date: (Tue) Dec 16, 2014}
 
 Data: Originates from the CoSeLoG project executed under NWO project
 number 638.001.211. Within the CoSeLoG project the (dis)similarities
@@ -103,6 +103,19 @@ Source:
 Time period: 2010-10-02 to 2012-01-23
 
 \subsubsection{Synopsis:}\label{synopsis}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Normative Model Enhancements 1.1 Rename transitions / tasks /
+  activities to highlight nature of activity rather than working on a
+  ``receipt''. 1.2 ``silent'' transitions required ? 1.3. Inspect
+  positive \& negative deviants 1.4. Add guards to decision points
+\item
+  Bottleneck improvements
+\item
+  Resource alloaction / utilization
+\end{enumerate}
 
 \paragraph{Potential next steps
 include:}\label{potential-next-steps-include}
@@ -178,12 +191,8 @@ supposed to display as a table, but doesn't work properly) :
 in this map \textbar{} 1,344\\ Total cases \textbar{} 1,434\\ \% cases
 displayed in this map \textbar{} 94\%
 
-Do not understand why if `` Confirmation of receipt'' is complete, there
-is a need for ``T02 Check confirmation of receipt''. Additionally, there
-are 4 activities (TA, T02, T04 \& T05) regarding confirmation of
-receipts. Maybe these activities are not named appropriately ? and/or We
-need to inspect the intermediate activities (e.g.~T01, T03) to get a
-better understanding ?
+There are 4 activities (TA, T02, T04 \& T05) regarding confirmation of
+receipts. Maybe these activities are not named appropriately ?
 
 \subsubsection{Step 03: inspect process performance in
 Disco}\label{step-03-inspect-process-performance-in-disco}
@@ -633,29 +642,185 @@ ProM}\label{step-06-inspect-conformance-with-normative-model-in-prom}
 T10 \& TA -\textgreater{} T04 -\textgreater{} T05. The color darkness or
 ``fill'' of the transition boxes is based on the number of traces in the
 event log that fire them. The numbers underneath the label in the
-transition boxes refer to the number of synchronous moves / move on
-model. T13 \& T18 are never fired in this event log.
+transition boxes refer to the number of synchronous moves vs. ``move on
+model''. T13 \& T18 are never fired in this event log.
 
-\emph{Places}: Place size displays move on log frequency. Places where
-move log occured are colored yellow. However, size of ``source'' \&
-``sink'' are not adjusted. Clicking on the place displays the underlying
-label. Size of places going to silent transitions are not adjusted with
-frequency but are colored yellow when there are move(s) on log.
+\emph{Places}: Place size displays ``move on log'' frequency. Places
+where move log occured are colored yellow. However, size of ``source''
+\& ``sink'' are not adjusted. Clicking on the place displays the
+underlying label. Size of places going to silent transitions are not
+adjusted with frequency but are colored yellow when there are move(s) on
+log.
 
 \emph{Arcs}: The thickness of the arcs seems proportional to the
 frequency of event log traces.
 
 \textbf{My analysis}:
 
-T10 has the maximum deviations (151). T06 has the minimum (125). The
-replay fitness (the `trace fitness' statistic) of the event log on the
-normative process model is 0.8425.\\The transition `T06 Determine
-necessity of stop advice+complete' (on the top left of the model) was
-tested with 1,434 traces in the event log. Out of those 1,309 (91\%)
-were synchronous moves in both the model \& log. Amongst those 1,309
-traces, T06 was fired synchronously for 1,327 times (i.e.~some traces
-fired T06 fired multiple times). For 125 traces, T06 was fired in the
-model only.
+The replay fitness (the `trace fitness' statistic) of the event log on
+the normative process model is 0.8425. T10 has the maximum deviations
+(151). T06 has the minimum (125).
+
+The transition `T06 Determine necessity of stop advice+complete' (on the
+top left of the model) was tested with 1,434 traces in the event log.
+Out of those 1,309 (91\%) were synchronous moves in both the model \&
+log. Amongst those 1,309 traces, T06 was fired synchronously for 1,327
+times (i.e.~some traces fired T06 fired multiple times). For 125 traces,
+T06 was fired in the model only.
+
+\subsubsection{Step 07: inspect resource utilization in
+ProM}\label{step-07-inspect-resource-utilization-in-prom}
+
+\textbf{Approach I used}:\\1. Click on ``Workspace'' icon.\\2. Select
+event log resource.\\3. Click on ``Actions'' icon for this resource.\\4.
+Search for ``Mine for a Subcontracting Social Network'' \& select
+it.\\5. Keep selected default options \& click on ``Continue''
+button.\\6. Click ``Start'' button.\\7. Select the following in the
+Social Network view options:\\ Layout: ISOMLayout\\ Ranking:
+Betweenness\\ Mouse Mode: Picking\\ Edges removed for cl\ldots{}: 3rd
+tick from left\\ View options:\\ shape by degree\\ show vertex names\\
+show edge\\ Group Clusters\\8. Select a resource and move it to get more
+clarity in the visual.
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_07_SocialNet.png}
+
+Resources grouped by cluster, shaped by connectivity degree and edges
+depicting the connectivity density.
+
+\textbf{My analysis}:
+
+The resources may be grouped into the following categories:\\I.
+\emph{Singletons}: Resources \{31, 36 \& 42\} don't and \{16\} rarely
+subcontract work.\\II. \emph{Couples}: \{05, 21\} and \{03, 14\} are
+targets of subcontracting and amongst each other within the group. III.
+\emph{General Pool}: All the other resources subcontract work
+significantly amongst themselves.
+
+Let's see if we can get any more granularity regarding the sub-groups in
+``General Pool'' by inspecting the cases \& tasks executed by these
+resources. Couldn't find an appropriate filter plug-in to do this in
+ProM. Therefore, I switched to Disco and figured out that I need to
+filter the event log to delete cases that the ``Singletons'' worked on
+\& utilize the remaining cases to re-do this analysis.
+
+\textbf{Approach I used}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{10}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Click on ``Import'' icon in Disco.\\
+\item
+  Select the event log.\\
+\item
+  Click on ``Filter'' icon in the bottom left.\\
+\item
+  Click in the left pane to add filter.\\
+\item
+  Select ``Attribute - Removes events by attribute''.\\
+\item
+  Select ``Resource'' in the ``Filter by:'' option.\\
+\item
+  Select ``Mandatory'' in the ``Filtering mode:'' option.
+\item
+  Select ``Resource31'' only in ``Event values:'' pane.
+\item
+  Click on ``Apply filter'' button.
+\end{enumerate}
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLog_Step07_Filter_Resource31.png}
+
+2 cases in which all tasks were executed by Resource31.
+
+\textbf{My analysis}:
+
+The ``Singletons'' worked on 4 cases (10918 for Resource 42; 4328 for
+Resource 36 \& {[}8012, 8014{]} for Resource 31) only. Moreover, in each
+of these cases, all the tasks were conducted by one resource. Similarly,
+I also found resources \{``test'' \& ``TEST''\} who each had one case
+8061 \& 8047. I excluded these cases by applying a filter \& exported
+the filtered event log.
+
+Re-did tasks 1-8 as listed above for ``Step 07: inspect resource
+utilization in ProM''. The clustering in ProM suggested expanding \&
+splitting the ``Singletons'' group into ``Exclusive One-timers'' and
+``Occasional Helpers:'' as listed further below.
+
+After filtering the event log to delete cases that utilize these
+resources, I re-did the social networking analysis in ProM.
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_07_excl_one-timers_SocialNet.png}
+
+\textbf{My analysis}:
+
+The resources may be grouped into the following categories:\\1.
+\emph{Exclusive One-timers}: Resources \{31, 36, 42, test, TEST\} have
+worked on their cases exclusively (Total 6 cases).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \emph{Occasional Helpers}: Resources \{33, 35, 37, 38, 39, 40, 41, 43,
+  admin3\}\\2.1 Resources \{40, 41, 43\} have helped with one activity
+  on one case each.\\2.2 Resource37 has helped with 5 activities on one
+  case.\\2.3 Resource39 has helped with one activity (T02) on 2
+  cases.\\2.4 Resource38 has helped with activities on 2 cases.\\2.5
+  Resource admin3 has helped with one activity on 3 cases.\\2.6
+  Resource33 has helped with T07-* activities on 3 cases.\\2.7
+  Resource35 has helped with multiple activities on 3 cases.
+
+  Total 17 cases.
+\item
+  \emph{Isolated Couples}: Resources \{{[}13, 22{]}, {[}23, 25{]},
+  {[}14, 34{]}, {[}28, 32{]}, {[}16, admin2{]}, {[}26, 30{]}, {[}21,
+  29{]}, {[}06, 20{]}\} occasionally are outsourced / assign work. The
+  cluster sub-groups are probably based on the tasks similarity.
+\item
+  \emph{Workgroup A}: Resources \{01, 05, 07, 11, 19\}
+\item
+  \emph{Workgroup B}: Resources \{{[}10, admin1{]}, {[}04, 24{]}, {[}02,
+  03, 08, 09, 12, 15, 17, 18, 27{]}\}\\5.1 Resources 10 \& admin1 are
+  out-scourced work by many resources but do not assign any work to
+  others.\\5.2 Resources 04 \& 24 are out-sourced work by many resources
+  and occassionally assign work to others.
+\end{enumerate}
+
+\textbf{Approach I used}:\\21. Click on ``Workspace'' icon.\\22. Select
+event log.\\23. Click on ``Visualize'' icon for the selected
+resource.\\24. Select ``XDottedChart'' by clicking on ``Create
+new\ldots{}'' drop-box.\\25. Select ``Dotted Chart'' tab.\\26. Select
+the following options:\\ Component: `org:resource' Time: Logical Case
+order: Occurence of first event 27. Click on ``Apply settings'' button.
+
+\textbf{What I saw}:
+
+\includegraphics{CoSeLoG_Step_07_SocialDots.png}
+
+The resources are displayed as rows and the transitions are organized
+into columns based on when the transition was executed by that resource
+for a certain case. The transitions are color coded.
+
+\textbf{My analysis}:
+
+I wish the chart could be interactive (e.g.~click on a dot and obtain
+more information). In the absence of that, this is ``educated'' guess
+work. I tried filtering the logs to discern a pattern (which resources
+executed T10) but none of the plug-ins were of much help.
+
+Again use one of the two Dotted Chart plug-ins. Change the component
+type to `Originator' or `org:resource' (depending on the plug-in).
+Answer the following two questions using this view: Are all users
+executing activities from the start of the event log, or are some users
+joining later? Are users mainly executing particular activities or are
+most users executing most of the activities?
 
 \subsubsection{Step nn: step title}\label{step-nn-step-title}
 
