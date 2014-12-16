@@ -793,16 +793,22 @@ worked on their cases exclusively (Total 6 cases).
   and occassionally assign work to others.
 \end{enumerate}
 
+For, are all users executing activities from the start of the event log,
+or are some users joining later? \& are users mainly executing
+particular activities or are most users executing most of the
+activities?
+
 \textbf{Approach I used}:\\21. Click on ``Workspace'' icon.\\22. Select
-event log.\\23. Click on ``Visualize'' icon for the selected
-resource.\\24. Select ``XDottedChart'' by clicking on ``Create
+event log excluding cases that involve \emph{Exclusive One-timers} or
+\emph{Occasional Helpers}.\\23. Click on ``Visualize'' icon for the
+selected resource.\\24. Select ``XDottedChart'' by clicking on ``Create
 new\ldots{}'' drop-box.\\25. Select ``Dotted Chart'' tab.\\26. Select
 the following options:\\ Component: `org:resource' Time: Logical Case
 order: Occurence of first event 27. Click on ``Apply settings'' button.
 
 \textbf{What I saw}:
 
-\includegraphics{CoSeLoG_Step_07_SocialDots.png}
+\includegraphics{CoSeLoG_Step_07_Filtered_SocialDots.png}
 
 The resources are displayed as rows and the transitions are organized
 into columns based on when the transition was executed by that resource
@@ -810,17 +816,14 @@ for a certain case. The transitions are color coded.
 
 \textbf{My analysis}:
 
-I wish the chart could be interactive (e.g.~click on a dot and obtain
-more information). In the absence of that, this is ``educated'' guess
-work. I tried filtering the logs to discern a pattern (which resources
-executed T10) but none of the plug-ins were of much help.
+Most of the resources are executing activities from the start of the
+event log. It's hard to identify the exceptions. I wish the chart could
+be interactive (e.g.~click on a dot and obtain more information).
 
-Again use one of the two Dotted Chart plug-ins. Change the component
-type to `Originator' or `org:resource' (depending on the plug-in).
-Answer the following two questions using this view: Are all users
-executing activities from the start of the event log, or are some users
-joining later? Are users mainly executing particular activities or are
-most users executing most of the activities?
+Most resources are executing the first few activities \{TA, T02, T06\}.
+The black color is assigned to multiple activities, so it's hard to tell
+whether many resources are executing these activities or only a few.
+Other activities appear to be executed by only a few.
 
 \subsubsection{Step nn: step title}\label{step-nn-step-title}
 

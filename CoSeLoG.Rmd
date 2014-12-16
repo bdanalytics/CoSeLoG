@@ -444,9 +444,11 @@ The resources may be grouped into the following categories:
     5.1 Resources 10 & admin1 are out-scourced work by many resources but do not assign any work to others.  
     5.2 Resources 04 & 24 are out-sourced work by many resources and occassionally assign  work to others.  
 
+For, are all users executing activities from the start of the event log, or are some users joining later? & are users mainly executing particular activities or are most users executing most of the activities?
+
 **Approach I used**:  
 21. Click on "Workspace" icon.  
-22. Select event log.  
+22. Select event log excluding cases that involve *Exclusive One-timers* or *Occasional Helpers*.  
 23. Click on "Visualize" icon for the selected resource.  
 24. Select "XDottedChart" by clicking on "Create new..." drop-box.  
 25. Select "Dotted Chart" tab.  
@@ -458,17 +460,15 @@ The resources may be grouped into the following categories:
 
 **What I saw**: 
 
-![](CoSeLoG_Step_07_SocialDots.png)
+![](CoSeLoG_Step_07_Filtered_SocialDots.png)
 
 The resources are displayed as rows and the transitions are organized into columns based on when the transition was executed by that resource for a certain case. The transitions are color coded.  
 
 **My analysis**:
 
-I wish the chart could be interactive (e.g. click on a dot and obtain more information). In the absence of that, this is "educated" guess work. I tried filtering the logs to discern a pattern (which resources executed T10) but none of the plug-ins were of much help. 
+Most of the resources are executing activities from the start of the event log. It's hard to identify the exceptions. I wish the chart could be interactive (e.g. click on a dot and obtain more information). 
 
-Again use one of the two Dotted Chart plug-ins. Change the component type to 'Originator' or 'org:resource' (depending on the plug-in). Answer the following two questions using this view:
-Are all users executing activities from the start of the event log, or are some users joining later?
-Are users mainly executing particular activities or are most users executing most of the activities?
+Most resources are executing the first few activities {TA, T02, T06}. The black color is assigned to multiple activities, so it's hard to tell whether many resources are executing these activities or only a few. Other activities appear to be executed by only a few. 
 
 ### Step nn: step title
 
