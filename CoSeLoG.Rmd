@@ -10,7 +10,11 @@ output:
     number_sections: yes
     toc: yes
 ---
+  
+**  **    
 **Date: `r format(Sys.time(), "(%a) %b %d, %Y")`**    
+
+# Background:
 
 Data: Originates from the CoSeLoG project executed under NWO project number 638.001.211. Within the CoSeLoG project the (dis)similarities between several processes of different municipalities in the Netherlands has been investigated. This event log contains the records of the execution of the receiving phase of the building permit application process in an anonymous municipality.
 
@@ -30,7 +34,7 @@ Based on analysis utilizing process mining techniques, the CoSeLoG process may b
 
     1.3. Add guards to decision points utilizing case attributes which were either not available / utilized for this analysis.
     
-    1.3. Analyze positive & negative deviants from real-world cases utilizing decision points' guards. Negative deviations should create "alerts" to the appropriate personnel in real-time. Positive deviations should be utilized to enhance the normative model.  
+    1.3. Analyze positive & negative deviations in real-world cases utilizing decision points' guards. Negative deviations should create "alerts" to the appropriate personnel in real-time. Positive deviations should be utilized to enhance the normative model.  
     
 2. Bottleneck improvements:  
 
@@ -38,26 +42,52 @@ Based on analysis utilizing process mining techniques, the CoSeLoG process may b
     
     2.2 Similarly, there are 1,079 cases that take 29.6 months from TA to T02 which is also not allowed by the normative process model. 
     
-3. Resource alloaction / utilization: Categorize resources into "Generalists" vs. "Specialists" to enhance both efficiency and effectiveness. 
-
-    3.1 Assign cases that require specialists based on case attributes / guards as they evolve in real-time. Once the case is assigned to a specialist, increase accountability by ensuring that case is processed all the way to completion by that specialist only, as much as possible. 
+    2.3 To enhance the process and facilitate further analytics, capture transactional information about each task / acitivity (e.g. start, complete, abort, schedule, assign, suspend, resume, withdraw, etc.)
     
-    3.2 If the case does not require a specialist, increase accountability by ensuring that case is processed all the way to completion by that generalist only, as much as possible.
-    
-    Reducing the number of hand-offs (as long as that resource has capacity) will have a higher probablity of identifying inherent bottlenecks and other efficiency improvements (e.g. whenever a new resource has to step in for a case, that case needs to be "learnt" by that resource prior to executing any task).
-    
+3. Resource alloaction / utilization: 
 
-### Potential next steps include:
+    3.1 Categorize resources into "Generalists" vs. "Specialists" to enhance both efficiency and effectiveness. 
+    
+    3.2 Implement a Resource Recommendation System that considers resource type & capacity along with case attributes & time deadlines to recommend resources for the next event / activity for the case. Broad design guidelines may include:
 
-1. Step 05: Add conformance fitness (filtered vs. unfiltered log) to Petri net selection criteria.
-2. Step 05: Add place names to discovered Petri nets.  
+    3.2.A Assign cases that require specialists based on case attributes / guards as they evolve in real-time. Once the case is assigned to a specialist, increase accountability by ensuring that case is processed all the way to completion by that specialist only, as much as possible. 
+    
+    3.2.B If the case does not require a specialist, increase accountability by ensuring that case is processed all the way to completion by that generalist only, as much as possible.
+    
+    3.2.C Reducing the number of hand-offs (as long as that resource has capacity) will have a higher probability of identifying inherent bottlenecks and other efficiency improvements (e.g. whenever a new resource has to step in for a case, that case needs to be "learnt" by that resource prior to executing any task).
+    
+## Potential next steps include:
+
+0. Change TA to T00 or T01 ?
+
+1. Discover Petri net in ProM:
+    1.1 Add Fitness/Simplicity/Precision/Generalization to Petri net selection criteria.
+        1.1.1 Fitness metrics:
+            alignment conformance of event log: ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/ option Measuring fitness
+            
+        1.1.2 Simplicity metrics:
+            # total places
+            # silent places
+            # silent transitions
+            # arcs
+            entropy: ProM plug-in ?
+            minimal description length (MDL): ProM plug-in ?
+        1.1.3 Generalization metrics:
+            alignment conformance of test event log (or cross-validation)
+            
+        1.1.4 Precision metrics:   
+            % model allowed traces (how do you deal with loops ?) present in event log: same as
+            behavioral appropriateness ?: ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/ option Measuring behavioral appropriateness
+            
+    1.2 Add place names to discovered Petri nets.
+    1.3 Radar plot of model evaluations.
+    1.4 Display remaining tokens in selected Petri net.
 
 X.1 Review questions in Peer Assignment to ensure that all have been answered  
 X.2 Re-do listed steps to ensure reproduceability  
 X.3 Convert text to tables where appropriate  
-X.4 Clean formats to make it more readable  
-X.5 Get page numbers  
-X.6 Still have "Contents" at the top ?
+X.4 Clean formats to make it more readable
+X.5 Scan Peer Assignment Forum for enhancement ideas
 
 ```{r set_global_options, echo=FALSE}
 rm(list=ls())
@@ -71,7 +101,7 @@ set.seed(12345)
 ```
 
 ```{r set_global_options_wd, echo=FALSE}
-setwd("~/Documents/Work/Courses/Coursera/process-mining/Projects/PM_Assignment")
+setwd("~/Documents/Work/Courses/Coursera/process-mining/Projects/CoSeLoG")
 ```
 
 # Import event log in Disco
@@ -92,9 +122,9 @@ There are 6 events on average per case. This information can be gathered by hove
 
 By clicking on "Variants" button on top of the table, we can see that there are only 116 variants amongst the 1,434 cases.
 
-The main observation from the 'Events over time' graph is that the maximum number of events (33) occured on May 2, 2011 across cases.  
+The main observation from the 'Events over time' graph is that the maximum number of events (77) occured on Apr 27, 2011 across cases.  
 
-### Step 02: inspect process map in Disco
+# Inspect process map in Disco
 **Approach I used**:  
 1. Click on "Map" tab in the window header.  
 2. Set "Activities" slider to 0% & "Paths" slider to 50% to make the process map fit on one screen and still be readable.  
@@ -128,7 +158,7 @@ Start -> TA -> T02 -> T04 -> T05 -> T06 -> T10 -> End |     828
 
 There are 4 activities (TA, T02, T04 & T05) regarding confirmation of receipts. Maybe these activities are not named appropriately ? 
 
-### Step 03: inspect process performance in Disco
+# Inspect process performance in Disco
 
 **Approach I used**:  
 1. Click on "Performance" bar / button in the "Detail" pane (right above the "Copy" / "Delete" / "Export" icons).  
@@ -147,7 +177,7 @@ The color & thickness of the arcs are based on the distribution of the selected 
 
 Analysis of other metrics (median, mean & max duration) highlighted arcs with very low case frequency.
 
-### Step 04: inspect event log in ProM
+# Inspect event log in ProM
 
 **Approach I used**:
    
@@ -170,7 +200,7 @@ The arrival of the new cases is fairly constant evidenced by the -45 degree slop
 
 For the more recent cases there are a lot less events / activities occuring close to case initiation compared to the earlier cases. 
 
-### Step 05: discover Petri net in Disco
+# Discover Petri net in ProM
 
 **Approach I used**:  
   
@@ -340,7 +370,7 @@ All the traces that end in End02 have 1 token remaining as described for Trace 2
 
 These traces should be in a table for better comprehension ?
 
-### Step 06: inspect conformance with normative model in ProM
+# Inspect conformance with normative model in ProM
 
 **Approach I used**: 
 
@@ -377,7 +407,7 @@ The replay fitness (the 'trace fitness' statistic) of the event log on the norma
 
 The transition 'T06 Determine necessity of stop advice+complete' (on the top left of the model) was tested with 1,434 traces in the event log. Out of those 1,309 (91%) were synchronous moves in both the model & log. Amongst those 1,309 traces, T06 was fired synchronously for 1,327 times (i.e. some traces fired T06 fired multiple times). For 125 traces, T06 was fired in the model only. 
 
-### Step 07: inspect resource utilization in ProM
+# Inspect resource utilization in ProM
 
 **Approach I used**:  
 1. Click on "Workspace" icon.  

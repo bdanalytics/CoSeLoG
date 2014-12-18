@@ -88,7 +88,11 @@
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
-\textbf{Date: (Tue) Dec 16, 2014}
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\textbf{Date: (Thu) Dec 18, 2014}
+
+\section{Background:}\label{background}
 
 Data: Originates from the CoSeLoG project executed under NWO project
 number 638.001.211. Within the CoSeLoG project the (dis)similarities
@@ -125,7 +129,7 @@ process may be enhanced with the following recommendations:
   1.3. Add guards to decision points utilizing case attributes which
   were either not available / utilized for this analysis.
 
-  1.3. Analyze positive \& negative deviants from real-world cases
+  1.3. Analyze positive \& negative deviations in real-world cases
   utilizing decision points' guards. Negative deviations should create
   ``alerts'' to the appropriate personnel in real-time. Positive
   deviations should be utilized to enhance the normative model.
@@ -139,45 +143,77 @@ process may be enhanced with the following recommendations:
 
   2.2 Similarly, there are 1,079 cases that take 29.6 months from TA to
   T02 which is also not allowed by the normative process model.
-\item
-  Resource alloaction / utilization: Categorize resources into
-  ``Generalists'' vs. ``Specialists'' to enhance both efficiency and
-  effectiveness.
 
-  3.1 Assign cases that require specialists based on case attributes /
+  2.3 To enhance the process and facilitate further analytics, capture
+  transactional information about each task / acitivity (e.g.~start,
+  complete, abort, schedule, assign, suspend, resume, withdraw, etc.)
+\item
+  Resource alloaction / utilization:
+
+  3.1 Categorize resources into ``Generalists'' vs. ``Specialists'' to
+  enhance both efficiency and effectiveness.
+
+  3.2 Implement a Resource Recommendation System that considers resource
+  type \& capacity along with case attributes \& time deadlines to
+  recommend resources for the next event / activity for the case. Broad
+  design guidelines may include:
+
+  3.2.A Assign cases that require specialists based on case attributes /
   guards as they evolve in real-time. Once the case is assigned to a
   specialist, increase accountability by ensuring that case is processed
   all the way to completion by that specialist only, as much as
   possible.
 
-  3.2 If the case does not require a specialist, increase accountability
-  by ensuring that case is processed all the way to completion by that
-  generalist only, as much as possible.
+  3.2.B If the case does not require a specialist, increase
+  accountability by ensuring that case is processed all the way to
+  completion by that generalist only, as much as possible.
 
-  Reducing the number of hand-offs (as long as that resource has
-  capacity) will have a higher probablity of identifying inherent
+  3.2.C Reducing the number of hand-offs (as long as that resource has
+  capacity) will have a higher probability of identifying inherent
   bottlenecks and other efficiency improvements (e.g.~whenever a new
   resource has to step in for a case, that case needs to be ``learnt''
   by that resource prior to executing any task).
 \end{enumerate}
 
-\subsubsection{Potential next steps
+\subsection{Potential next steps
 include:}\label{potential-next-steps-include}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\itemsep1pt\parskip0pt\parsep0pt
+\setcounter{enumi}{-1}
 \item
-  Step 05: Add conformance fitness (filtered vs.~unfiltered log) to
-  Petri net selection criteria.
+  Change TA to T00 or T01 ?
 \item
-  Step 05: Add place names to discovered Petri nets.
+  Discover Petri net in ProM: 1.1 Add
+  Fitness/Simplicity/Precision/Generalization to Petri net selection
+  criteria. 1.1.1 Fitness metrics: alignment conformance of event log:
+  ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/
+  option Measuring fitness
+
+\begin{verbatim}
+1.1.2 Simplicity metrics:
+    # total places
+    # silent places
+    # silent transitions
+    # arcs
+    entropy: ProM plug-in ?
+    minimal description length (MDL): ProM plug-in ?
+1.1.3 Generalization metrics:
+    alignment conformance of test event log (or cross-validation)
+
+1.1.4 Precision metrics:   
+    % model allowed traces (how do you deal with loops ?) present in event log: same as
+    behavioral appropriateness ?: ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/ option Measuring behavioral appropriateness
+\end{verbatim}
+
+  1.2 Add place names to discovered Petri nets. 1.3 Radar plot of model
+  evaluations. 1.4 Display remaining tokens in selected Petri net.
 \end{enumerate}
 
 X.1 Review questions in Peer Assignment to ensure that all have been
 answered\\X.2 Re-do listed steps to ensure reproduceability\\X.3 Convert
 text to tables where appropriate\\X.4 Clean formats to make it more
-readable\\X.5 Get page numbers\\X.6 Still have ``Contents'' at the top ?
+readable X.5 Scan Peer Assignment Forum for enhancement ideas
 
 \section{Import event log in Disco}\label{import-event-log-in-disco}
 
@@ -203,8 +239,8 @@ there are only 116 variants amongst the 1,434 cases.
 The main observation from the `Events over time' graph is that the
 maximum number of events (33) occured on May 2, 2011 across cases.
 
-\subsubsection{Step 02: inspect process map in
-Disco}\label{step-02-inspect-process-map-in-disco}
+\section{Inspect process map in
+Disco}\label{inspect-process-map-in-disco}
 
 \textbf{Approach I used}:\\1. Click on ``Map'' tab in the window
 header.\\2. Set ``Activities'' slider to 0\% \& ``Paths'' slider to 50\%
@@ -242,8 +278,8 @@ displayed in this map \textbar{} 94\%
 There are 4 activities (TA, T02, T04 \& T05) regarding confirmation of
 receipts. Maybe these activities are not named appropriately ?
 
-\subsubsection{Step 03: inspect process performance in
-Disco}\label{step-03-inspect-process-performance-in-disco}
+\section{Inspect process performance in
+Disco}\label{inspect-process-performance-in-disco}
 
 \textbf{Approach I used}:\\1. Click on ``Performance'' bar / button in
 the ``Detail'' pane (right above the ``Copy'' / ``Delete'' / ``Export''
@@ -271,8 +307,7 @@ elapsed days per month). The next bottleneck seems to be TA
 Analysis of other metrics (median, mean \& max duration) highlighted
 arcs with very low case frequency.
 
-\subsubsection{Step 04: inspect event log in
-ProM}\label{step-04-inspect-event-log-in-prom}
+\section{Inspect event log in ProM}\label{inspect-event-log-in-prom}
 
 \textbf{Approach I used}:
 
@@ -316,8 +351,7 @@ There are some minor fluctuations which is difficult to quantify
 For the more recent cases there are a lot less events / activities
 occuring close to case initiation compared to the earlier cases.
 
-\subsubsection{Step 05: discover Petri net in
-Disco}\label{step-05-discover-petri-net-in-disco}
+\section{Discover Petri net in ProM}\label{discover-petri-net-in-prom}
 
 \textbf{Approach I used}:
 
@@ -635,8 +669,8 @@ described for Trace 2.
 
 These traces should be in a table for better comprehension ?
 
-\subsubsection{Step 06: inspect conformance with normative model in
-ProM}\label{step-06-inspect-conformance-with-normative-model-in-prom}
+\section{Inspect conformance with normative model in
+ProM}\label{inspect-conformance-with-normative-model-in-prom}
 
 \textbf{Approach I used}:
 
@@ -716,8 +750,8 @@ log. Amongst those 1,309 traces, T06 was fired synchronously for 1,327
 times (i.e.~some traces fired T06 fired multiple times). For 125 traces,
 T06 was fired in the model only.
 
-\subsubsection{Step 07: inspect resource utilization in
-ProM}\label{step-07-inspect-resource-utilization-in-prom}
+\section{Inspect resource utilization in
+ProM}\label{inspect-resource-utilization-in-prom}
 
 \textbf{Approach I used}:\\1. Click on ``Workspace'' icon.\\2. Select
 event log resource.\\3. Click on ``Actions'' icon for this resource.\\4.
