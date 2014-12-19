@@ -90,7 +90,7 @@
 }
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\textbf{Date: (Thu) Dec 18, 2014}
+\textbf{Date: (Fri) Dec 19, 2014}
 
 \section{Background:}\label{background}
 
@@ -117,7 +117,7 @@ process may be enhanced with the following recommendations:
   Normative Model Enhancements:
 
   1.1 Rename transitions / tasks / activities to highlight nature of
-  activity rather than working on a ``receipt'' e.g.~TA (``Confirmation
+  activity rather than working on a ``receipt'' e.g.~T00 (``Confirmation
   of receipt'') \& T01 through T05.
 
   1.2 Review need for many ``silent'' transitions \& places. For e.g.
@@ -141,7 +141,7 @@ process may be enhanced with the following recommendations:
   path is not allowed by the normative process model. Reducing this
   duration will have a big impact on the overall process duration.
 
-  2.2 Similarly, there are 1,079 cases that take 29.6 months from TA to
+  2.2 Similarly, there are 1,079 cases that take 29.6 months from T00 to
   T02 which is also not allowed by the normative process model.
 
   2.3 To enhance the process and facilitate further analytics, capture
@@ -180,9 +180,6 @@ include:}\label{potential-next-steps-include}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{-1}
-\item
-  Change TA to T00 or T01 ?
 \item
   Discover Petri net in ProM: 1.1 Add
   Fitness/Simplicity/Precision/Generalization to Petri net selection
@@ -237,7 +234,7 @@ By clicking on ``Variants'' button on top of the table, we can see that
 there are only 116 variants amongst the 1,434 cases.
 
 The main observation from the `Events over time' graph is that the
-maximum number of events (33) occured on May 2, 2011 across cases.
+maximum number of events (77) occured on Apr 27, 2011 across cases.
 
 \section{Inspect process map in
 Disco}\label{inspect-process-map-in-disco}
@@ -253,30 +250,24 @@ to make the process map fit on one screen and still be readable.
 \textbf{My analysis}:
 
 The 6 most frequent activities between the initiation and termination of
-cases in the process map include:\\A. Confirmation of receipt\\B. T02
-Check confirmation of receipt\\C. T04 Determine confirmation of
-receipt\\D. T05 Print and send confirmation of receipt\\E. T06 Determine
-necessity of stop advice\\F. T10 Determine necessity to stop indication
+cases in the process map include:\\A. Confirmation of receipt (labeled
+as ``T00'' in the rest of this document)\\B. T02 Check confirmation of
+receipt\\C. T04 Determine confirmation of receipt\\D. T05 Print and send
+confirmation of receipt\\E. T06 Determine necessity of stop advice\\F.
+T10 Determine necessity to stop indication
 
-The most frequent activity paths traced by the cases include (this is
-supposed to display as a table, but doesn't work properly) :
+The most frequent activity paths traced by the cases include:
 
 \begin{verbatim}
-                                    Activity Path | # of Cases  
+##                                           Activity.Path Cases
+##                                     Start -> T00 -> End   116
+##                Start -> T00 -> T02 -> T04 -> T05 -> End   400
+##  Start -> T00 -> T02 -> T04 -> T05 -> T06 -> T10 -> End   828
 \end{verbatim}
 
------------------------------------------------------ \textbar{}
------------\\ Start -\textgreater{} TA -\textgreater{} End \textbar{}
-116\\ Start -\textgreater{} TA -\textgreater{} T02 -\textgreater{} T04
--\textgreater{} T05 -\textgreater{} End \textbar{} 400\\Start
--\textgreater{} TA -\textgreater{} T02 -\textgreater{} T04
--\textgreater{} T05 -\textgreater{} T06 -\textgreater{} T10
--\textgreater{} End \textbar{} 828\\ \textbar{}\\ Total cases displayed
-in this map \textbar{} 1,344\\ Total cases \textbar{} 1,434\\ \% cases
-displayed in this map \textbar{} 94\%
-
-There are 4 activities (TA, T02, T04 \& T05) regarding confirmation of
-receipts. Maybe these activities are not named appropriately ?
+These traces capture 93.7 \% of the cases in the event log. There are 4
+activities (T00, T02, T04 \& T05) regarding confirmation of receipts.
+Maybe these activities are not named appropriately ?
 
 \section{Inspect process performance in
 Disco}\label{inspect-process-performance-in-disco}
@@ -301,7 +292,7 @@ a statistics window is displayed for that arc.
 \textbf{My analysis}:\\\emph{Total Duration}: The arc from T05 to T06
 takes 79.6 months for 791 cases (31\% of total duration of all cases
 which is 258.12 months: mean of 5.4 days per case X 1,434 cases / 30
-elapsed days per month). The next bottleneck seems to be TA
+elapsed days per month). The next bottleneck seems to be T00
 -\textgreater{} T02 which is 29.6 months for 1,079 cases.
 
 Analysis of other metrics (median, mean \& max duration) highlighted
@@ -319,17 +310,17 @@ arcs with very low case frequency.
   ``Workspace'' pane.\\
 \item
   Click on eye icon (the one associated with the log in the middle; NOT
-  the top one).\\
+  the top one).
 \item
   Click on ``Create new\ldots{}'' droplist in the top center of the
-  window.\\
+  window.
 \item
   Select ``XDotted Chart'' by scrolling down the list.
 \item
   Select ``Dotted Chart'' tab on the left.
 \item
   Select ``Occurence of first event'' from the droplist for ``Case
-  order:'' option.\\
+  order:'' option.
 \item
   Click on ``Apply Settings'' button.
 \end{enumerate}
@@ -596,69 +587,69 @@ might be modified when that becomes clear.
 
 \includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_ILP.png}
 
-The main traces include:\\\textbf{1}. Start -\textgreater{} TA
+The main traces include:\\\textbf{1}. Start -\textgreater{} T00
 -\textgreater{} T02 -\textgreater{} T05 -\textgreater{} End01 with 2
-tokens remaining in ILP3 (between TA \& T10) and ILP5 (between TA \&
+tokens remaining in ILP3 (between T00 \& T10) and ILP5 (between T00 \&
 T07-1)
 
-\textbf{2}. Start -\textgreater{} TA -\textgreater{} T10 -\textgreater{}
-T11 -\textgreater{} End02 with 1 token remaining in ILP1 (between TA \&
-T02)
+\textbf{2}. Start -\textgreater{} T00 -\textgreater{} T10
+-\textgreater{} T11 -\textgreater{} End02 with 1 token remaining in ILP1
+(between T00 \& T02)
 
 The traces with some loops include:\\\textbf{1A}. Start -\textgreater{}
-TA -\textgreater{} T02 -\textgreater{} {[}T04{]}* -\textgreater{} T05
+T00 -\textgreater{} T02 -\textgreater{} {[}T04{]}* -\textgreater{} T05
 -\textgreater{} End01\\ After T02, there might be any number of T04
 firings
 
-\textbf{1B}. Start -\textgreater{} TA -\textgreater{} T02
+\textbf{1B}. Start -\textgreater{} T00 -\textgreater{} T02
 -\textgreater{} {[}T03 -\textgreater{} T02{]}* -\textgreater{} T05
 -\textgreater{} End01\\ After T02, there might be any number of T03
 -\textgreater{} T02 loops
 
-\textbf{1AB}. Start -\textgreater{} TA -\textgreater{} T02
+\textbf{1AB}. Start -\textgreater{} T00 -\textgreater{} T02
 -\textgreater{} {[}T04{]}* -\textgreater{} {[}T03 -\textgreater{}
 T02{]}* -\textgreater{} T05 -\textgreater{} End01\\ After T02, there
 might be any number of T04 firings and/or T03 -\textgreater{} T02 loops
 
-\textbf{2A}. Start -\textgreater{} TA -\textgreater{} {[}T06{]}*
+\textbf{2A}. Start -\textgreater{} T00 -\textgreater{} {[}T06{]}*
 -\textgreater{} T10 -\textgreater{} T11 -\textgreater{} End02
 
-\textbf{2B}. Start -\textgreater{} TA -\textgreater{} {[}T07-1{]}*
+\textbf{2B}. Start -\textgreater{} T00 -\textgreater{} {[}T07-1{]}*
 -\textgreater{} T10 -\textgreater{} T11 -\textgreater{} End02
 
-\textbf{2AB}. Start -\textgreater{} TA -\textgreater{} {[}T06{]}*
+\textbf{2AB}. Start -\textgreater{} T00 -\textgreater{} {[}T06{]}*
 -\textgreater{} {[}T07-1{]}* -\textgreater{} T10 -\textgreater{} T11
 -\textgreater{} End02
 
-\textbf{2C1a}. Start -\textgreater{} TA -\textgreater{} T10
+\textbf{2C1a}. Start -\textgreater{} T00 -\textgreater{} T10
 -\textgreater{} T02 -\textgreater{} {[}T04{]}* -\textgreater{} {[}T03
 -\textgreater{} T02{]}* -\textgreater{} T05 -\textgreater{}
-End01\\\textbf{2C1b}. Start -\textgreater{} TA -\textgreater{} T10
+End01\\\textbf{2C1b}. Start -\textgreater{} T00 -\textgreater{} T10
 -\textgreater{} T11 -\textgreater{} T02 -\textgreater{} {[}T04{]}*
 -\textgreater{} {[}T03 -\textgreater{} T02{]}* -\textgreater{} T05
 -\textgreater{} End01
 
-\textbf{2AC1a}. Start -\textgreater{} TA -\textgreater{} {[}T06{]}*
+\textbf{2AC1a}. Start -\textgreater{} T00 -\textgreater{} {[}T06{]}*
 -\textgreater{} T10 -\textgreater{} T02 -\textgreater{} {[}T04{]}*
 -\textgreater{} {[}T03 -\textgreater{} T02{]}* -\textgreater{} T05
--\textgreater{} End01\\\textbf{2AC1b}. Start -\textgreater{} TA
+-\textgreater{} End01\\\textbf{2AC1b}. Start -\textgreater{} T00
 -\textgreater{} {[}T06{]}* -\textgreater{} T10 -\textgreater{} T11
 -\textgreater{} T02 -\textgreater{} {[}T04{]}* -\textgreater{} {[}T03
 -\textgreater{} T02{]}* -\textgreater{} T05 -\textgreater{} End01
 
-\textbf{2BC1a}. Start -\textgreater{} TA -\textgreater{} {[}T07-1{]}*
+\textbf{2BC1a}. Start -\textgreater{} T00 -\textgreater{} {[}T07-1{]}*
 -\textgreater{} T10 -\textgreater{} T02 -\textgreater{} {[}T04{]}*
 -\textgreater{} {[}T03 -\textgreater{} T02{]}* -\textgreater{} T05
--\textgreater{} End01\\\textbf{2BC1b}. Start -\textgreater{} TA
+-\textgreater{} End01\\\textbf{2BC1b}. Start -\textgreater{} T00
 -\textgreater{} {[}T07-1{]}* -\textgreater{} T10 -\textgreater{} T11
 -\textgreater{} T02 -\textgreater{} {[}T04{]}* -\textgreater{} {[}T03
 -\textgreater{} T02{]}* -\textgreater{} T05 -\textgreater{} End01
 
-\textbf{2ABC1a}. Start -\textgreater{} TA -\textgreater{} {[}T06{]}*
+\textbf{2ABC1a}. Start -\textgreater{} T00 -\textgreater{} {[}T06{]}*
 -\textgreater{} {[}T07-1{]}* -\textgreater{} T10 -\textgreater{} T02
 -\textgreater{} {[}T04{]}* -\textgreater{} {[}T03 -\textgreater{}
 T02{]}* -\textgreater{} T05 -\textgreater{} End01\\\textbf{2ABC1b}.
-Start -\textgreater{} TA -\textgreater{} {[}T06{]}* -\textgreater{}
+Start -\textgreater{} T00 -\textgreater{} {[}T06{]}* -\textgreater{}
 {[}T07-1{]}* -\textgreater{} T10 -\textgreater{} T11 -\textgreater{} T02
 -\textgreater{} {[}T04{]}* -\textgreater{} {[}T03 -\textgreater{}
 T02{]}* -\textgreater{} T05 -\textgreater{} End01
@@ -720,12 +711,13 @@ ProM}\label{inspect-conformance-with-normative-model-in-prom}
 \includegraphics{CoSeLoG_Step_06_PetriNet_Normative_Conformance.png}
 
 \emph{Transitions}: Most of the traces pass through very few ``labeled''
-(tau are ``silent'') transitions: TA -\textgreater{} T06 -\textgreater{}
-T10 \& TA -\textgreater{} T04 -\textgreater{} T05. The color darkness or
-``fill'' of the transition boxes is based on the number of traces in the
-event log that fire them. The numbers underneath the label in the
-transition boxes refer to the number of synchronous moves vs. ``move on
-model''. T13 \& T18 are never fired in this event log.
+(tau are ``silent'') transitions: T00 -\textgreater{} T06
+-\textgreater{} T10 \& T00 -\textgreater{} T04 -\textgreater{} T05. The
+color darkness or ``fill'' of the transition boxes is based on the
+number of traces in the event log that fire them. The numbers underneath
+the label in the transition boxes refer to the number of synchronous
+moves vs. ``move on model''. T13 \& T18 are never fired in this event
+log.
 
 \emph{Places}: Place size displays ``move on log'' frequency. Places
 where move log occured are colored yellow. However, size of ``source''
@@ -903,7 +895,7 @@ Most of the resources are executing activities from the start of the
 event log. It's hard to identify the exceptions. I wish the chart could
 be interactive (e.g.~click on a dot and obtain more information).
 
-Most resources are executing the first few activities \{TA, T02, T06\}.
+Most resources are executing the first few activities \{T00, T02, T06\}.
 The black color is assigned to multiple activities, so it's hard to tell
 whether many resources are executing these activities or only a few.
 Other activities appear to be executed by only a few.

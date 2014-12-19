@@ -28,7 +28,7 @@ Based on analysis utilizing process mining techniques, the CoSeLoG process may b
 
 1. Normative Model Enhancements:  
 
-    1.1 Rename transitions / tasks / activities to highlight nature of activity rather than working on a "receipt" e.g. TA ("Confirmation of receipt") & T01 through T05.
+    1.1 Rename transitions / tasks / activities to highlight nature of activity rather than working on a "receipt" e.g. T00 ("Confirmation of receipt") & T01 through T05.
 
     1.2 Review need for many "silent" transitions & places. For e.g. "0 sink", first "tau split" and the immediately succeeding places called "source" might not be really adding much value, especially if it's required more for process analytics rather than the actual business needs / process.
 
@@ -40,7 +40,7 @@ Based on analysis utilizing process mining techniques, the CoSeLoG process may b
 
     2.1 There are 791 cases that take 79.6 months to traverse from T05 to T06 which is approx. 31% of the duration of all cases. However, this path is not allowed by the normative process model. Reducing this duration will have a big impact on the overall process duration.  
     
-    2.2 Similarly, there are 1,079 cases that take 29.6 months from TA to T02 which is also not allowed by the normative process model. 
+    2.2 Similarly, there are 1,079 cases that take 29.6 months from T00 to T02 which is also not allowed by the normative process model. 
     
     2.3 To enhance the process and facilitate further analytics, capture transactional information about each task / acitivity (e.g. start, complete, abort, schedule, assign, suspend, resume, withdraw, etc.)
     
@@ -57,8 +57,6 @@ Based on analysis utilizing process mining techniques, the CoSeLoG process may b
     3.2.C Reducing the number of hand-offs (as long as that resource has capacity) will have a higher probability of identifying inherent bottlenecks and other efficiency improvements (e.g. whenever a new resource has to step in for a case, that case needs to be "learnt" by that resource prior to executing any task).
     
 ## Potential next steps include:
-
-0. Change TA to T00 or T01 ?
 
 1. Discover Petri net in ProM:
     1.1 Add Fitness/Simplicity/Precision/Generalization to Petri net selection criteria.
@@ -92,6 +90,7 @@ X.5 Scan Peer Assignment Forum for enhancement ideas
 ```{r set_global_options, echo=FALSE}
 rm(list=ls())
 set.seed(12345)
+options(stringsAsFactors=FALSE)
 #source("~/Dropbox/datascience/R/mydsutils.R")
 #source("~/Dropbox/datascience/R/myplot.R")
 # Gather all package requirements here
@@ -137,26 +136,27 @@ The main observation from the 'Events over time' graph is that the maximum numbe
 **My analysis**:  
 
 The 6 most frequent activities between the initiation and termination of cases in the process map include:  
-A. <TA> Confirmation of receipt  
+A. Confirmation of receipt (labeled as "T00" in the rest of this document)  
 B. T02 Check confirmation of receipt  
 C. T04 Determine confirmation of receipt  
 D. T05 Print and send confirmation of receipt  
 E. T06 Determine necessity of stop advice  
 F. T10 Determine necessity to stop indication
 
-The most frequent activity paths traced by the cases include (this is supposed to display as a table, but doesn't work properly) :  
+The most frequent activity paths traced by the cases include:    
 
-                                        Activity Path | # of Cases  
------------------------------------------------------ | -----------  
-                                   Start -> TA -> End |     116  
-              Start -> TA -> T02 -> T04 -> T05 -> End |     400  
-Start -> TA -> T02 -> T04 -> T05 -> T06 -> T10 -> End |     828  
-                                                      |    
-                    Total cases displayed in this map |    1,344  
-                                          Total cases |    1,434  
-                        % cases displayed in this map |     94%   
+```{r step_02, echo=FALSE}
 
-There are 4 activities (TA, T02, T04 & T05) regarding confirmation of receipts. Maybe these activities are not named appropriately ? 
+step_02_df <- data.frame("Activity.Path"=c("Start -> T00 -> End",
+        "Start -> T00 -> T02 -> T04 -> T05 -> End",
+    "Start -> T00 -> T02 -> T04 -> T05 -> T06 -> T10 -> End"),
+                         "Cases"=c(                          116,
+                                               400,
+                                                         828))
+print(step_02_df, row.names=FALSE)
+```                        
+
+These traces capture `r format((sum(step_02_df$Cases) / 1434) * 100, digits=3)` % of the cases in the event log. There are 4 activities (T00, T02, T04 & T05) regarding confirmation of receipts. Maybe these activities are not named appropriately ? 
 
 # Inspect process performance in Disco
 
@@ -173,7 +173,7 @@ There are 4 activities (TA, T02, T04 & T05) regarding confirmation of receipts. 
 The color & thickness of the arcs are based on the distribution of the selected primary performance metric. Additionally, if an arc is clicked, a statistics window is displayed for that arc.
 
 **My analysis**:  
-*Total Duration*: The arc from T05 to T06 takes 79.6 months for 791 cases (31% of total duration of all cases which is 258.12 months: mean of 5.4 days per case X 1,434 cases / 30 elapsed days per month). The next bottleneck seems to be TA -> T02 which is 29.6 months for 1,079 cases.
+*Total Duration*: The arc from T05 to T06 takes 79.6 months for 791 cases (31% of total duration of all cases which is 258.12 months: mean of 5.4 days per case X 1,434 cases / 30 elapsed days per month). The next bottleneck seems to be T00 -> T02 which is 29.6 months for 1,079 cases.
 
 Analysis of other metrics (median, mean & max duration) highlighted arcs with very low case frequency.
 
@@ -182,18 +182,18 @@ Analysis of other metrics (median, mean & max duration) highlighted arcs with ve
 **Approach I used**:
    
 1. Click on "import..." icon on the upper right hand side of the "Workspace" pane.  
-2. Click on eye icon (the one associated with the log in the middle; NOT the top one).    
-3. Click on "Create new..." droplist in the top center of the window.  
+2. Click on eye icon (the one associated with the log in the middle; NOT the top one). 
+3. Click on "Create new..." droplist in the top center of the window. 
 4. Select "XDotted Chart" by scrolling down the list.
 5. Select "Dotted Chart" tab on the left.
-6. Select "Occurence of first event" from the droplist for "Case order:" option.  
+6. Select "Occurence of first event" from the droplist for "Case order:" option. 
 7. Click on "Apply Settings" button.  
 
 **What I saw**: 
 
 ![](CoSeLoG_Step_04.png)
 
-Events for each case are plotted across time and color-coded. Did not see the 'size shows # of events'-option. Zooming in does not make the timeline any more readable / discernible (e.g. do events initiate on weekends ?) 
+Events for each case are plotted across time and color-coded. Zooming in does not make the timeline any more readable / discernible (e.g. do events initiate on weekends ?) 
 
 **My analysis**:  
 The arrival of the new cases is fairly constant evidenced by the -45 degree slope of the (approx) line of blue dots. There are some minor fluctuations which is difficult to quantify (clicking on the dots does not display any additional information). 
@@ -333,37 +333,37 @@ Since the analysis objective / goal is not known yet, these criteria might be mo
 ![](CoSeLoG_Step_05_Filter96_PetriNet_ILP.png)
 
 The main traces include:  
-**1**. Start -> TA -> T02 -> T05 -> End01 with 2 tokens remaining in ILP3 (between TA & T10) and ILP5 (between TA & T07-1)
+**1**. Start -> T00 -> T02 -> T05 -> End01 with 2 tokens remaining in ILP3 (between T00 & T10) and ILP5 (between T00 & T07-1)
 
-**2**. Start -> TA -> T10 -> T11 -> End02 with 1 token remaining in ILP1 (between TA & T02)
+**2**. Start -> T00 -> T10 -> T11 -> End02 with 1 token remaining in ILP1 (between T00 & T02)
 
 The traces with some loops include:  
-**1A**. Start -> TA -> T02 -> [T04]* -> T05 -> End01  
+**1A**. Start -> T00 -> T02 -> [T04]* -> T05 -> End01  
     After T02, there might be any number of T04 firings
     
-**1B**. Start -> TA -> T02 -> [T03 -> T02]* -> T05 -> End01  
+**1B**. Start -> T00 -> T02 -> [T03 -> T02]* -> T05 -> End01  
     After T02, there might be any number of T03 -> T02 loops
     
-**1AB**. Start -> TA -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
+**1AB**. Start -> T00 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
     After T02, there might be any number of T04 firings and/or T03 -> T02 loops
     
-**2A**. Start -> TA -> [T06]* -> T10 -> T11 -> End02
+**2A**. Start -> T00 -> [T06]* -> T10 -> T11 -> End02
 
-**2B**. Start -> TA -> [T07-1]* -> T10 -> T11 -> End02
+**2B**. Start -> T00 -> [T07-1]* -> T10 -> T11 -> End02
 
-**2AB**. Start -> TA -> [T06]* -> [T07-1]* -> T10 -> T11 -> End02
+**2AB**. Start -> T00 -> [T06]* -> [T07-1]* -> T10 -> T11 -> End02
 
-**2C1a**. Start -> TA -> T10 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
-**2C1b**. Start -> TA -> T10 -> T11 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
+**2C1a**. Start -> T00 -> T10 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
+**2C1b**. Start -> T00 -> T10 -> T11 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
 
-**2AC1a**. Start -> TA -> [T06]* -> T10 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
-**2AC1b**. Start -> TA -> [T06]* -> T10 -> T11 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
+**2AC1a**. Start -> T00 -> [T06]* -> T10 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
+**2AC1b**. Start -> T00 -> [T06]* -> T10 -> T11 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
 
-**2BC1a**. Start -> TA -> [T07-1]* -> T10 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
-**2BC1b**. Start -> TA -> [T07-1]* -> T10 -> T11 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
+**2BC1a**. Start -> T00 -> [T07-1]* -> T10 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
+**2BC1b**. Start -> T00 -> [T07-1]* -> T10 -> T11 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
 
-**2ABC1a**. Start -> TA -> [T06]* -> [T07-1]* -> T10 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
-**2ABC1b**. Start -> TA -> [T06]* -> [T07-1]* -> T10 -> T11 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
+**2ABC1a**. Start -> T00 -> [T06]* -> [T07-1]* -> T10 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
+**2ABC1b**. Start -> T00 -> [T06]* -> [T07-1]* -> T10 -> T11 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
 
 All the traces that end in End01 have 2 tokens remaining as described for Trace 1.        
 All the traces that end in End02 have 1 token remaining as described for Trace 2.            
@@ -395,7 +395,7 @@ These traces should be in a table for better comprehension ?
 
 ![](CoSeLoG_Step_06_PetriNet_Normative_Conformance.png)
 
-*Transitions*: Most of the traces pass through very few "labeled" (tau are "silent") transitions: TA -> T06 -> T10 & TA -> T04 -> T05. The color darkness or "fill" of the transition boxes is based on the number of traces in the event log that fire them. The numbers underneath the label in the transition boxes refer to the number of synchronous moves vs. "move on model". T13 & T18 are never fired in this event log.  
+*Transitions*: Most of the traces pass through very few "labeled" (tau are "silent") transitions: T00 -> T06 -> T10 & T00 -> T04 -> T05. The color darkness or "fill" of the transition boxes is based on the number of traces in the event log that fire them. The numbers underneath the label in the transition boxes refer to the number of synchronous moves vs. "move on model". T13 & T18 are never fired in this event log.  
 
 *Places*: Place size displays "move on log" frequency. Places where move log occured are colored yellow. However, size of "source" & "sink" are not adjusted. Clicking on the place displays the underlying label. Size of places going to silent transitions are not adjusted with frequency but are colored yellow when there are move(s) on log.  
 
@@ -521,4 +521,4 @@ The resources are displayed as rows and the transitions are organized into colum
 
 Most of the resources are executing activities from the start of the event log. It's hard to identify the exceptions. I wish the chart could be interactive (e.g. click on a dot and obtain more information). 
 
-Most resources are executing the first few activities {TA, T02, T06}. The black color is assigned to multiple activities, so it's hard to tell whether many resources are executing these activities or only a few. Other activities appear to be executed by only a few. 
+Most resources are executing the first few activities {T00, T02, T06}. The black color is assigned to multiple activities, so it's hard to tell whether many resources are executing these activities or only a few. Other activities appear to be executed by only a few. 
