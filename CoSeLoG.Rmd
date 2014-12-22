@@ -202,11 +202,13 @@ For the more recent cases there are a lot less events / activities occuring clos
 
 # Discover Petri net in ProM
 
+## Alpha Algorithm
+
 **Approach I used**:  
   
-1. Click on "Actions" icon.  
-2. Add imported event log to "Input".  
-3. Search for "Alpha" plug-in.  
+1. Click on "Actions" icon. 
+2. Add imported event log to "Input". 
+3. Search for "Alpha" plug-in. 
 4. Select "Mine for a Petri Net using Alpha-algorithm". 
 5. Click on "Start" button.  
 
@@ -218,32 +220,29 @@ This is clearly difficult to work with. Let's filter the event log to make it mo
 
 **Approach I used**:  
 
-6. Click on "Actions" icon.  
-7. Search for "Filter Log".  
-8. Select "Filter Log using Simple Heuristics".  
-9. Click on "Start" button. 
-10. Change Log name to "CoSeLoG (filtered on simple heuristics)".  
-11. Click on "Next" button.
-12. Select "Select top percentage" to 100% because there is only 1 Start event.
-13. Click on "Next" button. 
-14. Select "Select top percentage" to 100% because ideally keeping all End events would be critical in understanding the process.   
+10. Click on "Actions" icon. 
+11. Search for "Filter Log". 
+12. Select "Filter Log using Simple Heuristics". 
+13. Click on "Start" button. 
+14. Change Log name to "CoSeLoG (filtered on simple heuristics)". 
 15. Click on "Next" button.
-16. Select "Select top percentage" to 96% because this Event filter criterion discards many events and therefore many arcs in the resulting Petri net.
-17. Change Log name to "CoSeLoG (96% filtered on simple heuristics)".  
-18. Click on "Finish" button.  
+16. Select "Select top percentage" to 100% because there is only 1 Start event.
+17. Click on "Next" button. 
+18. Select "Select top percentage" to 100% because ideally keeping all End events would be critical in understanding the process. 
+19. Click on "Next" button.
+20. Select "Select top percentage" to 96% because this Event filter criterion discards many events and therefore many arcs in the resulting Petri net. 97% filtering results in a much more complex Petri net.  
+21. Change Log name to "CoSeLoG (96% filtered on simple heuristics)". 
+22. Click on "Finish" button.  
 
 **What I saw**: 
 
 ![](CoSeLoG_Step_05_Filter96.png) 
 
-The number of Event classes has gone down from 27 to 9. The number of Events has reduced from 8,577 to 8,252 but number of Cases remain the same.
+The number of Event classes has gone down from 27 to 9. The number of Events has reduced from 8,577 to 8,252 but number of Cases remain the same. Now, let's see if we can discover a simpler Petri net.  
 
 **Approach I used**:  
 
-19. Click on "Workspace" icon. 
-20. Select "CoSeLoG (filtered...".  
-21. Click on "Actions" icon.  
-22. Repeat tasks numbered 1-5 listed earlier in this Step. For task 2, select  "CoSeLoG (96% filtered...)" log to "Input".   
+Repeat actions numbered 1-5 listed earlier in this section utilizing the "CoSeLoG (96% filtered...)" log.   
 
 **What I saw**: 
 

@@ -90,7 +90,7 @@
 }
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\textbf{Date: (Fri) Dec 19, 2014}
+\textbf{Date: (Mon) Dec 22, 2014}
 
 \section{Background:}\label{background}
 
@@ -329,10 +329,9 @@ arcs with very low case frequency.
 
 \includegraphics{CoSeLoG_Step_04.png}
 
-Events for each case are plotted across time and color-coded. Did not
-see the `size shows \# of events'-option. Zooming in does not make the
-timeline any more readable / discernible (e.g.~do events initiate on
-weekends ?)
+Events for each case are plotted across time and color-coded. Zooming in
+does not make the timeline any more readable / discernible (e.g.~do
+events initiate on weekends ?)
 
 \textbf{My analysis}:\\The arrival of the new cases is fairly constant
 evidenced by the -45 degree slope of the (approx) line of blue dots.
@@ -344,17 +343,19 @@ occuring close to case initiation compared to the earlier cases.
 
 \section{Discover Petri net in ProM}\label{discover-petri-net-in-prom}
 
+\subsection{Alpha Algorithm}\label{alpha-algorithm}
+
 \textbf{Approach I used}:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Click on ``Actions'' icon.\\
+  Click on ``Actions'' icon.
 \item
-  Add imported event log to ``Input''.\\
+  Add imported event log to ``Input''.
 \item
-  Search for ``Alpha'' plug-in.\\
+  Search for ``Alpha'' plug-in.
 \item
   Select ``Mine for a Petri Net using Alpha-algorithm''.
 \item
@@ -372,18 +373,18 @@ make it more comprehensible.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{5}
+\setcounter{enumi}{9}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Click on ``Actions'' icon.\\
+  Click on ``Actions'' icon.
 \item
-  Search for ``Filter Log''.\\
+  Search for ``Filter Log''.
 \item
-  Select ``Filter Log using Simple Heuristics''.\\
+  Select ``Filter Log using Simple Heuristics''.
 \item
   Click on ``Start'' button.
 \item
-  Change Log name to ``CoSeLoG (filtered on simple heuristics)''.\\
+  Change Log name to ``CoSeLoG (filtered on simple heuristics)''.
 \item
   Click on ``Next'' button.
 \item
@@ -393,7 +394,7 @@ make it more comprehensible.
   Click on ``Next'' button.
 \item
   Select ``Select top percentage'' to 100\% because ideally keeping all
-  End events would be critical in understanding the process.\\
+  End events would be critical in understanding the process.
 \item
   Click on ``Next'' button.
 \item
@@ -401,7 +402,7 @@ make it more comprehensible.
   criterion discards many events and therefore many arcs in the
   resulting Petri net.
 \item
-  Change Log name to ``CoSeLoG (96\% filtered on simple heuristics)''.\\
+  Change Log name to ``CoSeLoG (96\% filtered on simple heuristics)''.
 \item
   Click on ``Finish'' button.
 \end{enumerate}
@@ -412,24 +413,12 @@ make it more comprehensible.
 
 The number of Event classes has gone down from 27 to 9. The number of
 Events has reduced from 8,577 to 8,252 but number of Cases remain the
-same.
+same. Now, let's see if we can discover a simpler Petri net.
 
 \textbf{Approach I used}:
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{18}
-\itemsep1pt\parskip0pt\parsep0pt
-\item
-  Click on ``Workspace'' icon.
-\item
-  Select ``CoSeLoG (filtered\ldots{}''.\\
-\item
-  Click on ``Actions'' icon.\\
-\item
-  Repeat tasks numbered 1-5 listed earlier in this Step. For task 2,
-  select ``CoSeLoG (96\% filtered\ldots{})'' log to ``Input''.
-\end{enumerate}
+Repeat actions numbered 1-5 listed earlier in this section utilizing the
+``CoSeLoG (96\% filtered\ldots{})'' log.
 
 \textbf{What I saw}:
 
