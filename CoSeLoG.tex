@@ -145,7 +145,7 @@ process may be enhanced with the following recommendations:
   T02 which is also not allowed by the normative process model.
 
   2.3 To enhance the process and facilitate further analytics, capture
-  transactional information about each task / acitivity (e.g.~start,
+  transitional information about each task / acitivity (e.g.~start,
   complete, abort, schedule, assign, suspend, resume, withdraw, etc.)
 \item
   Resource alloaction / utilization:
@@ -181,30 +181,15 @@ include:}\label{potential-next-steps-include}
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
+  Utilize ``training'' vs. ``test'' or cross-validation technique(s) to
+  discover different Petri nets and collect the generalization
+  conformance fitness metric.
+\item
   Discover Petri net in ProM: 1.1 Add
   Fitness/Simplicity/Precision/Generalization to Petri net selection
-  criteria. 1.1.1 Fitness metrics: alignment conformance of event log:
-  ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/
-  option Measuring fitness
-
-\begin{verbatim}
-1.1.2 Simplicity metrics:
-    # total places
-    # silent places
-    # silent transitions
-    # arcs
-    entropy: ProM plug-in ?
-    minimal description length (MDL): ProM plug-in ?
-1.1.3 Generalization metrics:
-    alignment conformance of test event log (or cross-validation)
-
-1.1.4 Precision metrics:   
-    % model allowed traces (how do you deal with loops ?) present in event log: same as
-    behavioral appropriateness ?: ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/ option Measuring behavioral appropriateness
-\end{verbatim}
-
-  1.2 Add place names to discovered Petri nets. 1.3 Radar plot of model
-  evaluations. 1.4 Display remaining tokens in selected Petri net.
+  criteria.\\1.2 Add place names to discovered Petri nets. 1.3 Radar
+  plot of model evaluations. 1.4 Display remaining tokens in selected
+  Petri net.
 \end{enumerate}
 
 X.1 Review questions in Peer Assignment to ensure that all have been
@@ -236,8 +221,8 @@ there are only 116 variants amongst the 1,434 cases.
 The main observation from the `Events over time' graph is that the
 maximum number of events (77) occured on Apr 27, 2011 across cases.
 
-\section{Inspect process map in
-Disco}\label{inspect-process-map-in-disco}
+\section{Analyze process map in
+Disco}\label{analyze-process-map-in-disco}
 
 \textbf{Approach I used}:\\1. Click on ``Map'' tab in the window
 header.\\2. Set ``Activities'' slider to 0\% \& ``Paths'' slider to 50\%
@@ -269,8 +254,8 @@ These traces capture 93.7 \% of the cases in the event log. There are 4
 activities (T00, T02, T04 \& T05) regarding confirmation of receipts.
 Maybe these activities are not named appropriately ?
 
-\section{Inspect process performance in
-Disco}\label{inspect-process-performance-in-disco}
+\section{Analyze process performance in
+Disco}\label{analyze-process-performance-in-disco}
 
 \textbf{Approach I used}:\\1. Click on ``Performance'' bar / button in
 the ``Detail'' pane (right above the ``Copy'' / ``Delete'' / ``Export''
@@ -298,7 +283,7 @@ elapsed days per month). The next bottleneck seems to be T00
 Analysis of other metrics (median, mean \& max duration) highlighted
 arcs with very low case frequency.
 
-\section{Inspect event log in ProM}\label{inspect-event-log-in-prom}
+\section{Analyze event log in ProM}\label{analyze-event-log-in-prom}
 
 \textbf{Approach I used}:
 
@@ -400,7 +385,8 @@ make it more comprehensible.
 \item
   Select ``Select top percentage'' to 96\% because this Event filter
   criterion discards many events and therefore many arcs in the
-  resulting Petri net.
+  resulting Petri net. 97\% filtering results in a much more complex
+  Petri net.\\
 \item
   Change Log name to ``CoSeLoG (96\% filtered on simple heuristics)''.
 \item
@@ -424,22 +410,45 @@ Repeat actions numbered 1-5 listed earlier in this section utilizing the
 
 \includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_Alpha.png}
 
-The Alpha algorithm has discovered 9 transactions \& 9 places. However,
-transactions T06, T07-1 \& T10 are not integrated well into the rest of
-the control-flow.
+The Alpha algorithm has discovered 9 transitions \& 9 places. However,
+transitions T06, T07-1 \& T10 are not integrated well into the rest of
+the control-flow. Collect Petri net evaluation metrics as listed in the
+Appendix section ``Actions to run ProM plug-in''Replay a Log on Petri
+Net for Conformance Analysis``''.
+
+\textbf{My analysis}:
+
+\begin{verbatim}
+##  Petrinet Fitness.Traces Simplicity.Total.Places
+##     Alpha         0.8987                       9
+##  Simplicity.Total.Places.Silent Simplicity.Total.Transitions.Silent
+##                               0                                   0
+##  Simplicity.Total.Arcs Simplicity.MDL Generalization.Conformance
+##                     30              1                     0.8987
+##  Precision.Behavioral
+##                0.1971
+\end{verbatim}
+
+Strictly speaking, the ``Generalization.Conformance'' metric would
+typically be lower than ``Fitness.Traces'' if the proper ``training''
+vs. ``test'' events log technique or the cross-validation technique is
+utilized for discovering the Petri net and then testing for conformance.
+This analysis collects this metric for the sake of analysis completeness
+without utilizing those techniques (a lot of work !).
+
+\subsection{ILP}\label{ilp}
 
 \textbf{Approach I used}:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{22}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Click on ``Actions'' icon.\\
+  Click on ``Actions'' icon.
 \item
   Add ``CoSeLoG (96\% filtered\ldots{})'' log to ``Input''.\\
 \item
-  Search for ``ILP'' plug-in.\\
+  Search for ``ILP'' plug-in.
 \item
   Select ``Mine for a Petri Net using ILP''.
 \item
@@ -456,22 +465,39 @@ the control-flow.
 
 \includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_ILP.png}
 
-The ILP algorithm has discovered 9 transactions \& 8 places.
-Additionally, the ILP Petri net handles transactions T06, T07-1 \& T10
-better by not isolating them from the control-flow.
+The ILP algorithm has discovered 9 transitions \& 8 places (``P 1'' \&
+``P 2'' are ``End'' places). Additionally, the ILP Petri net handles
+transitions T06, T07-1 \& T10 better by not isolating them from the
+control-flow. Collect Petri net evaluation metrics as listed in the
+Appendix section ``Actions to run ProM plug-in''Replay a Log on Petri
+Net for Conformance Analysis``''.
+
+\textbf{My analysis}:
+
+\begin{verbatim}
+##  Petrinet Fitness.Traces Simplicity.Total.Places
+##       ILP         0.8483                       8
+##  Simplicity.Total.Places.Silent Simplicity.Total.Transitions.Silent
+##                               0                                   0
+##  Simplicity.Total.Arcs Simplicity.MDL Generalization.Conformance
+##                     21              3                     0.8483
+##  Precision.Behavioral
+##                0.9955
+\end{verbatim}
+
+\subsection{Heuristics Miner}\label{heuristics-miner}
 
 \textbf{Approach I used}:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{29}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Click on ``Actions'' icon.\\
+  Click on ``Actions'' icon.
 \item
-  Add ``CoSeLoG (96\% filtered\ldots{})'' log to ``Input''.\\
+  Add ``CoSeLoG (96\% filtered\ldots{})'' log to ``Input''.
 \item
-  Search for ``Heuristics'' plug-in.\\
+  Search for ``Heuristics'' plug-in.
 \item
   Select ``Mine for a Heuristics Net using Heuristics Miner''.
 \item
@@ -479,12 +505,12 @@ better by not isolating them from the control-flow.
 \item
   Select the default options and Click ``Continue'' button.
 \item
-  Click on ``Zoom'' button to the left of the graphic.\\
+  Click on ``Zoom'' button to the left of the graphic.
 \item
   Select zoom level next to ``Fit \textgreater{}'' on the slider to view
   the net in its entirety.
 \item
-  Capture screen image.\\
+  Capture screen image.
 \item
   Select zoom level to 50\% to make the net more readable.
 \end{enumerate}
@@ -493,23 +519,23 @@ better by not isolating them from the control-flow.
 
 \includegraphics{CoSeLoG_Step_05_Filter96_Heuristics_Net.png}
 
-9 transactions are discovered with a fitness score of 0.63 but T03,
-T07-1 \& T11 are grayed out due to low case frequency (\textless{}= 55).
+9 transitions are discovered with a fitness score of 0.63 but T03, T07-1
+\& T11 are grayed out due to low case frequency (\textless{}= 55).
 
 \textbf{Approach I used}:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{39}
+\setcounter{enumi}{19}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Click on ``Workspace'' icon.\\
+  Click on ``Workspace'' icon.
 \item
-  Select ``Mined Models'' of type ``HeuristicsNet''.\\
+  Select ``Mined Models'' of type ``HeuristicsNet''.
 \item
-  Click on ``Actions'' icon.\\
+  Click on ``Actions'' icon.
 \item
-  Select ``Convert Heuristics net into Petri net'' plug-in.\\
+  Select ``Convert Heuristics net into Petri net'' plug-in.
 \item
   Click on ``Start'' button.
 \end{enumerate}
@@ -518,15 +544,30 @@ T07-1 \& T11 are grayed out due to low case frequency (\textless{}= 55).
 
 \includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_Heuristics.png}
 
-This approach has discovered 9 transactions again, 14 ``hidden'' /
-``silent'' transactions and 18 places. However, there does not seem to
-be a clear ``End'' place.
+This approach has discovered 9 transitions again, 14 ``hidden'' /
+``silent'' transitions and 18 places. However, there does not seem to be
+a clear ``End'' place. It appears that ``pi1'' is the closest ``End''
+place.
+
+\textbf{My analysis}:
+
+\begin{verbatim}
+##    Petrinet Fitness.Traces Simplicity.Total.Places
+##  Heuristics         0.7698                      18
+##  Simplicity.Total.Places.Silent Simplicity.Total.Transitions.Silent
+##                               0                                  14
+##  Simplicity.Total.Arcs Simplicity.MDL Generalization.Conformance
+##                     44              2                     0.7698
+##  Precision.Behavioral
+##                0.8656
+\end{verbatim}
+
+\subsection{Inductive Miner}\label{inductive-miner}
 
 \textbf{Approach I used}:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{44}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
   Click on ``Workspace'' icon.\\
@@ -543,9 +584,9 @@ be a clear ``End'' place.
 \item
   Change ``Variant'' option from default of ``Inductive Miner -
   infrequent'' to ``Inductive Miner'' because the default option drops
-  T04 transaction probably due to infrequent cases containing it. We
-  want to keep this transaction so that we can compare the different
-  Petri nets with the same set of transactions.\\
+  T04 transition probably due to infrequent cases containing it. We want
+  to keep this transition so that we can compare the different Petri
+  nets with the same set of transitions.\\
 \item
   Click ``Finish'' button.
 \end{enumerate}
@@ -554,8 +595,8 @@ be a clear ``End'' place.
 
 \includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_Inductive.png}
 
-This approach discovered 9 transactions, 25 ``hidden'' / ``silent''
-transactions \& 21 places.
+This approach discovered 9 transitions, 25 ``hidden'' / ``silent''
+transitions \& 21 places.
 
 \textbf{My analysis}:
 
@@ -565,8 +606,8 @@ following criteria:
 `+' Clear Start \& End states (ILP, Alpha \& Inductive; some combination
 of options in the Heuristics plug-ins might generate a clear End state
 too which I did not try due to too many steps).\\`+' Integrate all event
-log transactions into the control-flow (ILP, Heuristics \&
-Inductive).\\`+' No silent transactions (ILP \& Alpha).\\`+' Less arcs
+log transitions into the control-flow (ILP, Heuristics \&
+Inductive).\\`+' No silent transitions (ILP \& Alpha).\\`+' Less arcs
 (ILP \& Heuristics).
 
 This should be displayed in a table for better readability ?
@@ -649,8 +690,8 @@ described for Trace 2.
 
 These traces should be in a table for better comprehension ?
 
-\section{Inspect conformance with normative model in
-ProM}\label{inspect-conformance-with-normative-model-in-prom}
+\section{Analyze conformance with normative model in
+ProM}\label{analyze-conformance-with-normative-model-in-prom}
 
 \textbf{Approach I used}:
 
@@ -731,8 +772,8 @@ log. Amongst those 1,309 traces, T06 was fired synchronously for 1,327
 times (i.e.~some traces fired T06 fired multiple times). For 125 traces,
 T06 was fired in the model only.
 
-\section{Inspect resource utilization in
-ProM}\label{inspect-resource-utilization-in-prom}
+\section{Analyze resource utilization in
+ProM}\label{analyze-resource-utilization-in-prom}
 
 \textbf{Approach I used}:\\1. Click on ``Workspace'' icon.\\2. Select
 event log resource.\\3. Click on ``Actions'' icon for this resource.\\4.
@@ -888,5 +929,97 @@ Most resources are executing the first few activities \{T00, T02, T06\}.
 The black color is assigned to multiple activities, so it's hard to tell
 whether many resources are executing these activities or only a few.
 Other activities appear to be executed by only a few.
+
+\section{Appendix}\label{appendix}
+
+\subsection{Petri net evaluation
+criteria}\label{petri-net-evaluation-criteria}
+
+Given a Petri net and an event log, the following evaluation criteria
+(not exhaustive) are useful:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Fitness metrics:\\1.1 Alignment conformance of event log: ProM plug-in
+  Replay a Log on Petri Net for Conformance Analysis w/ option Measuring
+  fitness
+\item
+  Simplicity metrics:\\2.1 \# total places\\2.2 \# silent places\\2.3 \#
+  silent transitions\\2.4 \# arcs\\2.5 Entropy: ProM plug-in ?\\2.6
+  Minimal Description Length (MDL): ProM plug-in ?
+\item
+  Generalization metrics:\\3.1 Alignment conformance of ``test'' (vs.
+  ``training'') event log (or cross-validation)
+\item
+  Precision metrics:\\4.1 Behavioral appropriateness (similar to \%
+  model allowed traces present in event log ?): ProM plug-in Replay a
+  Log on Petri Net for Conformance Analysis w/ option Measuring
+  behavioral appropriateness
+\end{enumerate}
+
+Based on the analysis objective(s), these metrics may be assigned
+appropriate weights. For this analysis, equal weights were selected
+i.e.~25\% for each metric category and 20\% for the Simplicity metric
+set elements (Entropy was not computed).
+
+\subsection{Actions to run ProM plug-in ``Replay a Log on Petri Net for
+Conformance
+Analysis''}\label{actions-to-run-prom-plug-in-replay-a-log-on-petri-net-for-conformance-analysis}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Click on ``Actions'' icon.\\
+\item
+  Search for ``Replay'' plug-in.\\
+\item
+  Select `Replay a Log on Petri Net for Conformance Analysis' (not the
+  variant with performance!) plug-in.
+\item
+  Add event log of interest to ``Input''.
+\item
+  Add Petri net of interest to ``Input''.\\
+\item
+  Click on ``Start'' button.\\
+\item
+  If the selected Petri net does not have a clear ``End'' place:\\7.1.
+  Click on ``Yes'' button in the dialog ``No final marking is found for
+  this model. Do you want to create one?''.\\7.2. Select the appropriate
+  ``End'' place(s) from the ``List of Places'' pane.\\7.3. Click on
+  ``Add Place \textgreater{}\textgreater{}'' button.\\7.4. Repeat
+  actions 7.2 \& 7.3 for the remaining ``End'' places. 7.5. Click on
+  ``Finish'' button.
+\item
+  Click on ``Finish'' button in the ``Map Transitions to Event Class''
+  dialog.\\
+\item
+  Click on ``No, I've mapped all necessary event classes'' in the
+  ``Mapping'' dialog.\\
+\item
+  Select ``Measuring fitness'' or ``Measuring behavioral
+  appropriateness''.\\10.1. For ``Measuring fitness'':\\ 10.1.1. Click
+  on ``Next'' button.\\ 10.1.2. Click on ``Finish'' button.\\ 10.1.3.
+  Click on ``Global Statistics (non-filtered traces)''.\\ 10.1.4.
+  ``Trace Fitness'' Property displays conformance metric (referenced as
+  1.1 in the ``Petri net evaluation criteria'' Appendix section).
+
+  10.2. For ``Measuring behavioral appropriateness'':\\ 10.2.1. Click on
+  ``Next'' button.\\ 10.2.2. Reduce slider for ``\# Maximum explored
+  states\ldots{}'' to approx. 200 instead of 2,000 to ensure reasonable
+  run-times.\\ 10.2.3. Click on ``Finish'' button.\\ 10.2.4. Click on
+  ``Global Statistics (non-filtered traces)''.\\ 10.2.5. ``Behavioral
+  Appropriateness'' Property displays behavioral appropriateness metric
+  (referenced as 4.1 in the ``Petri net evaluation criteria'' Appendix
+  section).
+\end{enumerate}
+
+Delete ?: 10. Click `yes' in the `No Final Marking' pop-up. 11. Select
+the `sink' place on the left (note: do not select `0-sink' etc.) and
+click the button `Add Place \textgreater{}\textgreater{}' to add the
+place `sink' to the candidate final marking list. 12. Click `Finish' in
+the mapping wizard.\\13. Click `Finish' .\\14. Click `No, I've mapped
+all necessary event classes' to indicate that some events are not
+present in the normative model.\\15. Click `Next'.\\16. Click `Finish'.
 
 \end{document}

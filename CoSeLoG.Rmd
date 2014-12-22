@@ -42,7 +42,7 @@ Based on analysis utilizing process mining techniques, the CoSeLoG process may b
     
     2.2 Similarly, there are 1,079 cases that take 29.6 months from T00 to T02 which is also not allowed by the normative process model. 
     
-    2.3 To enhance the process and facilitate further analytics, capture transactional information about each task / acitivity (e.g. start, complete, abort, schedule, assign, suspend, resume, withdraw, etc.)
+    2.3 To enhance the process and facilitate further analytics, capture transitional information about each task / acitivity (e.g. start, complete, abort, schedule, assign, suspend, resume, withdraw, etc.)
     
 3. Resource alloaction / utilization: 
 
@@ -58,25 +58,10 @@ Based on analysis utilizing process mining techniques, the CoSeLoG process may b
     
 ## Potential next steps include:
 
+1. Utilize "training" vs. "test" or cross-validation technique(s) to discover different Petri nets and collect the generalization conformance fitness metric.  
+
 1. Discover Petri net in ProM:
-    1.1 Add Fitness/Simplicity/Precision/Generalization to Petri net selection criteria.
-        1.1.1 Fitness metrics:
-            alignment conformance of event log: ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/ option Measuring fitness
-            
-        1.1.2 Simplicity metrics:
-            # total places
-            # silent places
-            # silent transitions
-            # arcs
-            entropy: ProM plug-in ?
-            minimal description length (MDL): ProM plug-in ?
-        1.1.3 Generalization metrics:
-            alignment conformance of test event log (or cross-validation)
-            
-        1.1.4 Precision metrics:   
-            % model allowed traces (how do you deal with loops ?) present in event log: same as
-            behavioral appropriateness ?: ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/ option Measuring behavioral appropriateness
-            
+    1.1 Add Fitness/Simplicity/Precision/Generalization to Petri net selection criteria.            
     1.2 Add place names to discovered Petri nets.
     1.3 Radar plot of model evaluations.
     1.4 Display remaining tokens in selected Petri net.
@@ -123,7 +108,7 @@ By clicking on "Variants" button on top of the table, we can see that there are 
 
 The main observation from the 'Events over time' graph is that the maximum number of events (77) occured on Apr 27, 2011 across cases.  
 
-# Inspect process map in Disco
+# Analyze process map in Disco
 **Approach I used**:  
 1. Click on "Map" tab in the window header.  
 2. Set "Activities" slider to 0% & "Paths" slider to 50% to make the process map fit on one screen and still be readable.  
@@ -158,7 +143,7 @@ print(step_02_df, row.names=FALSE)
 
 These traces capture `r format((sum(step_02_df$Cases) / 1434) * 100, digits=3)` % of the cases in the event log. There are 4 activities (T00, T02, T04 & T05) regarding confirmation of receipts. Maybe these activities are not named appropriately ? 
 
-# Inspect process performance in Disco
+# Analyze process performance in Disco
 
 **Approach I used**:  
 1. Click on "Performance" bar / button in the "Detail" pane (right above the "Copy" / "Delete" / "Export" icons).  
@@ -177,7 +162,7 @@ The color & thickness of the arcs are based on the distribution of the selected 
 
 Analysis of other metrics (median, mean & max duration) highlighted arcs with very low case frequency.
 
-# Inspect event log in ProM
+# Analyze event log in ProM
 
 **Approach I used**:
    
@@ -248,81 +233,135 @@ Repeat actions numbered 1-5 listed earlier in this section utilizing the "CoSeLo
 
 ![](CoSeLoG_Step_05_Filter96_PetriNet_Alpha.png)  
   
-The Alpha algorithm has discovered 9 transactions & 9 places. However, transactions T06, T07-1 & T10 are not integrated well into the rest of the control-flow.     
+The Alpha algorithm has discovered 9 transitions & 9 places. However, transitions T06, T07-1 & T10 are not integrated well into the rest of the control-flow. Collect Petri net evaluation metrics as listed in the Appendix section "Actions to run ProM plug-in "Replay a Log on Petri Net for Conformance Analysis"".  
+
+**My analysis**:  
+```{r alpha_metrics, echo=FALSE}
+
+petrinets_df <- data.frame("Petrinet"=c("Alpha"),
+                           "Fitness.Traces"=c(0.8987),
+                           "Simplicity.Total.Places"=c(9),
+                           "Simplicity.Total.Places.Silent"=c(0),
+                           "Simplicity.Total.Transitions.Silent"=c(0),
+                           "Simplicity.Total.Arcs"=c(4+3+3+2+4+2+3+9),
+                           "Simplicity.MDL"=c(1),
+                           "Generalization.Conformance"=c(0.8987),
+                           "Precision.Behavioral"=c(0.1971))
+print(subset(petrinets_df, Petrinet == "Alpha"), row.names=FALSE)
+```
+
+Strictly speaking, the "Generalization.Conformance" metric would typically be lower than "Fitness.Traces" if the proper "training" vs. "test" events log technique or the cross-validation technique is utilized for discovering the Petri net and then testing for conformance. This analysis collects this metric for the sake of analysis completeness without utilizing those techniques (a lot of work !). 
+
+## ILP
 
 **Approach I used**:  
 
-23. Click on "Actions" icon.  
-24. Add "CoSeLoG (96% filtered...)" log to "Input".  
-25. Search for "ILP" plug-in.  
-26. Select "Mine for a Petri Net using ILP". 
-27. Click on "Start" button.
-28. Select the "Number of places" option to "Before & After Transition" instead of "Per Causal Dependency" to ensure clear "End" states & minimize number of arcs. 
-29. Click "Finish" button.    
+1. Click on "Actions" icon. 
+2. Add "CoSeLoG (96% filtered...)" log to "Input".  
+3. Search for "ILP" plug-in. 
+4. Select "Mine for a Petri Net using ILP". 
+5. Click on "Start" button.
+6. Select the "Number of places" option to "Before & After Transition" instead of "Per Causal Dependency" to ensure clear "End" states & minimize number of arcs. 
+7. Click "Finish" button.    
 
 **What I saw**: 
 
 ![](CoSeLoG_Step_05_Filter96_PetriNet_ILP.png)
 
-The ILP algorithm has discovered 9 transactions & 8 places. Additionally, the ILP Petri net handles transactions T06, T07-1 & T10 better by not isolating them from the control-flow. 
+The ILP algorithm has discovered 9 transitions & 8 places ("P 1" & "P 2" are "End" places). Additionally, the ILP Petri net handles transitions T06, T07-1 & T10 better by not isolating them from the control-flow. Collect Petri net evaluation metrics as listed in the Appendix section "Actions to run ProM plug-in "Replay a Log on Petri Net for Conformance Analysis"".  
+
+**My analysis**:  
+```{r ILP_metrics, echo=FALSE}
+
+petrinets_df <- rbind(petrinets_df, 
+                data.frame("Petrinet"=c("ILP"),
+                           "Fitness.Traces"=c(0.8483),
+                           "Simplicity.Total.Places"=c(8),
+                           "Simplicity.Total.Places.Silent"=c(0),
+                           "Simplicity.Total.Transitions.Silent"=c(0),
+                           "Simplicity.Total.Arcs"=c(1+3+8+2+5+2),
+                           "Simplicity.MDL"=c(3),
+                           "Generalization.Conformance"=c(0.8483),
+                           "Precision.Behavioral"=c(0.9955)))
+print(subset(petrinets_df, Petrinet == "ILP"), row.names=FALSE)
+```
+
+## Heuristics Miner
 
 **Approach I used**:  
 
-30. Click on "Actions" icon.  
-31. Add "CoSeLoG (96% filtered...)" log to "Input".  
-32. Search for "Heuristics" plug-in.  
-33. Select "Mine for a Heuristics Net using Heuristics Miner". 
-34. Click on "Start" button.
-35. Select the default options and Click "Continue" button.
-36. Click on "Zoom" button to the left of the graphic.  
-37. Select zoom level next to "Fit >" on the slider to view the net in its entirety.
-38. Capture screen image.  
-39. Select zoom level to 50% to make the net more readable.  
+1. Click on "Actions" icon. 
+2. Add "CoSeLoG (96% filtered...)" log to "Input". 
+3. Search for "Heuristics" plug-in. 
+4. Select "Mine for a Heuristics Net using Heuristics Miner". 
+5. Click on "Start" button.
+6. Select the default options and Click "Continue" button.
+7. Click on "Zoom" button to the left of the graphic. 
+8. Select zoom level next to "Fit >" on the slider to view the net in its entirety.
+9. Capture screen image. 
+10. Select zoom level to 50% to make the net more readable.  
 
 **What I saw**: 
 
 ![](CoSeLoG_Step_05_Filter96_Heuristics_Net.png)
 
-9 transactions are discovered with a fitness score of 0.63 but T03, T07-1 & T11 are grayed out due to low case frequency (<= 55).  
+9 transitions are discovered with a fitness score of 0.63 but T03, T07-1 & T11 are grayed out due to low case frequency (<= 55).  
 
 **Approach I used**:  
 
-40. Click on "Workspace" icon.  
-41. Select "Mined Models" of type "HeuristicsNet".  
-42. Click on "Actions" icon.  
-43. Select "Convert Heuristics net into Petri net" plug-in.  
-44. Click on "Start" button.  
+20. Click on "Workspace" icon. 
+21. Select "Mined Models" of type "HeuristicsNet". 
+22. Click on "Actions" icon. 
+23. Select "Convert Heuristics net into Petri net" plug-in. 
+24. Click on "Start" button. 
 
 **What I saw**: 
 
 ![](CoSeLoG_Step_05_Filter96_PetriNet_Heuristics.png)
 
-This approach has discovered 9 transactions again, 14 "hidden" / "silent" transactions and 18 places. However, there does not seem to be a clear "End" place.  
+This approach has discovered 9 transitions again, 14 "hidden" / "silent" transitions and 18 places. However, there does not seem to be a clear "End" place. It appears that "pi1" is the closest "End" place.    
 
+**My analysis**:  
+```{r Heuristics_metrics, echo=FALSE}
+
+petrinets_df <- rbind(petrinets_df, 
+                data.frame("Petrinet"=c("Heuristics"),
+                           "Fitness.Traces"=c(0.7698),
+                           "Simplicity.Total.Places"=c(18),
+                           "Simplicity.Total.Places.Silent"=c(0),
+                           "Simplicity.Total.Transitions.Silent"=c(14),
+                           "Simplicity.Total.Arcs"=c(1+1+2+4+1+2+2+3+2+2+1+1+1+2+4+1+3+2+2+2+2+1+1+1),
+                           "Simplicity.MDL"=c(2),
+                           "Generalization.Conformance"=c(0.7698),
+                           "Precision.Behavioral"=c(0.8656)))
+print(subset(petrinets_df, Petrinet == "Heuristics"), row.names=FALSE)
+```
+
+## Inductive Miner
 **Approach I used**:  
 
-45. Click on "Workspace" icon.  
-46. Select "CoSeLoG (96% filtered...)" log.  
-47. Click on "Actions" icon.  
-48. Search for "Inductive" plug-in.  
-49. Select "Mine Petri net with Inductive Miner" plug-in.  
-50. Click on "Start" button. 
-51. Change "Variant" option from default of "Inductive Miner - infrequent" to "Inductive Miner" because the default option drops T04 transaction probably due to infrequent cases containing it. We want to keep this transaction so that we can compare the different Petri nets with the same set of transactions.  
-52. Click "Finish" button.
+1. Click on "Workspace" icon.  
+2. Select "CoSeLoG (96% filtered...)" log.  
+3. Click on "Actions" icon.  
+4. Search for "Inductive" plug-in.  
+5. Select "Mine Petri net with Inductive Miner" plug-in.  
+6. Click on "Start" button. 
+7. Change "Variant" option from default of "Inductive Miner - infrequent" to "Inductive Miner" because the default option drops T04 transition probably due to infrequent cases containing it. We want to keep this transition so that we can compare the different Petri nets with the same set of transitions.  
+8. Click "Finish" button.
 
 **What I saw**: 
 
 ![](CoSeLoG_Step_05_Filter96_PetriNet_Inductive.png)
 
-This approach discovered 9 transactions, 25 "hidden" / "silent" transactions & 21 places. 
+This approach discovered 9 transitions, 25 "hidden" / "silent" transitions & 21 places. 
 
 **My analysis**:
 
 In my opinion, the ILP discovered Petri net is the best based on the following criteria:
 
 '+' Clear Start & End states (ILP, Alpha & Inductive; some combination of options in the Heuristics plug-ins might generate a clear End state too which I did not try due to too many steps).  
-'+' Integrate all event log transactions into the control-flow (ILP, Heuristics & Inductive).    
-'+' No silent transactions (ILP & Alpha).  
+'+' Integrate all event log transitions into the control-flow (ILP, Heuristics & Inductive).    
+'+' No silent transitions (ILP & Alpha).  
 '+' Less arcs (ILP & Heuristics). 
 
 This should be displayed in a table for better readability ?
@@ -369,7 +408,7 @@ All the traces that end in End02 have 1 token remaining as described for Trace 2
 
 These traces should be in a table for better comprehension ?
 
-# Inspect conformance with normative model in ProM
+# Analyze conformance with normative model in ProM
 
 **Approach I used**: 
 
@@ -406,7 +445,7 @@ The replay fitness (the 'trace fitness' statistic) of the event log on the norma
 
 The transition 'T06 Determine necessity of stop advice+complete' (on the top left of the model) was tested with 1,434 traces in the event log. Out of those 1,309 (91%) were synchronous moves in both the model & log. Amongst those 1,309 traces, T06 was fired synchronously for 1,327 times (i.e. some traces fired T06 fired multiple times). For 125 traces, T06 was fired in the model only. 
 
-# Inspect resource utilization in ProM
+# Analyze resource utilization in ProM
 
 **Approach I used**:  
 1. Click on "Workspace" icon.  
@@ -521,3 +560,67 @@ The resources are displayed as rows and the transitions are organized into colum
 Most of the resources are executing activities from the start of the event log. It's hard to identify the exceptions. I wish the chart could be interactive (e.g. click on a dot and obtain more information). 
 
 Most resources are executing the first few activities {T00, T02, T06}. The black color is assigned to multiple activities, so it's hard to tell whether many resources are executing these activities or only a few. Other activities appear to be executed by only a few. 
+
+# Appendix
+## Petri net evaluation criteria
+
+Given a Petri net and an event log, the following evaluation criteria (not exhaustive) are useful:
+
+1. Fitness metrics:  
+    1.1 Alignment conformance of event log: ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/ option Measuring fitness
+            
+2. Simplicity metrics:  
+    2.1 # total places  
+    2.2 # silent places  
+    2.3 # silent transitions  
+    2.4 # arcs  
+    2.5 Entropy: ProM plug-in ?  
+    2.6 Minimal Description Length (MDL): ProM plug-in ?
+
+3. Generalization metrics:  
+    3.1 Alignment conformance of "test" (vs. "training") event log (or cross-validation)
+            
+4. Precision metrics:   
+    4.1 Behavioral appropriateness (similar to % model allowed traces present in event log ?): ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/ option Measuring behavioral appropriateness
+            
+Based on the analysis objective(s), these metrics may be assigned appropriate weights. For this analysis, equal weights were selected i.e. 25% for each metric category and 20% for the Simplicity metric set elements (Entropy was not computed).
+
+## Actions to run ProM plug-in "Replay a Log on Petri Net for Conformance Analysis"
+
+1. Click on "Actions" icon.  
+2. Search for "Replay" plug-in.  
+3. Select ‘Replay a Log on Petri Net for Conformance Analysis’ (not the variant with performance!) plug-in.
+4. Add event log of interest to "Input".
+5. Add Petri net of interest to "Input".  
+6. Click on "Start" button.  
+7. If the selected Petri net does not have a clear "End" place:  
+    7.1. Click on "Yes" button in the dialog "No final marking is found for this model. Do you want to create one?".  
+    7.2. Select the appropriate "End" place(s) from the "List of Places" pane.  
+    7.3. Click on "Add Place >>" button.  
+    7.4. Repeat actions 7.2 & 7.3 for the remaining "End" places. 
+    7.5. Click on "Finish" button.  
+    
+8. Click on "Finish" button in the "Map Transitions to Event Class" dialog.  
+9. Click on "No, I've mapped all necessary event classes" in the "Mapping" dialog.  
+10. Select "Measuring fitness" or "Measuring behavioral appropriateness".  
+    10.1. For "Measuring fitness":  
+        10.1.1. Click on "Next" button.  
+        10.1.2. Click on "Finish" button.  
+        10.1.3. Click on "Global Statistics (non-filtered traces)".  
+        10.1.4. "Trace Fitness" Property displays conformance metric (referenced as 1.1 in the "Petri net evaluation criteria" Appendix section).  
+    
+    10.2. For "Measuring behavioral appropriateness":  
+        10.2.1. Click on "Next" button.  
+        10.2.2. Reduce slider for "# Maximum explored states..." to approx. 200 instead of 2,000 to ensure reasonable run-times.  
+        10.2.3. Click on "Finish" button.  
+        10.2.4. Click on "Global Statistics (non-filtered traces)".  
+        10.2.5. "Behavioral Appropriateness" Property displays behavioral appropriateness metric (referenced as 4.1 in the "Petri net evaluation criteria" Appendix section).  
+
+Delete ?:
+10. Click 'yes' in the 'No Final Marking' pop-up.
+11. Select the 'sink' place on the left (note: do not select '0-sink' etc.) and click the button 'Add Place >>' to add the place 'sink' to the candidate final marking list. 
+12. Click 'Finish' in the mapping wizard.  
+13. Click 'Finish' .  
+14. Click 'No, I've mapped all necessary event classes' to indicate that some events are not present in the normative model.  
+15. Click 'Next'.  
+16. Click 'Finish'.  
