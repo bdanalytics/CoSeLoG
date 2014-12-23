@@ -185,6 +185,9 @@ include:}\label{potential-next-steps-include}
   discover different Petri nets and collect the generalization
   conformance fitness metric.
 \item
+  Compute additional Petri net evaluation metrics e.g.
+  ``Simplicity.Entropy''
+\item
   Discover Petri net in ProM: 1.1 Add
   Fitness/Simplicity/Precision/Generalization to Petri net selection
   criteria.\\1.2 Add place names to discovered Petri nets. 1.3 Radar
@@ -570,15 +573,15 @@ place.
 \def\labelenumi{\arabic{enumi}.}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Click on ``Workspace'' icon.\\
+  Click on ``Workspace'' icon.
 \item
-  Select ``CoSeLoG (96\% filtered\ldots{})'' log.\\
+  Select ``CoSeLoG (96\% filtered\ldots{})'' log.
 \item
-  Click on ``Actions'' icon.\\
+  Click on ``Actions'' icon.
 \item
-  Search for ``Inductive'' plug-in.\\
+  Search for ``Inductive'' plug-in.
 \item
-  Select ``Mine Petri net with Inductive Miner'' plug-in.\\
+  Select ``Mine Petri net with Inductive Miner'' plug-in.
 \item
   Click on ``Start'' button.
 \item
@@ -586,7 +589,7 @@ place.
   infrequent'' to ``Inductive Miner'' because the default option drops
   T04 transition probably due to infrequent cases containing it. We want
   to keep this transition so that we can compare the different Petri
-  nets with the same set of transitions.\\
+  nets with the same set of transitions.
 \item
   Click ``Finish'' button.
 \end{enumerate}
@@ -596,7 +599,22 @@ place.
 \includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_Inductive.png}
 
 This approach discovered 9 transitions, 25 ``hidden'' / ``silent''
-transitions \& 21 places.
+transitions \& 21 places. The ``End'' place is named as ``sink''.
+
+\textbf{My analysis}:
+
+\begin{verbatim}
+##   Petrinet Fitness.Traces Simplicity.Total.Places
+##  Inductive         0.9813                      21
+##  Simplicity.Total.Places.Silent Simplicity.Total.Transitions.Silent
+##                               0                                  25
+##  Simplicity.Total.Arcs Simplicity.MDL Generalization.Conformance
+##                     68             13                     0.9813
+##  Precision.Behavioral
+##                0.9955
+\end{verbatim}
+
+\subsection{Select ``Best'' Petri net}\label{select-best-petri-net}
 
 \textbf{My analysis}:
 
@@ -970,18 +988,18 @@ Analysis''}\label{actions-to-run-prom-plug-in-replay-a-log-on-petri-net-for-conf
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  Click on ``Actions'' icon.\\
+  Click on ``Actions'' icon.
 \item
-  Search for ``Replay'' plug-in.\\
+  Search for ``Replay'' plug-in.
 \item
   Select `Replay a Log on Petri Net for Conformance Analysis' (not the
   variant with performance!) plug-in.
 \item
   Add event log of interest to ``Input''.
 \item
-  Add Petri net of interest to ``Input''.\\
+  Add Petri net of interest to ``Input''.
 \item
-  Click on ``Start'' button.\\
+  Click on ``Start'' button.
 \item
   If the selected Petri net does not have a clear ``End'' place:\\7.1.
   Click on ``Yes'' button in the dialog ``No final marking is found for
@@ -992,10 +1010,10 @@ Analysis''}\label{actions-to-run-prom-plug-in-replay-a-log-on-petri-net-for-conf
   ``Finish'' button.
 \item
   Click on ``Finish'' button in the ``Map Transitions to Event Class''
-  dialog.\\
+  dialog.
 \item
   Click on ``No, I've mapped all necessary event classes'' in the
-  ``Mapping'' dialog.\\
+  ``Mapping'' dialog.
 \item
   Select ``Measuring fitness'' or ``Measuring behavioral
   appropriateness''.\\10.1. For ``Measuring fitness'':\\ 10.1.1. Click
