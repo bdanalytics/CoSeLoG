@@ -78,7 +78,7 @@ rm(list=ls())
 set.seed(12345)
 options(stringsAsFactors=FALSE)
 #source("~/Dropbox/datascience/R/mydsutils.R")
-#source("~/Dropbox/datascience/R/myplot.R")
+source("~/Dropbox/datascience/R/myplot.R")
 # Gather all package requirements here
 #suppressPackageStartupMessages(require())
 
@@ -241,10 +241,10 @@ The Alpha algorithm has discovered 9 transitions & 9 places. However, transition
 
 petrinets_df <- data.frame("Petrinet"=c("Alpha"),
                            "Fitness.Traces"=c(0.8987),
-                           "Simplicity.Total.Places"=c(9),
-                           "Simplicity.Total.Places.Silent"=c(0),
-                           "Simplicity.Total.Transitions.Silent"=c(0),
-                           "Simplicity.Total.Arcs"=c(4+3+3+2+4+2+3+9),
+                           "Simplicity.Places.Total"=c(9),
+                           "Simplicity.Places.Implicit"=c(0),
+                           "Simplicity.Transitions.Silent"=c(0),
+                           "Simplicity.Arcs"=c(4+3+3+2+4+2+3+9),
                            "Simplicity.MDL"=c(1),
                            "Generalization.Conformance"=c(0.8987),
                            "Precision.Behavioral"=c(0.1971))
@@ -277,10 +277,10 @@ The ILP algorithm has discovered 9 transitions & 8 places ("P 1" & "P 2" are "En
 petrinets_df <- rbind(petrinets_df, 
                 data.frame("Petrinet"=c("ILP"),
                            "Fitness.Traces"=c(0.8483),
-                           "Simplicity.Total.Places"=c(8),
-                           "Simplicity.Total.Places.Silent"=c(0),
-                           "Simplicity.Total.Transitions.Silent"=c(0),
-                           "Simplicity.Total.Arcs"=c(1+3+8+2+5+2),
+                           "Simplicity.Places.Total"=c(8),
+                           "Simplicity.Places.Implicit"=c(0),
+                           "Simplicity.Transitions.Silent"=c(0),
+                           "Simplicity.Arcs"=c(1+3+8+2+5+2),
                            "Simplicity.MDL"=c(3),
                            "Generalization.Conformance"=c(0.8483),
                            "Precision.Behavioral"=c(0.9955)))
@@ -328,10 +328,10 @@ This approach has discovered 9 transitions again, 14 "hidden" / "silent" transit
 petrinets_df <- rbind(petrinets_df, 
                 data.frame("Petrinet"=c("Heuristics"),
                            "Fitness.Traces"=c(0.7698),
-                           "Simplicity.Total.Places"=c(18),
-                           "Simplicity.Total.Places.Silent"=c(0),
-                           "Simplicity.Total.Transitions.Silent"=c(14),
-                           "Simplicity.Total.Arcs"=c(1+1+2+4+1+2+2+3+2+2+1+1+1+2+4+1+3+2+2+2+2+1+1+1),
+                           "Simplicity.Places.Total"=c(18),
+                           "Simplicity.Places.Implicit"=c(0),
+                           "Simplicity.Transitions.Silent"=c(14),
+                           "Simplicity.Arcs"=c(1+1+2+4+1+2+2+3+2+2+1+1+1+2+4+1+3+2+2+2+2+1+1+1),
                            "Simplicity.MDL"=c(2),
                            "Generalization.Conformance"=c(0.7698),
                            "Precision.Behavioral"=c(0.8656)))
@@ -362,10 +362,10 @@ This approach discovered 9 transitions, 25 "hidden" / "silent" transitions & 21 
 petrinets_df <- rbind(petrinets_df, 
                 data.frame("Petrinet"=c("Inductive"),
                            "Fitness.Traces"=c(0.9813),
-                           "Simplicity.Total.Places"=c(21),
-                           "Simplicity.Total.Places.Silent"=c(0),
-                           "Simplicity.Total.Transitions.Silent"=c(25),
-                           "Simplicity.Total.Arcs"=c(1+4+6+6+4+3+5+9+9+4+3+4+3+3+3+1),
+                           "Simplicity.Places.Total"=c(21),
+                           "Simplicity.Places.Implicit"=c(0),
+                           "Simplicity.Transitions.Silent"=c(25),
+                           "Simplicity.Arcs"=c(1+4+6+6+4+3+5+9+9+4+3+4+3+3+3+1),
                            "Simplicity.MDL"=c(13),
                            "Generalization.Conformance"=c(0.9813),
                            "Precision.Behavioral"=c(0.9955)))
@@ -375,6 +375,91 @@ print(subset(petrinets_df, Petrinet == "Inductive"), row.names=FALSE)
 ## Select "Best" Petri net
 
 **My analysis**:
+
+The metrics for all the discovered Petri nets:  
+```{r Select_Petrinet_1, echo=FALSE}
+
+rownames(petrinets_df) <- petrinets_df$Petrinet
+petrinets_df <- subset(petrinets_df, select=-Petrinet)
+print(petrinets_df)
+```
+
+To consolidate the Simplicity.* metrics into a Simplicity.Score for each Petri net, assign equal weights (as a simple approximation) by scaling the raw metric relative to a "perfect" score of 100 since each metric has different scales. For e.g. the minimum value of Simplicity.Places.Total is 8 which may be considered as the "perfect" score amongst these Petri nets. If the minimum value is 0 we add 1 to both numerator & denominator.
+
+```{r Select_Petrinet_2, echo=TRUE}
+consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
+    
+    for (metric in metrics) {
+        min_value <- min(pn_df[, metric])
+        
+        if(min_value == 0) {
+            # Add 1 to account for possibility of 0 in denominator
+            pn_df[, paste0(metric, ".Score")] <- 
+                ((min_value + 1) * 100.0) / (pn_df[, metric] + 1)
+        } else {
+            pn_df[, paste0(metric, ".Score")] <- 
+                ((min_value + 0) * 100.0) / (pn_df[, metric] + 0)
+        }
+            
+    }
+    
+    for (row in 1:nrow(pn_df))
+        pn_df[row, consolidated.metric.name] <- 
+            mean(as.numeric(pn_df[row, paste0(metrics, ".Score")]))
+
+    print(myplot_hbar(pn_df, ".rownames", 
+                      c("Simplicity.Places.Total", "Simplicity.Places.Total.Score")))
+    
+    df <- pn_df
+    xcol_name <- ".rownames"
+    ycol_names <- c("Simplicity.Places.Total", "Simplicity.Places.Total.Score",
+                    "Simplicity.Places.Implicit", "Simplicity.Places.Implicit.Score",
+                    "Simplicity.Transitions.Silent", "Simplicity.Transitions.Silent.Score",
+                    "Simplicity.Arcs", "Simplicity.Arcs.Score",
+                    "Simplicity.MDL", "Simplicity.MDL.Score"
+                    )
+    
+    if (xcol_name == ".rownames")
+        df[, xcol_name] <- rownames(df)
+
+    require(reshape)
+
+    mltd_df <- melt(df, id=xcol_name, measure=ycol_names)
+    names(mltd_df)[1] <- "xcol_name"
+    # New
+    require(plyr)
+#     mltd_df <- mutate(mltd_df, 
+#             var_type=ifelse(length(grep(".Score", variable, fixed=TRUE)) == 0,
+#                             "Raw", "Score"))
+    mltd_df$variable <- as.character(mltd_df$variable)
+    mltd_df$var_type <- sapply(1:nrow(mltd_df), function(row)
+            ifelse(length(grep(".Score", mltd_df[row, "variable"], fixed=TRUE)) == 0,
+                            "Raw", "Score"))
+    mltd_df$var_label <- sapply(1:nrow(mltd_df), function(row)
+            ifelse(length(grep(".Score", mltd_df[row, "variable"], fixed=TRUE)) == 0,
+                            mltd_df[row, "variable"], 
+                            gsub(".Score", "", mltd_df[row, "variable"], fixed=TRUE)))
+    print(mltd_df)
+    
+    #g <- ggplot(mltd_df, aes(x=reorder(xcol_name, value), y=value, fill=variable))
+    g <- ggplot(mltd_df, aes(x=reorder(xcol_name, value), y=value))        
+    g <- g + geom_bar(stat="identity", aes(fill=var_label)) + xlab(xcol_name)
+
+    # New
+    g <- g + facet_grid(var_label ~ var_type, scales="free") + 
+             theme(legend.position="none")
+    
+    g <- g + coord_flip()
+
+    print(g)
+    
+    return(pn_df)
+}
+petrinets_mod_df <- consolidate_scores(pn_df=petrinets_df, 
+            metrics=grep("Simplicity.", names(petrinets_df), fixed=TRUE, value=TRUE), 
+            consolidated.metric.name="Simplicity.Score")
+print(petrinets_mod_df)
+```
 
 In my opinion, the ILP discovered Petri net is the best based on the following criteria:
 
@@ -590,7 +675,7 @@ Given a Petri net and an event log, the following evaluation criteria (not exhau
             
 2. Simplicity metrics:  
     2.1 # total places  
-    2.2 # silent places  
+    2.2 # implicit places  
     2.3 # silent transitions  
     2.4 # arcs  
     2.5 Entropy: ProM plug-in ?  

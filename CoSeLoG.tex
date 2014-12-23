@@ -22,6 +22,29 @@
 % use microtype if available
 \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
 \usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{48,48,48}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.94,0.87,0.69}{{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.87,0.87,0.75}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.86,0.86,0.80}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.86,0.64,0.64}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.75,0.75,0.82}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.86,0.64,0.64}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.80,0.58,0.58}{{#1}}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.50,0.62,0.50}{{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.94,0.94,0.56}{{#1}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.81,0.69}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.94,0.94,0.56}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.80,0.80,0.80}{{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.76,0.75,0.62}{{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.80,0.80,0.80}{{#1}}}
 \usepackage{graphicx}
 % Redefine \includegraphics so that, unless explicit options are
 % given, the image width will not exceed the width of the page.
@@ -90,7 +113,7 @@
 }
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\textbf{Date: (Mon) Dec 22, 2014}
+\textbf{Date: (Tue) Dec 23, 2014}
 
 \section{Background:}\label{background}
 
@@ -422,14 +445,12 @@ Net for Conformance Analysis``''.
 \textbf{My analysis}:
 
 \begin{verbatim}
-##  Petrinet Fitness.Traces Simplicity.Total.Places
+##  Petrinet Fitness.Traces Simplicity.Places.Total
 ##     Alpha         0.8987                       9
-##  Simplicity.Total.Places.Silent Simplicity.Total.Transitions.Silent
-##                               0                                   0
-##  Simplicity.Total.Arcs Simplicity.MDL Generalization.Conformance
-##                     30              1                     0.8987
-##  Precision.Behavioral
-##                0.1971
+##  Simplicity.Places.Implicit Simplicity.Transitions.Silent Simplicity.Arcs
+##                           0                             0              30
+##  Simplicity.MDL Generalization.Conformance Precision.Behavioral
+##               1                     0.8987               0.1971
 \end{verbatim}
 
 Strictly speaking, the ``Generalization.Conformance'' metric would
@@ -478,14 +499,12 @@ Net for Conformance Analysis``''.
 \textbf{My analysis}:
 
 \begin{verbatim}
-##  Petrinet Fitness.Traces Simplicity.Total.Places
+##  Petrinet Fitness.Traces Simplicity.Places.Total
 ##       ILP         0.8483                       8
-##  Simplicity.Total.Places.Silent Simplicity.Total.Transitions.Silent
-##                               0                                   0
-##  Simplicity.Total.Arcs Simplicity.MDL Generalization.Conformance
-##                     21              3                     0.8483
-##  Precision.Behavioral
-##                0.9955
+##  Simplicity.Places.Implicit Simplicity.Transitions.Silent Simplicity.Arcs
+##                           0                             0              21
+##  Simplicity.MDL Generalization.Conformance Precision.Behavioral
+##               3                     0.8483               0.9955
 \end{verbatim}
 
 \subsection{Heuristics Miner}\label{heuristics-miner}
@@ -555,14 +574,12 @@ place.
 \textbf{My analysis}:
 
 \begin{verbatim}
-##    Petrinet Fitness.Traces Simplicity.Total.Places
+##    Petrinet Fitness.Traces Simplicity.Places.Total
 ##  Heuristics         0.7698                      18
-##  Simplicity.Total.Places.Silent Simplicity.Total.Transitions.Silent
-##                               0                                  14
-##  Simplicity.Total.Arcs Simplicity.MDL Generalization.Conformance
-##                     44              2                     0.7698
-##  Precision.Behavioral
-##                0.8656
+##  Simplicity.Places.Implicit Simplicity.Transitions.Silent Simplicity.Arcs
+##                           0                            14              44
+##  Simplicity.MDL Generalization.Conformance Precision.Behavioral
+##               2                     0.7698               0.8656
 \end{verbatim}
 
 \subsection{Inductive Miner}\label{inductive-miner}
@@ -604,19 +621,270 @@ transitions \& 21 places. The ``End'' place is named as ``sink''.
 \textbf{My analysis}:
 
 \begin{verbatim}
-##   Petrinet Fitness.Traces Simplicity.Total.Places
+##   Petrinet Fitness.Traces Simplicity.Places.Total
 ##  Inductive         0.9813                      21
-##  Simplicity.Total.Places.Silent Simplicity.Total.Transitions.Silent
-##                               0                                  25
-##  Simplicity.Total.Arcs Simplicity.MDL Generalization.Conformance
-##                     68             13                     0.9813
-##  Precision.Behavioral
-##                0.9955
+##  Simplicity.Places.Implicit Simplicity.Transitions.Silent Simplicity.Arcs
+##                           0                            25              68
+##  Simplicity.MDL Generalization.Conformance Precision.Behavioral
+##              13                     0.9813               0.9955
 \end{verbatim}
 
 \subsection{Select ``Best'' Petri net}\label{select-best-petri-net}
 
 \textbf{My analysis}:
+
+The metrics for all the discovered Petri nets:
+
+\begin{verbatim}
+##            Fitness.Traces Simplicity.Places.Total
+## Alpha              0.8987                       9
+## ILP                0.8483                       8
+## Heuristics         0.7698                      18
+## Inductive          0.9813                      21
+##            Simplicity.Places.Implicit Simplicity.Transitions.Silent
+## Alpha                               0                             0
+## ILP                                 0                             0
+## Heuristics                          0                            14
+## Inductive                           0                            25
+##            Simplicity.Arcs Simplicity.MDL Generalization.Conformance
+## Alpha                   30              1                     0.8987
+## ILP                     21              3                     0.8483
+## Heuristics              44              2                     0.7698
+## Inductive               68             13                     0.9813
+##            Precision.Behavioral
+## Alpha                    0.1971
+## ILP                      0.9955
+## Heuristics               0.8656
+## Inductive                0.9955
+\end{verbatim}
+
+To consolidate the Simplicity.* metrics into a Simplicity.Score for each
+Petri net, assign equal weights (as a simple approximation) by scaling
+the raw metric relative to a ``perfect'' score of 100 since each metric
+has different scales. For e.g.~the minimum value of
+Simplicity.Places.Total is 8 which may be considered as the ``perfect''
+score amongst these Petri nets. If the minimum value is 0 we add 1 to
+both numerator \& denominator.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{consolidate_scores <-}\StringTok{ }\NormalTok{function(pn_df, metrics, consolidated.metric.name) \{}
+    
+    \NormalTok{for (metric in metrics) \{}
+        \NormalTok{min_value <-}\StringTok{ }\KeywordTok{min}\NormalTok{(pn_df[, metric])}
+        
+        \NormalTok{if(min_value ==}\StringTok{ }\DecValTok{0}\NormalTok{) \{}
+            \CommentTok{# Add 1 to account for possibility of 0 in denominator}
+            \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Score"}\NormalTok{)] <-}\StringTok{ }
+\StringTok{                }\NormalTok{((min_value +}\StringTok{ }\DecValTok{1}\NormalTok{) *}\StringTok{ }\FloatTok{100.0}\NormalTok{) /}\StringTok{ }\NormalTok{(pn_df[, metric] +}\StringTok{ }\DecValTok{1}\NormalTok{)}
+        \NormalTok{\} else \{}
+            \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Score"}\NormalTok{)] <-}\StringTok{ }
+\StringTok{                }\NormalTok{((min_value +}\StringTok{ }\DecValTok{0}\NormalTok{) *}\StringTok{ }\FloatTok{100.0}\NormalTok{) /}\StringTok{ }\NormalTok{(pn_df[, metric] +}\StringTok{ }\DecValTok{0}\NormalTok{)}
+        \NormalTok{\}}
+            
+    \NormalTok{\}}
+    
+    \NormalTok{for (row in }\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(pn_df))}
+        \NormalTok{pn_df[row, consolidated.metric.name] <-}\StringTok{ }
+\StringTok{            }\KeywordTok{mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(pn_df[row, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Score"}\NormalTok{)]))}
+
+    \KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_hbar}\NormalTok{(pn_df, }\StringTok{".rownames"}\NormalTok{, }
+                      \KeywordTok{c}\NormalTok{(}\StringTok{"Simplicity.Places.Total"}\NormalTok{, }\StringTok{"Simplicity.Places.Total.Score"}\NormalTok{)))}
+    
+    \NormalTok{df <-}\StringTok{ }\NormalTok{pn_df}
+    \NormalTok{xcol_name <-}\StringTok{ ".rownames"}
+    \NormalTok{ycol_names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Simplicity.Places.Total"}\NormalTok{, }\StringTok{"Simplicity.Places.Total.Score"}\NormalTok{,}
+                    \StringTok{"Simplicity.Places.Implicit"}\NormalTok{, }\StringTok{"Simplicity.Places.Implicit.Score"}\NormalTok{,}
+                    \StringTok{"Simplicity.Transitions.Silent"}\NormalTok{, }\StringTok{"Simplicity.Transitions.Silent.Score"}\NormalTok{,}
+                    \StringTok{"Simplicity.Arcs"}\NormalTok{, }\StringTok{"Simplicity.Arcs.Score"}\NormalTok{,}
+                    \StringTok{"Simplicity.MDL"}\NormalTok{, }\StringTok{"Simplicity.MDL.Score"}
+                    \NormalTok{)}
+    
+    \NormalTok{if (xcol_name ==}\StringTok{ ".rownames"}\NormalTok{)}
+        \NormalTok{df[, xcol_name] <-}\StringTok{ }\KeywordTok{rownames}\NormalTok{(df)}
+
+    \KeywordTok{require}\NormalTok{(reshape)}
+
+    \NormalTok{mltd_df <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(df, }\DataTypeTok{id=}\NormalTok{xcol_name, }\DataTypeTok{measure=}\NormalTok{ycol_names)}
+    \KeywordTok{names}\NormalTok{(mltd_df)[}\DecValTok{1}\NormalTok{] <-}\StringTok{ "xcol_name"}
+    \CommentTok{# New}
+    \KeywordTok{require}\NormalTok{(plyr)}
+\CommentTok{#     mltd_df <- mutate(mltd_df, }
+\CommentTok{#             var_type=ifelse(length(grep(".Score", variable, fixed=TRUE)) == 0,}
+\CommentTok{#                             "Raw", "Score"))}
+    \NormalTok{mltd_df$variable <-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(mltd_df$variable)}
+    \NormalTok{mltd_df$var_type <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(mltd_df), function(row)}
+            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Score"}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
+                            \StringTok{"Raw"}\NormalTok{, }\StringTok{"Score"}\NormalTok{))}
+    \NormalTok{mltd_df$var_label <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(mltd_df), function(row)}
+            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Score"}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
+                            \NormalTok{mltd_df[row, }\StringTok{"variable"}\NormalTok{], }
+                            \KeywordTok{gsub}\NormalTok{(}\StringTok{".Score"}\NormalTok{, }\StringTok{""}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)))}
+    \KeywordTok{print}\NormalTok{(mltd_df)}
+    
+    \CommentTok{#g <- ggplot(mltd_df, aes(x=reorder(xcol_name, value), y=value, fill=variable))}
+    \NormalTok{g <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(mltd_df, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{reorder}\NormalTok{(xcol_name, value), }\DataTypeTok{y=}\NormalTok{value))        }
+    \NormalTok{g <-}\StringTok{ }\NormalTok{g +}\StringTok{ }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{var_label)) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(xcol_name)}
+
+    \CommentTok{# New}
+    \NormalTok{g <-}\StringTok{ }\NormalTok{g +}\StringTok{ }\KeywordTok{facet_grid}\NormalTok{(var_label ~}\StringTok{ }\NormalTok{var_type, }\DataTypeTok{scales=}\StringTok{"free"}\NormalTok{) +}\StringTok{ }
+\StringTok{             }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{)}
+    
+    \NormalTok{g <-}\StringTok{ }\NormalTok{g +}\StringTok{ }\KeywordTok{coord_flip}\NormalTok{()}
+
+    \KeywordTok{print}\NormalTok{(g)}
+    
+    \KeywordTok{return}\NormalTok{(pn_df)}
+\NormalTok{\}}
+\NormalTok{petrinets_mod_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_df, }
+            \DataTypeTok{metrics=}\KeywordTok{grep}\NormalTok{(}\StringTok{"Simplicity."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{value=}\OtherTok{TRUE}\NormalTok{), }
+            \DataTypeTok{consolidated.metric.name=}\StringTok{"Simplicity.Score"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: reshape
+## Loading required package: plyr
+## 
+## Attaching package: 'plyr'
+## 
+## The following objects are masked from 'package:reshape':
+## 
+##     rename, round_any
+\end{verbatim}
+
+\includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_2-1.pdf}
+
+\begin{verbatim}
+##     xcol_name                            variable      value var_type
+## 1       Alpha             Simplicity.Places.Total   9.000000      Raw
+## 2         ILP             Simplicity.Places.Total   8.000000      Raw
+## 3  Heuristics             Simplicity.Places.Total  18.000000      Raw
+## 4   Inductive             Simplicity.Places.Total  21.000000      Raw
+## 5       Alpha       Simplicity.Places.Total.Score  88.888889    Score
+## 6         ILP       Simplicity.Places.Total.Score 100.000000    Score
+## 7  Heuristics       Simplicity.Places.Total.Score  44.444444    Score
+## 8   Inductive       Simplicity.Places.Total.Score  38.095238    Score
+## 9       Alpha          Simplicity.Places.Implicit   0.000000      Raw
+## 10        ILP          Simplicity.Places.Implicit   0.000000      Raw
+## 11 Heuristics          Simplicity.Places.Implicit   0.000000      Raw
+## 12  Inductive          Simplicity.Places.Implicit   0.000000      Raw
+## 13      Alpha    Simplicity.Places.Implicit.Score 100.000000    Score
+## 14        ILP    Simplicity.Places.Implicit.Score 100.000000    Score
+## 15 Heuristics    Simplicity.Places.Implicit.Score 100.000000    Score
+## 16  Inductive    Simplicity.Places.Implicit.Score 100.000000    Score
+## 17      Alpha       Simplicity.Transitions.Silent   0.000000      Raw
+## 18        ILP       Simplicity.Transitions.Silent   0.000000      Raw
+## 19 Heuristics       Simplicity.Transitions.Silent  14.000000      Raw
+## 20  Inductive       Simplicity.Transitions.Silent  25.000000      Raw
+## 21      Alpha Simplicity.Transitions.Silent.Score 100.000000    Score
+## 22        ILP Simplicity.Transitions.Silent.Score 100.000000    Score
+## 23 Heuristics Simplicity.Transitions.Silent.Score   6.666667    Score
+## 24  Inductive Simplicity.Transitions.Silent.Score   3.846154    Score
+## 25      Alpha                     Simplicity.Arcs  30.000000      Raw
+## 26        ILP                     Simplicity.Arcs  21.000000      Raw
+## 27 Heuristics                     Simplicity.Arcs  44.000000      Raw
+## 28  Inductive                     Simplicity.Arcs  68.000000      Raw
+## 29      Alpha               Simplicity.Arcs.Score  70.000000    Score
+## 30        ILP               Simplicity.Arcs.Score 100.000000    Score
+## 31 Heuristics               Simplicity.Arcs.Score  47.727273    Score
+## 32  Inductive               Simplicity.Arcs.Score  30.882353    Score
+## 33      Alpha                      Simplicity.MDL   1.000000      Raw
+## 34        ILP                      Simplicity.MDL   3.000000      Raw
+## 35 Heuristics                      Simplicity.MDL   2.000000      Raw
+## 36  Inductive                      Simplicity.MDL  13.000000      Raw
+## 37      Alpha                Simplicity.MDL.Score 100.000000    Score
+## 38        ILP                Simplicity.MDL.Score  33.333333    Score
+## 39 Heuristics                Simplicity.MDL.Score  50.000000    Score
+## 40  Inductive                Simplicity.MDL.Score   7.692308    Score
+##                        var_label
+## 1        Simplicity.Places.Total
+## 2        Simplicity.Places.Total
+## 3        Simplicity.Places.Total
+## 4        Simplicity.Places.Total
+## 5        Simplicity.Places.Total
+## 6        Simplicity.Places.Total
+## 7        Simplicity.Places.Total
+## 8        Simplicity.Places.Total
+## 9     Simplicity.Places.Implicit
+## 10    Simplicity.Places.Implicit
+## 11    Simplicity.Places.Implicit
+## 12    Simplicity.Places.Implicit
+## 13    Simplicity.Places.Implicit
+## 14    Simplicity.Places.Implicit
+## 15    Simplicity.Places.Implicit
+## 16    Simplicity.Places.Implicit
+## 17 Simplicity.Transitions.Silent
+## 18 Simplicity.Transitions.Silent
+## 19 Simplicity.Transitions.Silent
+## 20 Simplicity.Transitions.Silent
+## 21 Simplicity.Transitions.Silent
+## 22 Simplicity.Transitions.Silent
+## 23 Simplicity.Transitions.Silent
+## 24 Simplicity.Transitions.Silent
+## 25               Simplicity.Arcs
+## 26               Simplicity.Arcs
+## 27               Simplicity.Arcs
+## 28               Simplicity.Arcs
+## 29               Simplicity.Arcs
+## 30               Simplicity.Arcs
+## 31               Simplicity.Arcs
+## 32               Simplicity.Arcs
+## 33                Simplicity.MDL
+## 34                Simplicity.MDL
+## 35                Simplicity.MDL
+## 36                Simplicity.MDL
+## 37                Simplicity.MDL
+## 38                Simplicity.MDL
+## 39                Simplicity.MDL
+## 40                Simplicity.MDL
+\end{verbatim}
+
+\includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_2-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(petrinets_mod_df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            Fitness.Traces Simplicity.Places.Total
+## Alpha              0.8987                       9
+## ILP                0.8483                       8
+## Heuristics         0.7698                      18
+## Inductive          0.9813                      21
+##            Simplicity.Places.Implicit Simplicity.Transitions.Silent
+## Alpha                               0                             0
+## ILP                                 0                             0
+## Heuristics                          0                            14
+## Inductive                           0                            25
+##            Simplicity.Arcs Simplicity.MDL Generalization.Conformance
+## Alpha                   30              1                     0.8987
+## ILP                     21              3                     0.8483
+## Heuristics              44              2                     0.7698
+## Inductive               68             13                     0.9813
+##            Precision.Behavioral Simplicity.Places.Total.Score
+## Alpha                    0.1971                      88.88889
+## ILP                      0.9955                     100.00000
+## Heuristics               0.8656                      44.44444
+## Inductive                0.9955                      38.09524
+##            Simplicity.Places.Implicit.Score
+## Alpha                                   100
+## ILP                                     100
+## Heuristics                              100
+## Inductive                               100
+##            Simplicity.Transitions.Silent.Score Simplicity.Arcs.Score
+## Alpha                               100.000000              70.00000
+## ILP                                 100.000000             100.00000
+## Heuristics                            6.666667              47.72727
+## Inductive                             3.846154              30.88235
+##            Simplicity.MDL.Score Simplicity.Score
+## Alpha                100.000000         91.77778
+## ILP                   33.333333         86.66667
+## Heuristics            50.000000         49.76768
+## Inductive              7.692308         36.10321
+\end{verbatim}
 
 In my opinion, the ILP discovered Petri net is the best based on the
 following criteria:
@@ -963,8 +1231,8 @@ Given a Petri net and an event log, the following evaluation criteria
   Replay a Log on Petri Net for Conformance Analysis w/ option Measuring
   fitness
 \item
-  Simplicity metrics:\\2.1 \# total places\\2.2 \# silent places\\2.3 \#
-  silent transitions\\2.4 \# arcs\\2.5 Entropy: ProM plug-in ?\\2.6
+  Simplicity metrics:\\2.1 \# total places\\2.2 \# implicit places\\2.3
+  \# silent transitions\\2.4 \# arcs\\2.5 Entropy: ProM plug-in ?\\2.6
   Minimal Description Length (MDL): ProM plug-in ?
 \item
   Generalization metrics:\\3.1 Alignment conformance of ``test'' (vs.
