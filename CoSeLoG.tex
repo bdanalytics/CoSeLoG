@@ -688,8 +688,8 @@ both numerator \& denominator.
         \NormalTok{pn_df[row, consolidated.metric.name] <-}\StringTok{ }
 \StringTok{            }\KeywordTok{mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(pn_df[row, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Score"}\NormalTok{)]))}
 
-    \KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_hbar}\NormalTok{(pn_df, }\StringTok{".rownames"}\NormalTok{, }
-                      \KeywordTok{c}\NormalTok{(}\StringTok{"Simplicity.Places.Total"}\NormalTok{, }\StringTok{"Simplicity.Places.Total.Score"}\NormalTok{)))}
+\CommentTok{#     print(myplot_hbar(pn_df, ".rownames", }
+\CommentTok{#                       c("Simplicity.Places.Total", "Simplicity.Places.Total.Score")))}
     
     \NormalTok{df <-}\StringTok{ }\NormalTok{pn_df}
     \NormalTok{xcol_name <-}\StringTok{ ".rownames"}
@@ -703,12 +703,9 @@ both numerator \& denominator.
     \NormalTok{if (xcol_name ==}\StringTok{ ".rownames"}\NormalTok{)}
         \NormalTok{df[, xcol_name] <-}\StringTok{ }\KeywordTok{rownames}\NormalTok{(df)}
 
-    \KeywordTok{require}\NormalTok{(reshape)}
-
     \NormalTok{mltd_df <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(df, }\DataTypeTok{id=}\NormalTok{xcol_name, }\DataTypeTok{measure=}\NormalTok{ycol_names)}
     \KeywordTok{names}\NormalTok{(mltd_df)[}\DecValTok{1}\NormalTok{] <-}\StringTok{ "xcol_name"}
     \CommentTok{# New}
-    \KeywordTok{require}\NormalTok{(plyr)}
 \CommentTok{#     mltd_df <- mutate(mltd_df, }
 \CommentTok{#             var_type=ifelse(length(grep(".Score", variable, fixed=TRUE)) == 0,}
 \CommentTok{#                             "Raw", "Score"))}
@@ -720,7 +717,7 @@ both numerator \& denominator.
             \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Score"}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
                             \NormalTok{mltd_df[row, }\StringTok{"variable"}\NormalTok{], }
                             \KeywordTok{gsub}\NormalTok{(}\StringTok{".Score"}\NormalTok{, }\StringTok{""}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)))}
-    \KeywordTok{print}\NormalTok{(mltd_df)}
+    \CommentTok{#print(mltd_df)}
     
     \CommentTok{#g <- ggplot(mltd_df, aes(x=reorder(xcol_name, value), y=value, fill=variable))}
     \NormalTok{g <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(mltd_df, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{reorder}\NormalTok{(xcol_name, value), }\DataTypeTok{y=}\NormalTok{value))        }
@@ -736,115 +733,17 @@ both numerator \& denominator.
     
     \KeywordTok{return}\NormalTok{(pn_df)}
 \NormalTok{\}}
-\NormalTok{petrinets_mod_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_df, }
+\NormalTok{petrinets_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_df, }
             \DataTypeTok{metrics=}\KeywordTok{grep}\NormalTok{(}\StringTok{"Simplicity."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{value=}\OtherTok{TRUE}\NormalTok{), }
             \DataTypeTok{consolidated.metric.name=}\StringTok{"Simplicity.Score"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## Loading required package: reshape
-## Loading required package: plyr
-## 
-## Attaching package: 'plyr'
-## 
-## The following objects are masked from 'package:reshape':
-## 
-##     rename, round_any
-\end{verbatim}
-
 \includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_2-1.pdf}
-
-\begin{verbatim}
-##     xcol_name                            variable      value var_type
-## 1       Alpha             Simplicity.Places.Total   9.000000      Raw
-## 2         ILP             Simplicity.Places.Total   8.000000      Raw
-## 3  Heuristics             Simplicity.Places.Total  18.000000      Raw
-## 4   Inductive             Simplicity.Places.Total  21.000000      Raw
-## 5       Alpha       Simplicity.Places.Total.Score  88.888889    Score
-## 6         ILP       Simplicity.Places.Total.Score 100.000000    Score
-## 7  Heuristics       Simplicity.Places.Total.Score  44.444444    Score
-## 8   Inductive       Simplicity.Places.Total.Score  38.095238    Score
-## 9       Alpha          Simplicity.Places.Implicit   0.000000      Raw
-## 10        ILP          Simplicity.Places.Implicit   0.000000      Raw
-## 11 Heuristics          Simplicity.Places.Implicit   0.000000      Raw
-## 12  Inductive          Simplicity.Places.Implicit   0.000000      Raw
-## 13      Alpha    Simplicity.Places.Implicit.Score 100.000000    Score
-## 14        ILP    Simplicity.Places.Implicit.Score 100.000000    Score
-## 15 Heuristics    Simplicity.Places.Implicit.Score 100.000000    Score
-## 16  Inductive    Simplicity.Places.Implicit.Score 100.000000    Score
-## 17      Alpha       Simplicity.Transitions.Silent   0.000000      Raw
-## 18        ILP       Simplicity.Transitions.Silent   0.000000      Raw
-## 19 Heuristics       Simplicity.Transitions.Silent  14.000000      Raw
-## 20  Inductive       Simplicity.Transitions.Silent  25.000000      Raw
-## 21      Alpha Simplicity.Transitions.Silent.Score 100.000000    Score
-## 22        ILP Simplicity.Transitions.Silent.Score 100.000000    Score
-## 23 Heuristics Simplicity.Transitions.Silent.Score   6.666667    Score
-## 24  Inductive Simplicity.Transitions.Silent.Score   3.846154    Score
-## 25      Alpha                     Simplicity.Arcs  30.000000      Raw
-## 26        ILP                     Simplicity.Arcs  21.000000      Raw
-## 27 Heuristics                     Simplicity.Arcs  44.000000      Raw
-## 28  Inductive                     Simplicity.Arcs  68.000000      Raw
-## 29      Alpha               Simplicity.Arcs.Score  70.000000    Score
-## 30        ILP               Simplicity.Arcs.Score 100.000000    Score
-## 31 Heuristics               Simplicity.Arcs.Score  47.727273    Score
-## 32  Inductive               Simplicity.Arcs.Score  30.882353    Score
-## 33      Alpha                      Simplicity.MDL   1.000000      Raw
-## 34        ILP                      Simplicity.MDL   3.000000      Raw
-## 35 Heuristics                      Simplicity.MDL   2.000000      Raw
-## 36  Inductive                      Simplicity.MDL  13.000000      Raw
-## 37      Alpha                Simplicity.MDL.Score 100.000000    Score
-## 38        ILP                Simplicity.MDL.Score  33.333333    Score
-## 39 Heuristics                Simplicity.MDL.Score  50.000000    Score
-## 40  Inductive                Simplicity.MDL.Score   7.692308    Score
-##                        var_label
-## 1        Simplicity.Places.Total
-## 2        Simplicity.Places.Total
-## 3        Simplicity.Places.Total
-## 4        Simplicity.Places.Total
-## 5        Simplicity.Places.Total
-## 6        Simplicity.Places.Total
-## 7        Simplicity.Places.Total
-## 8        Simplicity.Places.Total
-## 9     Simplicity.Places.Implicit
-## 10    Simplicity.Places.Implicit
-## 11    Simplicity.Places.Implicit
-## 12    Simplicity.Places.Implicit
-## 13    Simplicity.Places.Implicit
-## 14    Simplicity.Places.Implicit
-## 15    Simplicity.Places.Implicit
-## 16    Simplicity.Places.Implicit
-## 17 Simplicity.Transitions.Silent
-## 18 Simplicity.Transitions.Silent
-## 19 Simplicity.Transitions.Silent
-## 20 Simplicity.Transitions.Silent
-## 21 Simplicity.Transitions.Silent
-## 22 Simplicity.Transitions.Silent
-## 23 Simplicity.Transitions.Silent
-## 24 Simplicity.Transitions.Silent
-## 25               Simplicity.Arcs
-## 26               Simplicity.Arcs
-## 27               Simplicity.Arcs
-## 28               Simplicity.Arcs
-## 29               Simplicity.Arcs
-## 30               Simplicity.Arcs
-## 31               Simplicity.Arcs
-## 32               Simplicity.Arcs
-## 33                Simplicity.MDL
-## 34                Simplicity.MDL
-## 35                Simplicity.MDL
-## 36                Simplicity.MDL
-## 37                Simplicity.MDL
-## 38                Simplicity.MDL
-## 39                Simplicity.MDL
-## 40                Simplicity.MDL
-\end{verbatim}
-
-\includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_2-2.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{print}\NormalTok{(petrinets_mod_df)}
+\KeywordTok{print}\NormalTok{(petrinets_df)}
 \end{Highlighting}
 \end{Shaded}
 

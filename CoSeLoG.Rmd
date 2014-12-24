@@ -80,7 +80,8 @@ options(stringsAsFactors=FALSE)
 #source("~/Dropbox/datascience/R/mydsutils.R")
 source("~/Dropbox/datascience/R/myplot.R")
 # Gather all package requirements here
-#suppressPackageStartupMessages(require())
+suppressPackageStartupMessages(require(reshape))
+suppressPackageStartupMessages(require(plyr))
 
 #require(sos); findFn("pinv", maxPages=2, sortby="MaxScore")
 ```
@@ -386,7 +387,7 @@ print(petrinets_df)
 
 To consolidate the Simplicity.* metrics into a Simplicity.Score for each Petri net, assign equal weights (as a simple approximation) by scaling the raw metric relative to a "perfect" score of 100 since each metric has different scales. For e.g. the minimum value of Simplicity.Places.Total is 8 which may be considered as the "perfect" score amongst these Petri nets. If the minimum value is 0 we add 1 to both numerator & denominator.
 
-```{r Select_Petrinet_2, echo=TRUE}
+```{r Select_Petrinet_2, echo=TRUE, fig.height=10}
 consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
     
     for (metric in metrics) {
@@ -407,8 +408,8 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
         pn_df[row, consolidated.metric.name] <- 
             mean(as.numeric(pn_df[row, paste0(metrics, ".Score")]))
 
-    print(myplot_hbar(pn_df, ".rownames", 
-                      c("Simplicity.Places.Total", "Simplicity.Places.Total.Score")))
+#     print(myplot_hbar(pn_df, ".rownames", 
+#                       c("Simplicity.Places.Total", "Simplicity.Places.Total.Score")))
     
     df <- pn_df
     xcol_name <- ".rownames"
@@ -422,12 +423,9 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
     if (xcol_name == ".rownames")
         df[, xcol_name] <- rownames(df)
 
-    require(reshape)
-
     mltd_df <- melt(df, id=xcol_name, measure=ycol_names)
     names(mltd_df)[1] <- "xcol_name"
     # New
-    require(plyr)
 #     mltd_df <- mutate(mltd_df, 
 #             var_type=ifelse(length(grep(".Score", variable, fixed=TRUE)) == 0,
 #                             "Raw", "Score"))
@@ -439,7 +437,7 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
             ifelse(length(grep(".Score", mltd_df[row, "variable"], fixed=TRUE)) == 0,
                             mltd_df[row, "variable"], 
                             gsub(".Score", "", mltd_df[row, "variable"], fixed=TRUE)))
-    print(mltd_df)
+    #print(mltd_df)
     
     #g <- ggplot(mltd_df, aes(x=reorder(xcol_name, value), y=value, fill=variable))
     g <- ggplot(mltd_df, aes(x=reorder(xcol_name, value), y=value))        
@@ -455,10 +453,10 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
     
     return(pn_df)
 }
-petrinets_mod_df <- consolidate_scores(pn_df=petrinets_df, 
+petrinets_df <- consolidate_scores(pn_df=petrinets_df, 
             metrics=grep("Simplicity.", names(petrinets_df), fixed=TRUE, value=TRUE), 
             consolidated.metric.name="Simplicity.Score")
-print(petrinets_mod_df)
+print(petrinets_df)
 ```
 
 In my opinion, the ILP discovered Petri net is the best based on the following criteria:
