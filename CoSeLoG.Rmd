@@ -388,7 +388,14 @@ print(petrinets_df)
 To consolidate the Simplicity.* metrics into a Simplicity.Score for each Petri net, assign equal weights (as a simple approximation) by scaling the raw metric relative to a "perfect" score of 100 since each metric has different scales. For e.g. the minimum value of Simplicity.Places.Total is 8 which may be considered as the "perfect" score amongst these Petri nets. If the minimum value is 0 we add 1 to both numerator & denominator.
 
 ```{r Select_Petrinet_2, echo=TRUE, fig.height=6.5}
-consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
+consolidate_scores <- function(pn_df, metrics, consolidated.metric.name, 
+                               metric_weights=NULL) {
+    
+    if (missing(metric_weights))
+        metric_weights <- rep(1.0 / length(metrics), length(metrics))
+    
+    if (is.null(names(metric_weights)))
+        names(metric_weights) <- metrics
     
     for (metric in metrics) {
         min_value <- min(pn_df[, metric])
@@ -401,19 +408,24 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
             pn_df[, paste0(metric, ".Scaled")] <- 
                 ((min_value + 0) * 100.0) / (pn_df[, metric] + 0)
         }
-            
+        
+        pn_df[, paste0(metric, ".Weighted")] <- 
+            pn_df[, paste0(metric, ".Scaled")] * metric_weights[metric]
     }
     
-    for (row in 1:nrow(pn_df))
+    for (row in 1:nrow(pn_df)) {
         pn_df[row, consolidated.metric.name] <- 
-            mean(as.numeric(pn_df[row, paste0(metrics, ".Scaled")]))
+            weighted.mean(as.numeric(pn_df[row, paste0(metrics, ".Scaled")]),
+                          metric_weights)
+    }    
 
-    ycol_names <- c("Simplicity.Places.Total", "Simplicity.Places.Total.Scaled",
-                    "Simplicity.Places.Implicit", "Simplicity.Places.Implicit.Scaled",
-                    "Simplicity.Transitions.Silent", "Simplicity.Transitions.Silent.Scaled",
-                    "Simplicity.Arcs", "Simplicity.Arcs.Scaled",
-                    "Simplicity.MDL", "Simplicity.MDL.Scaled"
-                    )    
+    ycol_names <- c(metrics, paste0(metrics, ".Scaled"))
+#     ycol_names <- c("Simplicity.Places.Total", "Simplicity.Places.Total.Scaled",
+#                     "Simplicity.Places.Implicit", "Simplicity.Places.Implicit.Scaled",
+#                     "Simplicity.Transitions.Silent", "Simplicity.Transitions.Silent.Scaled",
+#                     "Simplicity.Arcs", "Simplicity.Arcs.Scaled",
+#                     "Simplicity.MDL", "Simplicity.MDL.Scaled"
+#                     )    
     hbar_df <- melt(cbind(data.frame(Petrinet=rownames(pn_df)),
                           pn_df), id="Petrinet", measure=ycol_names)
     hbar_df$variable <- as.character(hbar_df$variable)
@@ -434,23 +446,30 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
             theme(legend.position="none") + coord_flip()
     print(gp)
 
+#     radar_inp_df <- cbind( data.frame(instance=rownames(pn_df)),
+#                                     subset(pn_df, select=c( 
+#                                         Simplicity.Places.Total.Scaled,
+#                                         Simplicity.Places.Implicit.Scaled,
+#                                         Simplicity.Transitions.Silent.Scaled,
+#                                         Simplicity.Arcs.Scaled,
+#                                         Simplicity.MDL.Scaled)),
+#                                     data.frame(facet=rep(" ", nrow(pn_df))))
     radar_inp_df <- cbind( data.frame(instance=rownames(pn_df)),
-                                    subset(pn_df, select=c( 
-                                        Simplicity.Places.Total.Scaled,
-                                        Simplicity.Places.Implicit.Scaled,
-                                        Simplicity.Transitions.Silent.Scaled,
-                                        Simplicity.Arcs.Scaled,
-                                        Simplicity.MDL.Scaled)),
+                                    pn_df[, paste0(metrics, ".Scaled")],
                                     data.frame(facet=rep(" ", nrow(pn_df))))
     print(myplot_radar(radar_inp_df))
 
-    print(myplot_hbar(pn_df, ".rownames", "Simplicity.Score"))
+    print(myplot_hbar(pn_df, ".rownames", paste0(metrics, ".Weighted")) + 
+        scale_fill_discrete("Metrics", 
+                            labels=gsub("Simplicity.", "", metrics, fixed=TRUE)))
+    #print(myplot_hbar(pn_df, ".rownames", "Simplicity.Score"))
     
     return(pn_df)
 }
 petrinets_mod_df <- consolidate_scores(pn_df=petrinets_df, 
         metrics=grep("Simplicity.", names(petrinets_df), fixed=TRUE, value=TRUE), 
-        consolidated.metric.name="Simplicity.Score")
+        consolidated.metric.name="Simplicity.Score",
+        metric_weights=c(0.2, 0.2, 0.2, 0.25, 0.15))
 print(petrinets_mod_df)
 ```
 

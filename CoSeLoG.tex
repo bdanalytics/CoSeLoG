@@ -668,7 +668,14 @@ both numerator \& denominator.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{consolidate_scores <-}\StringTok{ }\NormalTok{function(pn_df, metrics, consolidated.metric.name) \{}
+\NormalTok{consolidate_scores <-}\StringTok{ }\NormalTok{function(pn_df, metrics, consolidated.metric.name, }
+                               \DataTypeTok{metric_weights=}\OtherTok{NULL}\NormalTok{) \{}
+    
+    \NormalTok{if (}\KeywordTok{missing}\NormalTok{(metric_weights))}
+        \NormalTok{metric_weights <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\FloatTok{1.0} \NormalTok{/}\StringTok{ }\KeywordTok{length}\NormalTok{(metrics), }\KeywordTok{length}\NormalTok{(metrics))}
+    
+    \NormalTok{if (}\KeywordTok{is.null}\NormalTok{(}\KeywordTok{names}\NormalTok{(metric_weights)))}
+        \KeywordTok{names}\NormalTok{(metric_weights) <-}\StringTok{ }\NormalTok{metrics}
     
     \NormalTok{for (metric in metrics) \{}
         \NormalTok{min_value <-}\StringTok{ }\KeywordTok{min}\NormalTok{(pn_df[, metric])}
@@ -681,19 +688,24 @@ both numerator \& denominator.
             \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Scaled"}\NormalTok{)] <-}\StringTok{ }
 \StringTok{                }\NormalTok{((min_value +}\StringTok{ }\DecValTok{0}\NormalTok{) *}\StringTok{ }\FloatTok{100.0}\NormalTok{) /}\StringTok{ }\NormalTok{(pn_df[, metric] +}\StringTok{ }\DecValTok{0}\NormalTok{)}
         \NormalTok{\}}
-            
+        
+        \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Weighted"}\NormalTok{)] <-}\StringTok{ }
+\StringTok{            }\NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Scaled"}\NormalTok{)] *}\StringTok{ }\NormalTok{metric_weights[metric]}
     \NormalTok{\}}
     
-    \NormalTok{for (row in }\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(pn_df))}
+    \NormalTok{for (row in }\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(pn_df)) \{}
         \NormalTok{pn_df[row, consolidated.metric.name] <-}\StringTok{ }
-\StringTok{            }\KeywordTok{mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(pn_df[row, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Scaled"}\NormalTok{)]))}
+\StringTok{            }\KeywordTok{weighted.mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(pn_df[row, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Scaled"}\NormalTok{)]),}
+                          \NormalTok{metric_weights)}
+    \NormalTok{\}    }
 
-    \NormalTok{ycol_names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Simplicity.Places.Total"}\NormalTok{, }\StringTok{"Simplicity.Places.Total.Scaled"}\NormalTok{,}
-                    \StringTok{"Simplicity.Places.Implicit"}\NormalTok{, }\StringTok{"Simplicity.Places.Implicit.Scaled"}\NormalTok{,}
-                    \StringTok{"Simplicity.Transitions.Silent"}\NormalTok{, }\StringTok{"Simplicity.Transitions.Silent.Scaled"}\NormalTok{,}
-                    \StringTok{"Simplicity.Arcs"}\NormalTok{, }\StringTok{"Simplicity.Arcs.Scaled"}\NormalTok{,}
-                    \StringTok{"Simplicity.MDL"}\NormalTok{, }\StringTok{"Simplicity.MDL.Scaled"}
-                    \NormalTok{)    }
+    \NormalTok{ycol_names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(metrics, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Scaled"}\NormalTok{))}
+\CommentTok{#     ycol_names <- c("Simplicity.Places.Total", "Simplicity.Places.Total.Scaled",}
+\CommentTok{#                     "Simplicity.Places.Implicit", "Simplicity.Places.Implicit.Scaled",}
+\CommentTok{#                     "Simplicity.Transitions.Silent", "Simplicity.Transitions.Silent.Scaled",}
+\CommentTok{#                     "Simplicity.Arcs", "Simplicity.Arcs.Scaled",}
+\CommentTok{#                     "Simplicity.MDL", "Simplicity.MDL.Scaled"}
+\CommentTok{#                     )    }
     \NormalTok{hbar_df <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Petrinet=}\KeywordTok{rownames}\NormalTok{(pn_df)),}
                           \NormalTok{pn_df), }\DataTypeTok{id=}\StringTok{"Petrinet"}\NormalTok{, }\DataTypeTok{measure=}\NormalTok{ycol_names)}
     \NormalTok{hbar_df$variable <-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(hbar_df$variable)}
@@ -714,23 +726,30 @@ both numerator \& denominator.
 \StringTok{            }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{) +}\StringTok{ }\KeywordTok{coord_flip}\NormalTok{()}
     \KeywordTok{print}\NormalTok{(gp)}
 
+\CommentTok{#     radar_inp_df <- cbind( data.frame(instance=rownames(pn_df)),}
+\CommentTok{#                                     subset(pn_df, select=c( }
+\CommentTok{#                                         Simplicity.Places.Total.Scaled,}
+\CommentTok{#                                         Simplicity.Places.Implicit.Scaled,}
+\CommentTok{#                                         Simplicity.Transitions.Silent.Scaled,}
+\CommentTok{#                                         Simplicity.Arcs.Scaled,}
+\CommentTok{#                                         Simplicity.MDL.Scaled)),}
+\CommentTok{#                                     data.frame(facet=rep(" ", nrow(pn_df))))}
     \NormalTok{radar_inp_df <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{( }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{instance=}\KeywordTok{rownames}\NormalTok{(pn_df)),}
-                                    \KeywordTok{subset}\NormalTok{(pn_df, }\DataTypeTok{select=}\KeywordTok{c}\NormalTok{( }
-                                        \NormalTok{Simplicity.Places.Total.Scaled,}
-                                        \NormalTok{Simplicity.Places.Implicit.Scaled,}
-                                        \NormalTok{Simplicity.Transitions.Silent.Scaled,}
-                                        \NormalTok{Simplicity.Arcs.Scaled,}
-                                        \NormalTok{Simplicity.MDL.Scaled)),}
+                                    \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Scaled"}\NormalTok{)],}
                                     \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{facet=}\KeywordTok{rep}\NormalTok{(}\StringTok{" "}\NormalTok{, }\KeywordTok{nrow}\NormalTok{(pn_df))))}
     \KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_radar}\NormalTok{(radar_inp_df))}
 
-    \KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_hbar}\NormalTok{(pn_df, }\StringTok{".rownames"}\NormalTok{, }\StringTok{"Simplicity.Score"}\NormalTok{))}
+    \KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_hbar}\NormalTok{(pn_df, }\StringTok{".rownames"}\NormalTok{, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Weighted"}\NormalTok{)) +}\StringTok{ }
+\StringTok{        }\KeywordTok{scale_fill_discrete}\NormalTok{(}\StringTok{"Metrics"}\NormalTok{, }
+                            \DataTypeTok{labels=}\KeywordTok{gsub}\NormalTok{(}\StringTok{"Simplicity."}\NormalTok{, }\StringTok{""}\NormalTok{, metrics, }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)))}
+    \CommentTok{#print(myplot_hbar(pn_df, ".rownames", "Simplicity.Score"))}
     
     \KeywordTok{return}\NormalTok{(pn_df)}
 \NormalTok{\}}
 \NormalTok{petrinets_mod_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_df, }
         \DataTypeTok{metrics=}\KeywordTok{grep}\NormalTok{(}\StringTok{"Simplicity."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{value=}\OtherTok{TRUE}\NormalTok{), }
-        \DataTypeTok{consolidated.metric.name=}\StringTok{"Simplicity.Score"}\NormalTok{)}
+        \DataTypeTok{consolidated.metric.name=}\StringTok{"Simplicity.Score"}\NormalTok{,}
+        \DataTypeTok{metric_weights=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.2}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.25}\NormalTok{, }\FloatTok{0.15}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -770,21 +789,41 @@ both numerator \& denominator.
 ## ILP                      0.9955                      100.00000
 ## Heuristics               0.8656                       44.44444
 ## Inductive                0.9955                       38.09524
+##            Simplicity.Places.Total.Weighted
+## Alpha                             17.777778
+## ILP                               20.000000
+## Heuristics                         8.888889
+## Inductive                          7.619048
 ##            Simplicity.Places.Implicit.Scaled
 ## Alpha                                    100
 ## ILP                                      100
 ## Heuristics                               100
 ## Inductive                                100
-##            Simplicity.Transitions.Silent.Scaled Simplicity.Arcs.Scaled
-## Alpha                                100.000000               70.00000
-## ILP                                  100.000000              100.00000
-## Heuristics                             6.666667               47.72727
-## Inductive                              3.846154               30.88235
-##            Simplicity.MDL.Scaled Simplicity.Score
-## Alpha                 100.000000         91.77778
-## ILP                    33.333333         86.66667
-## Heuristics             50.000000         49.76768
-## Inductive               7.692308         36.10321
+##            Simplicity.Places.Implicit.Weighted
+## Alpha                                       20
+## ILP                                         20
+## Heuristics                                  20
+## Inductive                                   20
+##            Simplicity.Transitions.Silent.Scaled
+## Alpha                                100.000000
+## ILP                                  100.000000
+## Heuristics                             6.666667
+## Inductive                              3.846154
+##            Simplicity.Transitions.Silent.Weighted Simplicity.Arcs.Scaled
+## Alpha                                  20.0000000               70.00000
+## ILP                                    20.0000000              100.00000
+## Heuristics                              1.3333333               47.72727
+## Inductive                               0.7692308               30.88235
+##            Simplicity.Arcs.Weighted Simplicity.MDL.Scaled
+## Alpha                     17.500000            100.000000
+## ILP                       25.000000             33.333333
+## Heuristics                11.931818             50.000000
+## Inductive                  7.720588              7.692308
+##            Simplicity.MDL.Weighted Simplicity.Score
+## Alpha                    15.000000         90.27778
+## ILP                       5.000000         90.00000
+## Heuristics                7.500000         49.65404
+## Inductive                 1.153846         37.26271
 \end{verbatim}
 
 In my opinion, the ILP discovered Petri net is the best based on the
