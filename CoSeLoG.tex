@@ -688,56 +688,33 @@ both numerator \& denominator.
         \NormalTok{pn_df[row, consolidated.metric.name] <-}\StringTok{ }
 \StringTok{            }\KeywordTok{mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(pn_df[row, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Scaled"}\NormalTok{)]))}
 
-\CommentTok{#     print(myplot_hbar(pn_df, ".rownames", }
-\CommentTok{#                       c("Simplicity.Places.Total", "Simplicity.Places.Total.Scaled")))}
-    
-    \NormalTok{df <-}\StringTok{ }\NormalTok{pn_df}
-    \NormalTok{xcol_name <-}\StringTok{ ".rownames"}
     \NormalTok{ycol_names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Simplicity.Places.Total"}\NormalTok{, }\StringTok{"Simplicity.Places.Total.Scaled"}\NormalTok{,}
                     \StringTok{"Simplicity.Places.Implicit"}\NormalTok{, }\StringTok{"Simplicity.Places.Implicit.Scaled"}\NormalTok{,}
                     \StringTok{"Simplicity.Transitions.Silent"}\NormalTok{, }\StringTok{"Simplicity.Transitions.Silent.Scaled"}\NormalTok{,}
                     \StringTok{"Simplicity.Arcs"}\NormalTok{, }\StringTok{"Simplicity.Arcs.Scaled"}\NormalTok{,}
                     \StringTok{"Simplicity.MDL"}\NormalTok{, }\StringTok{"Simplicity.MDL.Scaled"}
-                    \NormalTok{)}
-    
-    \NormalTok{if (xcol_name ==}\StringTok{ ".rownames"}\NormalTok{)}
-        \NormalTok{df[, xcol_name] <-}\StringTok{ }\KeywordTok{rownames}\NormalTok{(df)}
+                    \NormalTok{)    }
+    \NormalTok{hbar_df <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Petrinet=}\KeywordTok{rownames}\NormalTok{(pn_df)),}
+                          \NormalTok{pn_df), }\DataTypeTok{id=}\StringTok{"Petrinet"}\NormalTok{, }\DataTypeTok{measure=}\NormalTok{ycol_names)}
+    \NormalTok{hbar_df$variable <-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(hbar_df$variable)}
+    \NormalTok{hbar_df$var_type <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(hbar_df), function(row)}
+            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, hbar_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
+                            \StringTok{"Simplicity.Raw"}\NormalTok{, }\StringTok{"Simplicity.Scaled"}\NormalTok{))}
+    \NormalTok{hbar_df$var_label <-}\StringTok{ }
+\StringTok{        }\KeywordTok{gsub}\NormalTok{(}\StringTok{"Simplicity."}\NormalTok{, }\StringTok{""}\NormalTok{,}
+            \KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(hbar_df), function(row)}
+            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, hbar_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
+                            \NormalTok{hbar_df[row, }\StringTok{"variable"}\NormalTok{], }
+                            \KeywordTok{gsub}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, }\StringTok{""}\NormalTok{, hbar_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{))}
+                    \NormalTok{),}
+            \DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)}
+    \NormalTok{gp <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(hbar_df, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{reorder}\NormalTok{(Petrinet, value), }\DataTypeTok{y=}\NormalTok{value)) +}\StringTok{       }
+\StringTok{            }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{var_label)) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Petrinet"}\NormalTok{) +}\StringTok{ }
+\StringTok{            }\KeywordTok{facet_grid}\NormalTok{(var_label ~}\StringTok{ }\NormalTok{var_type, }\DataTypeTok{scales=}\StringTok{"free"}\NormalTok{) +}\StringTok{ }
+\StringTok{            }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{) +}\StringTok{ }\KeywordTok{coord_flip}\NormalTok{()}
+    \KeywordTok{print}\NormalTok{(gp)}
 
-    \NormalTok{mltd_df <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(df, }\DataTypeTok{id=}\NormalTok{xcol_name, }\DataTypeTok{measure=}\NormalTok{ycol_names)}
-    \KeywordTok{names}\NormalTok{(mltd_df)[}\DecValTok{1}\NormalTok{] <-}\StringTok{ "xcol_name"}
-    \CommentTok{# New}
-\CommentTok{#     mltd_df <- mutate(mltd_df, }
-\CommentTok{#             var_type=ifelse(length(grep(".Scaled", variable, fixed=TRUE)) == 0,}
-\CommentTok{#                             "Raw", "Score"))}
-    \NormalTok{mltd_df$variable <-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(mltd_df$variable)}
-    \NormalTok{mltd_df$var_type <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(mltd_df), function(row)}
-            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
-                            \StringTok{"Raw"}\NormalTok{, }\StringTok{"Scaled"}\NormalTok{))}
-    \NormalTok{mltd_df$var_label <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(mltd_df), function(row)}
-            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
-                            \NormalTok{mltd_df[row, }\StringTok{"variable"}\NormalTok{], }
-                            \KeywordTok{gsub}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, }\StringTok{""}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)))}
-    \CommentTok{#print(mltd_df)}
-    
-    \CommentTok{#g <- ggplot(mltd_df, aes(x=reorder(xcol_name, value), y=value, fill=variable))}
-    \NormalTok{g <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(mltd_df, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{reorder}\NormalTok{(xcol_name, value), }\DataTypeTok{y=}\NormalTok{value))        }
-    \NormalTok{g <-}\StringTok{ }\NormalTok{g +}\StringTok{ }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{var_label)) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(xcol_name)}
-
-    \CommentTok{# New}
-    \NormalTok{g <-}\StringTok{ }\NormalTok{g +}\StringTok{ }\KeywordTok{facet_grid}\NormalTok{(var_label ~}\StringTok{ }\NormalTok{var_type, }\DataTypeTok{scales=}\StringTok{"free"}\NormalTok{) +}\StringTok{ }
-\StringTok{             }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{)}
-    
-    \NormalTok{g <-}\StringTok{ }\NormalTok{g +}\StringTok{ }\KeywordTok{coord_flip}\NormalTok{()}
-
-    \KeywordTok{print}\NormalTok{(g)}
-
-\CommentTok{#     print(myplot_hbar(pn_df, ".rownames", c("Simplicity.Places.Total.Scaled",}
-\CommentTok{#                                             "Simplicity.Places.Implicit.Scaled",}
-\CommentTok{#                                             "Simplicity.Transitions.Silent.Scaled",}
-\CommentTok{#                                             "Simplicity.Arcs.Scaled",}
-\CommentTok{#                                             "Simplicity.MDL.Scaled")))}
-
-    \NormalTok{radar_inp_df <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{( }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{instance=}\KeywordTok{rownames}\NormalTok{(df)),}
+    \NormalTok{radar_inp_df <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{( }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{instance=}\KeywordTok{rownames}\NormalTok{(pn_df)),}
                                     \KeywordTok{subset}\NormalTok{(pn_df, }\DataTypeTok{select=}\KeywordTok{c}\NormalTok{( }
                                         \NormalTok{Simplicity.Places.Total.Scaled,}
                                         \NormalTok{Simplicity.Places.Implicit.Scaled,}
