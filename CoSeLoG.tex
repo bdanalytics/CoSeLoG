@@ -113,7 +113,7 @@
 }
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\textbf{Date: (Tue) Dec 23, 2014}
+\textbf{Date: (Thu) Dec 25, 2014}
 
 \section{Background:}\label{background}
 
@@ -675,10 +675,10 @@ both numerator \& denominator.
         
         \NormalTok{if(min_value ==}\StringTok{ }\DecValTok{0}\NormalTok{) \{}
             \CommentTok{# Add 1 to account for possibility of 0 in denominator}
-            \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Score"}\NormalTok{)] <-}\StringTok{ }
+            \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Scaled"}\NormalTok{)] <-}\StringTok{ }
 \StringTok{                }\NormalTok{((min_value +}\StringTok{ }\DecValTok{1}\NormalTok{) *}\StringTok{ }\FloatTok{100.0}\NormalTok{) /}\StringTok{ }\NormalTok{(pn_df[, metric] +}\StringTok{ }\DecValTok{1}\NormalTok{)}
         \NormalTok{\} else \{}
-            \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Score"}\NormalTok{)] <-}\StringTok{ }
+            \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Scaled"}\NormalTok{)] <-}\StringTok{ }
 \StringTok{                }\NormalTok{((min_value +}\StringTok{ }\DecValTok{0}\NormalTok{) *}\StringTok{ }\FloatTok{100.0}\NormalTok{) /}\StringTok{ }\NormalTok{(pn_df[, metric] +}\StringTok{ }\DecValTok{0}\NormalTok{)}
         \NormalTok{\}}
             
@@ -686,18 +686,18 @@ both numerator \& denominator.
     
     \NormalTok{for (row in }\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(pn_df))}
         \NormalTok{pn_df[row, consolidated.metric.name] <-}\StringTok{ }
-\StringTok{            }\KeywordTok{mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(pn_df[row, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Score"}\NormalTok{)]))}
+\StringTok{            }\KeywordTok{mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(pn_df[row, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Scaled"}\NormalTok{)]))}
 
 \CommentTok{#     print(myplot_hbar(pn_df, ".rownames", }
-\CommentTok{#                       c("Simplicity.Places.Total", "Simplicity.Places.Total.Score")))}
+\CommentTok{#                       c("Simplicity.Places.Total", "Simplicity.Places.Total.Scaled")))}
     
     \NormalTok{df <-}\StringTok{ }\NormalTok{pn_df}
     \NormalTok{xcol_name <-}\StringTok{ ".rownames"}
-    \NormalTok{ycol_names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Simplicity.Places.Total"}\NormalTok{, }\StringTok{"Simplicity.Places.Total.Score"}\NormalTok{,}
-                    \StringTok{"Simplicity.Places.Implicit"}\NormalTok{, }\StringTok{"Simplicity.Places.Implicit.Score"}\NormalTok{,}
-                    \StringTok{"Simplicity.Transitions.Silent"}\NormalTok{, }\StringTok{"Simplicity.Transitions.Silent.Score"}\NormalTok{,}
-                    \StringTok{"Simplicity.Arcs"}\NormalTok{, }\StringTok{"Simplicity.Arcs.Score"}\NormalTok{,}
-                    \StringTok{"Simplicity.MDL"}\NormalTok{, }\StringTok{"Simplicity.MDL.Score"}
+    \NormalTok{ycol_names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Simplicity.Places.Total"}\NormalTok{, }\StringTok{"Simplicity.Places.Total.Scaled"}\NormalTok{,}
+                    \StringTok{"Simplicity.Places.Implicit"}\NormalTok{, }\StringTok{"Simplicity.Places.Implicit.Scaled"}\NormalTok{,}
+                    \StringTok{"Simplicity.Transitions.Silent"}\NormalTok{, }\StringTok{"Simplicity.Transitions.Silent.Scaled"}\NormalTok{,}
+                    \StringTok{"Simplicity.Arcs"}\NormalTok{, }\StringTok{"Simplicity.Arcs.Scaled"}\NormalTok{,}
+                    \StringTok{"Simplicity.MDL"}\NormalTok{, }\StringTok{"Simplicity.MDL.Scaled"}
                     \NormalTok{)}
     
     \NormalTok{if (xcol_name ==}\StringTok{ ".rownames"}\NormalTok{)}
@@ -707,16 +707,16 @@ both numerator \& denominator.
     \KeywordTok{names}\NormalTok{(mltd_df)[}\DecValTok{1}\NormalTok{] <-}\StringTok{ "xcol_name"}
     \CommentTok{# New}
 \CommentTok{#     mltd_df <- mutate(mltd_df, }
-\CommentTok{#             var_type=ifelse(length(grep(".Score", variable, fixed=TRUE)) == 0,}
+\CommentTok{#             var_type=ifelse(length(grep(".Scaled", variable, fixed=TRUE)) == 0,}
 \CommentTok{#                             "Raw", "Score"))}
     \NormalTok{mltd_df$variable <-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(mltd_df$variable)}
     \NormalTok{mltd_df$var_type <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(mltd_df), function(row)}
-            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Score"}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
-                            \StringTok{"Raw"}\NormalTok{, }\StringTok{"Score"}\NormalTok{))}
+            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
+                            \StringTok{"Raw"}\NormalTok{, }\StringTok{"Scaled"}\NormalTok{))}
     \NormalTok{mltd_df$var_label <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(mltd_df), function(row)}
-            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Score"}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
+            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
                             \NormalTok{mltd_df[row, }\StringTok{"variable"}\NormalTok{], }
-                            \KeywordTok{gsub}\NormalTok{(}\StringTok{".Score"}\NormalTok{, }\StringTok{""}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)))}
+                            \KeywordTok{gsub}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, }\StringTok{""}\NormalTok{, mltd_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)))}
     \CommentTok{#print(mltd_df)}
     
     \CommentTok{#g <- ggplot(mltd_df, aes(x=reorder(xcol_name, value), y=value, fill=variable))}
@@ -730,20 +730,45 @@ both numerator \& denominator.
     \NormalTok{g <-}\StringTok{ }\NormalTok{g +}\StringTok{ }\KeywordTok{coord_flip}\NormalTok{()}
 
     \KeywordTok{print}\NormalTok{(g)}
+
+\CommentTok{#     print(myplot_hbar(pn_df, ".rownames", c("Simplicity.Places.Total.Scaled",}
+\CommentTok{#                                             "Simplicity.Places.Implicit.Scaled",}
+\CommentTok{#                                             "Simplicity.Transitions.Silent.Scaled",}
+\CommentTok{#                                             "Simplicity.Arcs.Scaled",}
+\CommentTok{#                                             "Simplicity.MDL.Scaled")))}
+
+    \NormalTok{radar_inp_df <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{( }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{instance=}\KeywordTok{rownames}\NormalTok{(df)),}
+                                    \KeywordTok{subset}\NormalTok{(pn_df, }\DataTypeTok{select=}\KeywordTok{c}\NormalTok{( }
+                                        \NormalTok{Simplicity.Places.Total.Scaled,}
+                                        \NormalTok{Simplicity.Places.Implicit.Scaled,}
+                                        \NormalTok{Simplicity.Transitions.Silent.Scaled,}
+                                        \NormalTok{Simplicity.Arcs.Scaled,}
+                                        \NormalTok{Simplicity.MDL.Scaled)),}
+                                    \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{facet=}\KeywordTok{rep}\NormalTok{(}\StringTok{" "}\NormalTok{, }\KeywordTok{nrow}\NormalTok{(pn_df))))}
+    \KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_radar}\NormalTok{(radar_inp_df))}
+
+    \KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_hbar}\NormalTok{(pn_df, }\StringTok{".rownames"}\NormalTok{, }\StringTok{"Simplicity.Score"}\NormalTok{))}
     
     \KeywordTok{return}\NormalTok{(pn_df)}
 \NormalTok{\}}
-\NormalTok{petrinets_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_df, }
-            \DataTypeTok{metrics=}\KeywordTok{grep}\NormalTok{(}\StringTok{"Simplicity."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{value=}\OtherTok{TRUE}\NormalTok{), }
-            \DataTypeTok{consolidated.metric.name=}\StringTok{"Simplicity.Score"}\NormalTok{)}
+\NormalTok{petrinets_mod_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_df, }
+        \DataTypeTok{metrics=}\KeywordTok{grep}\NormalTok{(}\StringTok{"Simplicity."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{value=}\OtherTok{TRUE}\NormalTok{), }
+        \DataTypeTok{consolidated.metric.name=}\StringTok{"Simplicity.Score"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_2-1.pdf}
 
+\begin{verbatim}
+## Warning: Removed 15 rows containing missing values (geom_text).
+\end{verbatim}
+
+\includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_2-2.pdf}
+\includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_2-3.pdf}
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{print}\NormalTok{(petrinets_df)}
+\KeywordTok{print}\NormalTok{(petrinets_mod_df)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -763,26 +788,26 @@ both numerator \& denominator.
 ## ILP                     21              3                     0.8483
 ## Heuristics              44              2                     0.7698
 ## Inductive               68             13                     0.9813
-##            Precision.Behavioral Simplicity.Places.Total.Score
-## Alpha                    0.1971                      88.88889
-## ILP                      0.9955                     100.00000
-## Heuristics               0.8656                      44.44444
-## Inductive                0.9955                      38.09524
-##            Simplicity.Places.Implicit.Score
-## Alpha                                   100
-## ILP                                     100
-## Heuristics                              100
-## Inductive                               100
-##            Simplicity.Transitions.Silent.Score Simplicity.Arcs.Score
-## Alpha                               100.000000              70.00000
-## ILP                                 100.000000             100.00000
-## Heuristics                            6.666667              47.72727
-## Inductive                             3.846154              30.88235
-##            Simplicity.MDL.Score Simplicity.Score
-## Alpha                100.000000         91.77778
-## ILP                   33.333333         86.66667
-## Heuristics            50.000000         49.76768
-## Inductive              7.692308         36.10321
+##            Precision.Behavioral Simplicity.Places.Total.Scaled
+## Alpha                    0.1971                       88.88889
+## ILP                      0.9955                      100.00000
+## Heuristics               0.8656                       44.44444
+## Inductive                0.9955                       38.09524
+##            Simplicity.Places.Implicit.Scaled
+## Alpha                                    100
+## ILP                                      100
+## Heuristics                               100
+## Inductive                                100
+##            Simplicity.Transitions.Silent.Scaled Simplicity.Arcs.Scaled
+## Alpha                                100.000000               70.00000
+## ILP                                  100.000000              100.00000
+## Heuristics                             6.666667               47.72727
+## Inductive                              3.846154               30.88235
+##            Simplicity.MDL.Scaled Simplicity.Score
+## Alpha                 100.000000         91.77778
+## ILP                    33.333333         86.66667
+## Heuristics             50.000000         49.76768
+## Inductive               7.692308         36.10321
 \end{verbatim}
 
 In my opinion, the ILP discovered Petri net is the best based on the

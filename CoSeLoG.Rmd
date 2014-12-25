@@ -395,10 +395,10 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
         
         if(min_value == 0) {
             # Add 1 to account for possibility of 0 in denominator
-            pn_df[, paste0(metric, ".Score")] <- 
+            pn_df[, paste0(metric, ".Scaled")] <- 
                 ((min_value + 1) * 100.0) / (pn_df[, metric] + 1)
         } else {
-            pn_df[, paste0(metric, ".Score")] <- 
+            pn_df[, paste0(metric, ".Scaled")] <- 
                 ((min_value + 0) * 100.0) / (pn_df[, metric] + 0)
         }
             
@@ -406,18 +406,18 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
     
     for (row in 1:nrow(pn_df))
         pn_df[row, consolidated.metric.name] <- 
-            mean(as.numeric(pn_df[row, paste0(metrics, ".Score")]))
+            mean(as.numeric(pn_df[row, paste0(metrics, ".Scaled")]))
 
 #     print(myplot_hbar(pn_df, ".rownames", 
-#                       c("Simplicity.Places.Total", "Simplicity.Places.Total.Score")))
+#                       c("Simplicity.Places.Total", "Simplicity.Places.Total.Scaled")))
     
     df <- pn_df
     xcol_name <- ".rownames"
-    ycol_names <- c("Simplicity.Places.Total", "Simplicity.Places.Total.Score",
-                    "Simplicity.Places.Implicit", "Simplicity.Places.Implicit.Score",
-                    "Simplicity.Transitions.Silent", "Simplicity.Transitions.Silent.Score",
-                    "Simplicity.Arcs", "Simplicity.Arcs.Score",
-                    "Simplicity.MDL", "Simplicity.MDL.Score"
+    ycol_names <- c("Simplicity.Places.Total", "Simplicity.Places.Total.Scaled",
+                    "Simplicity.Places.Implicit", "Simplicity.Places.Implicit.Scaled",
+                    "Simplicity.Transitions.Silent", "Simplicity.Transitions.Silent.Scaled",
+                    "Simplicity.Arcs", "Simplicity.Arcs.Scaled",
+                    "Simplicity.MDL", "Simplicity.MDL.Scaled"
                     )
     
     if (xcol_name == ".rownames")
@@ -427,16 +427,16 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
     names(mltd_df)[1] <- "xcol_name"
     # New
 #     mltd_df <- mutate(mltd_df, 
-#             var_type=ifelse(length(grep(".Score", variable, fixed=TRUE)) == 0,
+#             var_type=ifelse(length(grep(".Scaled", variable, fixed=TRUE)) == 0,
 #                             "Raw", "Score"))
     mltd_df$variable <- as.character(mltd_df$variable)
     mltd_df$var_type <- sapply(1:nrow(mltd_df), function(row)
-            ifelse(length(grep(".Score", mltd_df[row, "variable"], fixed=TRUE)) == 0,
-                            "Raw", "Score"))
+            ifelse(length(grep(".Scaled", mltd_df[row, "variable"], fixed=TRUE)) == 0,
+                            "Raw", "Scaled"))
     mltd_df$var_label <- sapply(1:nrow(mltd_df), function(row)
-            ifelse(length(grep(".Score", mltd_df[row, "variable"], fixed=TRUE)) == 0,
+            ifelse(length(grep(".Scaled", mltd_df[row, "variable"], fixed=TRUE)) == 0,
                             mltd_df[row, "variable"], 
-                            gsub(".Score", "", mltd_df[row, "variable"], fixed=TRUE)))
+                            gsub(".Scaled", "", mltd_df[row, "variable"], fixed=TRUE)))
     #print(mltd_df)
     
     #g <- ggplot(mltd_df, aes(x=reorder(xcol_name, value), y=value, fill=variable))
@@ -450,13 +450,31 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name) {
     g <- g + coord_flip()
 
     print(g)
+
+#     print(myplot_hbar(pn_df, ".rownames", c("Simplicity.Places.Total.Scaled",
+#                                             "Simplicity.Places.Implicit.Scaled",
+#                                             "Simplicity.Transitions.Silent.Scaled",
+#                                             "Simplicity.Arcs.Scaled",
+#                                             "Simplicity.MDL.Scaled")))
+
+    radar_inp_df <- cbind( data.frame(instance=rownames(df)),
+                                    subset(pn_df, select=c( 
+                                        Simplicity.Places.Total.Scaled,
+                                        Simplicity.Places.Implicit.Scaled,
+                                        Simplicity.Transitions.Silent.Scaled,
+                                        Simplicity.Arcs.Scaled,
+                                        Simplicity.MDL.Scaled)),
+                                    data.frame(facet=rep(" ", nrow(pn_df))))
+    print(myplot_radar(radar_inp_df))
+
+    print(myplot_hbar(pn_df, ".rownames", "Simplicity.Score"))
     
     return(pn_df)
 }
-petrinets_df <- consolidate_scores(pn_df=petrinets_df, 
-            metrics=grep("Simplicity.", names(petrinets_df), fixed=TRUE, value=TRUE), 
-            consolidated.metric.name="Simplicity.Score")
-print(petrinets_df)
+petrinets_mod_df <- consolidate_scores(pn_df=petrinets_df, 
+        metrics=grep("Simplicity.", names(petrinets_df), fixed=TRUE, value=TRUE), 
+        consolidated.metric.name="Simplicity.Score")
+print(petrinets_mod_df)
 ```
 
 In my opinion, the ILP discovered Petri net is the best based on the following criteria:
