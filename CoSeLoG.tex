@@ -447,10 +447,10 @@ Net for Conformance Analysis``''.
 \begin{verbatim}
 ##  Petrinet Fitness.Traces Simplicity.Places.Total Simplicity.Places.End
 ##     Alpha         0.8987                       9                     1
-##  Simplicity.Places.Implicit Simplicity.Transitions.Isolated
-##                           0                               3
-##  Simplicity.Transitions.Silent Simplicity.Arcs Simplicity.MDL
-##                              0              30              1
+##  Simplicity.Places.Implicit Simplicity.Trans.Isolated
+##                           0                         3
+##  Simplicity.Trans.Silent Simplicity.Arcs Simplicity.MDL
+##                        0              30              1
 ##  Generalization.Conformance Precision.Behavioral
 ##                      0.8987               0.1971
 \end{verbatim}
@@ -503,10 +503,10 @@ Net for Conformance Analysis``''.
 \begin{verbatim}
 ##  Petrinet Fitness.Traces Simplicity.Places.Total Simplicity.Places.End
 ##       ILP         0.8483                       8                     2
-##  Simplicity.Places.Implicit Simplicity.Transitions.Isolated
-##                           0                               0
-##  Simplicity.Transitions.Silent Simplicity.Arcs Simplicity.MDL
-##                              0              21              3
+##  Simplicity.Places.Implicit Simplicity.Trans.Isolated
+##                           0                         0
+##  Simplicity.Trans.Silent Simplicity.Arcs Simplicity.MDL
+##                        0              21              3
 ##  Generalization.Conformance Precision.Behavioral
 ##                      0.8483               0.9955
 \end{verbatim}
@@ -581,10 +581,10 @@ selected as the ``End'' place for conformance analysis).
 \begin{verbatim}
 ##    Petrinet Fitness.Traces Simplicity.Places.Total Simplicity.Places.End
 ##  Heuristics         0.7698                      18                    16
-##  Simplicity.Places.Implicit Simplicity.Transitions.Isolated
-##                           0                               0
-##  Simplicity.Transitions.Silent Simplicity.Arcs Simplicity.MDL
-##                             14              44              2
+##  Simplicity.Places.Implicit Simplicity.Trans.Isolated
+##                           0                         0
+##  Simplicity.Trans.Silent Simplicity.Arcs Simplicity.MDL
+##                       14              44              2
 ##  Generalization.Conformance Precision.Behavioral
 ##                      0.7698               0.8656
 \end{verbatim}
@@ -630,10 +630,10 @@ transitions \& 21 places. The ``End'' place is named as ``sink''.
 \begin{verbatim}
 ##   Petrinet Fitness.Traces Simplicity.Places.Total Simplicity.Places.End
 ##  Inductive         0.9813                      21                     1
-##  Simplicity.Places.Implicit Simplicity.Transitions.Isolated
-##                           0                               0
-##  Simplicity.Transitions.Silent Simplicity.Arcs Simplicity.MDL
-##                             25              68             13
+##  Simplicity.Places.Implicit Simplicity.Trans.Isolated
+##                           0                         0
+##  Simplicity.Trans.Silent Simplicity.Arcs Simplicity.MDL
+##                       25              68             13
 ##  Generalization.Conformance Precision.Behavioral
 ##                      0.9813               0.9955
 \end{verbatim}
@@ -650,16 +650,16 @@ The metrics for all the discovered Petri nets:
 ## ILP                0.8483                       8                     2
 ## Heuristics         0.7698                      18                    16
 ## Inductive          0.9813                      21                     1
-##            Simplicity.Places.Implicit Simplicity.Transitions.Isolated
-## Alpha                               0                               3
-## ILP                                 0                               0
-## Heuristics                          0                               0
-## Inductive                           0                               0
-##            Simplicity.Transitions.Silent Simplicity.Arcs Simplicity.MDL
-## Alpha                                  0              30              1
-## ILP                                    0              21              3
-## Heuristics                            14              44              2
-## Inductive                             25              68             13
+##            Simplicity.Places.Implicit Simplicity.Trans.Isolated
+## Alpha                               0                         3
+## ILP                                 0                         0
+## Heuristics                          0                         0
+## Inductive                           0                         0
+##            Simplicity.Trans.Silent Simplicity.Arcs Simplicity.MDL
+## Alpha                            0              30              1
+## ILP                              0              21              3
+## Heuristics                      14              44              2
+## Inductive                       25              68             13
 ##            Generalization.Conformance Precision.Behavioral
 ## Alpha                          0.8987               0.1971
 ## ILP                            0.8483               0.9955
@@ -740,7 +740,7 @@ both numerator \& denominator.
     
     \KeywordTok{return}\NormalTok{(pn_df)}
 \NormalTok{\}}
-\NormalTok{petrinets_mod_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_df, }
+\NormalTok{petrinets_Simplicity_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_df, }
         \DataTypeTok{metrics=}\KeywordTok{grep}\NormalTok{(}\StringTok{"Simplicity."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{value=}\OtherTok{TRUE}\NormalTok{), }
         \DataTypeTok{consolidated.metric.name=}\StringTok{"Simplicity.Score"}
         \CommentTok{#, metric_weights=c(0.2, 0.2, 0.2, 0.25, 0.15)}
@@ -759,91 +759,28 @@ both numerator \& denominator.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{print}\NormalTok{(petrinets_mod_df)}
+\NormalTok{petrinets_Simplicity_df <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(petrinets_Simplicity_df[, }
+            \NormalTok{-}\KeywordTok{grep}\NormalTok{(}\StringTok{"Simplicity."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_Simplicity_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)],}
+            \NormalTok{petrinets_Simplicity_df[, }\StringTok{"Simplicity.Score"}\NormalTok{, }\OtherTok{FALSE}\NormalTok{])}
+\KeywordTok{print}\NormalTok{(petrinets_Simplicity_df)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##            Fitness.Traces Simplicity.Places.Total Simplicity.Places.End
-## Alpha              0.8987                       9                     1
-## ILP                0.8483                       8                     2
-## Heuristics         0.7698                      18                    16
-## Inductive          0.9813                      21                     1
-##            Simplicity.Places.Implicit Simplicity.Transitions.Isolated
-## Alpha                               0                               3
-## ILP                                 0                               0
-## Heuristics                          0                               0
-## Inductive                           0                               0
-##            Simplicity.Transitions.Silent Simplicity.Arcs Simplicity.MDL
-## Alpha                                  0              30              1
-## ILP                                    0              21              3
-## Heuristics                            14              44              2
-## Inductive                             25              68             13
-##            Generalization.Conformance Precision.Behavioral
-## Alpha                          0.8987               0.1971
-## ILP                            0.8483               0.9955
-## Heuristics                     0.7698               0.8656
-## Inductive                      0.9813               0.9955
-##            Simplicity.Places.Total.Scaled Simplicity.Places.Total.Weighted
-## Alpha                            88.88889                        12.698413
-## ILP                             100.00000                        14.285714
-## Heuristics                       44.44444                         6.349206
-## Inductive                        38.09524                         5.442177
-##            Simplicity.Places.End.Scaled Simplicity.Places.End.Weighted
-## Alpha                            100.00                     14.2857143
-## ILP                               50.00                      7.1428571
-## Heuristics                         6.25                      0.8928571
-## Inductive                        100.00                     14.2857143
-##            Simplicity.Places.Implicit.Scaled
-## Alpha                                    100
-## ILP                                      100
-## Heuristics                               100
-## Inductive                                100
-##            Simplicity.Places.Implicit.Weighted
-## Alpha                                 14.28571
-## ILP                                   14.28571
-## Heuristics                            14.28571
-## Inductive                             14.28571
-##            Simplicity.Transitions.Isolated.Scaled
-## Alpha                                          25
-## ILP                                           100
-## Heuristics                                    100
-## Inductive                                     100
-##            Simplicity.Transitions.Isolated.Weighted
-## Alpha                                      3.571429
-## ILP                                       14.285714
-## Heuristics                                14.285714
-## Inductive                                 14.285714
-##            Simplicity.Transitions.Silent.Scaled
-## Alpha                                100.000000
-## ILP                                  100.000000
-## Heuristics                             6.666667
-## Inductive                              3.846154
-##            Simplicity.Transitions.Silent.Weighted Simplicity.Arcs.Scaled
-## Alpha                                  14.2857143               70.00000
-## ILP                                    14.2857143              100.00000
-## Heuristics                              0.9523810               47.72727
-## Inductive                               0.5494505               30.88235
-##            Simplicity.Arcs.Weighted Simplicity.MDL.Scaled
-## Alpha                     10.000000            100.000000
-## ILP                       14.285714             33.333333
-## Heuristics                 6.818182             50.000000
-## Inductive                  4.411765              7.692308
-##            Simplicity.MDL.Weighted Simplicity.Score
-## Alpha                    14.285714         83.41270
-## ILP                       4.761905         83.33333
-## Heuristics                7.142857         50.72691
-## Inductive                 1.098901         54.35944
+##            Fitness.Traces Generalization.Conformance Precision.Behavioral
+## Alpha              0.8987                     0.8987               0.1971
+## ILP                0.8483                     0.8483               0.9955
+## Heuristics         0.7698                     0.7698               0.8656
+## Inductive          0.9813                     0.9813               0.9955
+##            Simplicity.Score
+## Alpha              83.41270
+## ILP                83.33333
+## Heuristics         50.72691
+## Inductive          54.35944
 \end{verbatim}
 
 In my opinion, the ILP discovered Petri net is the best based on the
 following criteria:
-
-`+' Integrate all event log transitions into the control-flow (ILP,
-Heuristics \& Inductive).\\`+' No silent transitions (ILP \&
-Alpha).\\`+' Less arcs (ILP \& Heuristics).
-
-This should be displayed in a table for better readability ?
 
 Since the analysis objective / goal is not known yet, these criteria
 might be modified when that becomes clear.
@@ -1179,8 +1116,9 @@ Given a Petri net and an event log, the following evaluation criteria
   fitness
 \item
   Simplicity metrics:\\2.1 \# total places 2.2 \# end places 2.3 \#
-  implicit places\\2.4 \# silent transitions\\2.5 \# arcs\\2.6 Entropy:
-  ProM plug-in ?\\2.7 Minimal Description Length (MDL): ProM plug-in ?
+  implicit places 2.4 \# isolated transitions 2.5 \# silent
+  transitions\\2.6 \# arcs\\2.7 Minimal Description Length (MDL): ProM
+  plug-in ? 2.8 Entropy: ProM plug-in ?
 \item
   Generalization metrics:\\3.1 Alignment conformance of ``test'' (vs.
   ``training'') event log (or cross-validation)
@@ -1193,8 +1131,8 @@ Given a Petri net and an event log, the following evaluation criteria
 
 Based on the analysis objective(s), these metrics may be assigned
 appropriate weights. For this analysis, equal weights were selected
-i.e.~25\% for each metric category and ???\% for the Simplicity metric
-set elements (Entropy was not computed).
+i.e.~25\% for each metric category and 14.3\% for the seven Simplicity
+metric set elements (Entropy was not computed).
 
 \subsection{Actions to run ProM plug-in ``Replay a Log on Petri Net for
 Conformance
