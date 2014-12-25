@@ -240,15 +240,17 @@ The Alpha algorithm has discovered 9 transitions & 9 places. However, transition
 **My analysis**:  
 ```{r alpha_metrics, echo=FALSE}
 
-petrinets_df <- data.frame("Petrinet"=c("Alpha"),
-                           "Fitness.Traces"=c(0.8987),
-                           "Simplicity.Places.Total"=c(9),
-                           "Simplicity.Places.Implicit"=c(0),
-                           "Simplicity.Transitions.Silent"=c(0),
-                           "Simplicity.Arcs"=c(4+3+3+2+4+2+3+9),
-                           "Simplicity.MDL"=c(1),
-                           "Generalization.Conformance"=c(0.8987),
-                           "Precision.Behavioral"=c(0.1971))
+petrinets_df <- data.frame( "Petrinet"=c("Alpha"),
+                            "Fitness.Traces"=c(0.8987),
+                            "Simplicity.Places.Total"=c(9),
+                            "Simplicity.Places.End"=c(1),
+                            "Simplicity.Places.Implicit"=c(0),
+                            "Simplicity.Transitions.Isolated"=c(3),
+                            "Simplicity.Transitions.Silent"=c(0),
+                            "Simplicity.Arcs"=c(4+3+3+2+4+2+3+9),
+                            "Simplicity.MDL"=c(1),
+                            "Generalization.Conformance"=c(0.8987),
+                            "Precision.Behavioral"=c(0.1971))
 print(subset(petrinets_df, Petrinet == "Alpha"), row.names=FALSE)
 ```
 
@@ -279,7 +281,9 @@ petrinets_df <- rbind(petrinets_df,
                 data.frame("Petrinet"=c("ILP"),
                            "Fitness.Traces"=c(0.8483),
                            "Simplicity.Places.Total"=c(8),
+                            "Simplicity.Places.End"=c(2),                           
                            "Simplicity.Places.Implicit"=c(0),
+                            "Simplicity.Transitions.Isolated"=c(0),
                            "Simplicity.Transitions.Silent"=c(0),
                            "Simplicity.Arcs"=c(1+3+8+2+5+2),
                            "Simplicity.MDL"=c(3),
@@ -321,7 +325,7 @@ print(subset(petrinets_df, Petrinet == "ILP"), row.names=FALSE)
 
 ![](CoSeLoG_Step_05_Filter96_PetriNet_Heuristics.png)
 
-This approach has discovered 9 transitions again, 14 "hidden" / "silent" transitions and 18 places. However, there does not seem to be a clear "End" place. It appears that "pi1" is the closest "End" place.    
+This approach has discovered 9 transitions again, 14 "hidden" / "silent" transitions and 18 places. However, there does not seem to be a clear "End" place. Apart from the first two places, all the other places could potentially be classified as "End" places ("pi1" is selected as the "End" place for conformance analysis).   
 
 **My analysis**:  
 ```{r Heuristics_metrics, echo=FALSE}
@@ -330,7 +334,9 @@ petrinets_df <- rbind(petrinets_df,
                 data.frame("Petrinet"=c("Heuristics"),
                            "Fitness.Traces"=c(0.7698),
                            "Simplicity.Places.Total"=c(18),
+                            "Simplicity.Places.End"=c(16),
                            "Simplicity.Places.Implicit"=c(0),
+                           "Simplicity.Transitions.Isolated"=c(0),
                            "Simplicity.Transitions.Silent"=c(14),
                            "Simplicity.Arcs"=c(1+1+2+4+1+2+2+3+2+2+1+1+1+2+4+1+3+2+2+2+2+1+1+1),
                            "Simplicity.MDL"=c(2),
@@ -364,7 +370,9 @@ petrinets_df <- rbind(petrinets_df,
                 data.frame("Petrinet"=c("Inductive"),
                            "Fitness.Traces"=c(0.9813),
                            "Simplicity.Places.Total"=c(21),
+                            "Simplicity.Places.End"=c(1),
                            "Simplicity.Places.Implicit"=c(0),
+                           "Simplicity.Transitions.Isolated"=c(0),
                            "Simplicity.Transitions.Silent"=c(25),
                            "Simplicity.Arcs"=c(1+4+6+6+4+3+5+9+9+4+3+4+3+3+3+1),
                            "Simplicity.MDL"=c(13),
@@ -387,7 +395,7 @@ print(petrinets_df)
 
 To consolidate the Simplicity.* metrics into a Simplicity.Score for each Petri net, assign equal weights (as a simple approximation) by scaling the raw metric relative to a "perfect" score of 100 since each metric has different scales. For e.g. the minimum value of Simplicity.Places.Total is 8 which may be considered as the "perfect" score amongst these Petri nets. If the minimum value is 0 we add 1 to both numerator & denominator.
 
-```{r Select_Petrinet_2, echo=TRUE, fig.height=6.5}
+```{r Select_Petrinet_2, echo=TRUE, fig.height=7.5}
 consolidate_scores <- function(pn_df, metrics, consolidated.metric.name, 
                                metric_weights=NULL) {
     
@@ -420,12 +428,6 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name,
     }    
 
     ycol_names <- c(metrics, paste0(metrics, ".Scaled"))
-#     ycol_names <- c("Simplicity.Places.Total", "Simplicity.Places.Total.Scaled",
-#                     "Simplicity.Places.Implicit", "Simplicity.Places.Implicit.Scaled",
-#                     "Simplicity.Transitions.Silent", "Simplicity.Transitions.Silent.Scaled",
-#                     "Simplicity.Arcs", "Simplicity.Arcs.Scaled",
-#                     "Simplicity.MDL", "Simplicity.MDL.Scaled"
-#                     )    
     hbar_df <- melt(cbind(data.frame(Petrinet=rownames(pn_df)),
                           pn_df), id="Petrinet", measure=ycol_names)
     hbar_df$variable <- as.character(hbar_df$variable)
@@ -446,14 +448,6 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name,
             theme(legend.position="none") + coord_flip()
     print(gp)
 
-#     radar_inp_df <- cbind( data.frame(instance=rownames(pn_df)),
-#                                     subset(pn_df, select=c( 
-#                                         Simplicity.Places.Total.Scaled,
-#                                         Simplicity.Places.Implicit.Scaled,
-#                                         Simplicity.Transitions.Silent.Scaled,
-#                                         Simplicity.Arcs.Scaled,
-#                                         Simplicity.MDL.Scaled)),
-#                                     data.frame(facet=rep(" ", nrow(pn_df))))
     radar_inp_df <- cbind( data.frame(instance=rownames(pn_df)),
                                     pn_df[, paste0(metrics, ".Scaled")],
                                     data.frame(facet=rep(" ", nrow(pn_df))))
@@ -462,25 +456,18 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name,
     print(myplot_hbar(pn_df, ".rownames", paste0(metrics, ".Weighted")) + 
         scale_fill_discrete("Metrics", 
                             labels=gsub("Simplicity.", "", metrics, fixed=TRUE)))
-    #print(myplot_hbar(pn_df, ".rownames", "Simplicity.Score"))
     
     return(pn_df)
 }
 petrinets_mod_df <- consolidate_scores(pn_df=petrinets_df, 
         metrics=grep("Simplicity.", names(petrinets_df), fixed=TRUE, value=TRUE), 
-        consolidated.metric.name="Simplicity.Score",
-        metric_weights=c(0.2, 0.2, 0.2, 0.25, 0.15))
+        consolidated.metric.name="Simplicity.Score"
+        #, metric_weights=c(0.2, 0.2, 0.2, 0.25, 0.15)
+        )
 print(petrinets_mod_df)
 ```
 
 In my opinion, the ILP discovered Petri net is the best based on the following criteria:
-
-'+' Clear Start & End states (ILP, Alpha & Inductive; some combination of options in the Heuristics plug-ins might generate a clear End state too which I did not try due to too many steps).  
-'+' Integrate all event log transitions into the control-flow (ILP, Heuristics & Inductive).    
-'+' No silent transitions (ILP & Alpha).  
-'+' Less arcs (ILP & Heuristics). 
-
-This should be displayed in a table for better readability ?
 
 Since the analysis objective / goal is not known yet, these criteria might be modified when that becomes clear.   
 
@@ -686,12 +673,14 @@ Given a Petri net and an event log, the following evaluation criteria (not exhau
     1.1 Alignment conformance of event log: ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/ option Measuring fitness
             
 2. Simplicity metrics:  
-    2.1 # total places  
-    2.2 # implicit places  
-    2.3 # silent transitions  
-    2.4 # arcs  
-    2.5 Entropy: ProM plug-in ?  
-    2.6 Minimal Description Length (MDL): ProM plug-in ?
+    2.1 # total places
+    2.2 # end places 
+    2.3 # implicit places
+    2.4 # isolated transitions
+    2.5 # silent transitions  
+    2.6 # arcs  
+    2.7 Minimal Description Length (MDL): ProM plug-in ?
+    2.8 Entropy: ProM plug-in ?  
 
 3. Generalization metrics:  
     3.1 Alignment conformance of "test" (vs. "training") event log (or cross-validation)
@@ -699,7 +688,7 @@ Given a Petri net and an event log, the following evaluation criteria (not exhau
 4. Precision metrics:   
     4.1 Behavioral appropriateness (similar to % model allowed traces present in event log ?): ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/ option Measuring behavioral appropriateness
             
-Based on the analysis objective(s), these metrics may be assigned appropriate weights. For this analysis, equal weights were selected i.e. 25% for each metric category and 20% for the Simplicity metric set elements (Entropy was not computed).
+Based on the analysis objective(s), these metrics may be assigned appropriate weights. For this analysis, equal weights were selected i.e. 25% for each metric category and 14.3% for the seven Simplicity metric set elements (Entropy was not computed).
 
 ## Actions to run ProM plug-in "Replay a Log on Petri Net for Conformance Analysis"
 
