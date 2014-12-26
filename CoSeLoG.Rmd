@@ -454,10 +454,18 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name,
                             gsub(".Scaled", "", hbar_df[row, "variable"], fixed=TRUE))
                     ),
             fixed=TRUE)
-    gp <- ggplot(hbar_df, aes(x=reorder(Petrinet, value), y=value)) +       
-            geom_bar(stat="identity", aes(fill=var_label)) + xlab("Petrinet") + 
-            facet_grid(var_label ~ var_type, scales="free", space="free") + 
-            theme(legend.position="none") + coord_flip()
+    
+    if (length(metrics) > 1) {
+        gp <- ggplot(hbar_df, aes(x=reorder(Petrinet, value), y=value)) +       
+                geom_bar(stat="identity", aes(fill=var_label)) + xlab("Petrinet") + 
+                facet_grid(var_label ~ var_type, scales="free") +         
+                theme(legend.position="none") + coord_flip()
+    } else {
+        gp <- ggplot(hbar_df, aes(x=reorder(Petrinet, value), y=value)) +       
+                geom_bar(stat="identity", aes(fill=var_type)) + xlab("Petrinet") + 
+                facet_wrap(~ var_type, scales="free") +         
+                theme(legend.position="none")
+    }
     print(gp)
 
     if (length(metrics) > 1) {
@@ -487,7 +495,7 @@ petrinets_Simplicity_df <- cbind(petrinets_Simplicity_df[,
 print(petrinets_Simplicity_df)
 ```
 
-Based on Simplicity metrics, Alpha & ILP have high scores. Let's create scores for the other categories. The "Raw" vs. "Scaled" bar graphs should have scaled x-axis but for some reason that is not happening.
+Based on Simplicity metrics, Alpha & ILP have high scores. Let's create scores for the other categories. The "Raw" vs. "Scaled" horizontal bar graphs should have scaled x-axis but for some reason that is not happening, so let's switch to vertical bar graphs when there is only one metric element to score.
 
 ```{r Select_Petrinet_3, echo=TRUE}
 petrinets_SF_df <- consolidate_scores(pn_df=petrinets_Simplicity_df, 
@@ -524,13 +532,12 @@ print(myplot_radar(radar_inp_df))
 
 petrinets_SFGP_df$Overall.Score <- rowMeans(as.matrix(petrinets_SFGP_df))
 hbar_df <- petrinets_SFGP_df[, -grep("Overall.", names(petrinets_SFGP_df), 
-                                     fixed=TRUE)]
+                                     fixed=TRUE)] * 0.25
 print(myplot_hbar(hbar_df, ".rownames", names(hbar_df)) + 
-    xlab("Petrinet") + ylab("Overall.Weighted") + 
-    theme(axis.ticks.x = element_blank(), axis.text.x=element_blank()) + 
+    xlab("Petrinet") + ylab("Overall.Score") + 
     scale_fill_discrete("Categories", 
                         labels=gsub(".Score", "", names(hbar_df), fixed=TRUE)))
-print(petrinets_SFGP_df)
+print(orderBy(~-Overall.Score, petrinets_SFGP_df))
 ```
 
 Based on this analysis, the ILP discovered Petri net is the best. Based on other analysis objective(s) / goal(s) the weights of these criteria may be modified.   

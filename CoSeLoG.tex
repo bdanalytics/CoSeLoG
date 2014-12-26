@@ -1,13 +1,10 @@
 \documentclass[]{article}
-\usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
 \usepackage{fixltx2e} % provides \textsubscript
-% Set line spacing
-% use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
 \else % if luatex or xelatex
   \ifxetex
@@ -19,8 +16,13 @@
   \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
   \newcommand{\euro}{€}
 \fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 % use microtype if available
-\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
 \usepackage[margin=1in]{geometry}
 \usepackage{color}
 \usepackage{fancyvrb}
@@ -46,24 +48,14 @@
 \newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.76,0.75,0.62}{{#1}}}
 \newcommand{\NormalTok}[1]{\textcolor[rgb]{0.80,0.80,0.80}{{#1}}}
 \usepackage{graphicx}
-% Redefine \includegraphics so that, unless explicit options are
-% given, the image width will not exceed the width of the page.
-% Images get their normal width if they fit onto the page, but
-% are scaled down if they would overflow the margins.
 \makeatletter
-\def\ScaleIfNeeded{%
-  \ifdim\Gin@nat@width>\linewidth
-    \linewidth
-  \else
-    \Gin@nat@width
-  \fi
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
 \makeatother
-\let\Oldincludegraphics\includegraphics
-{%
- \catcode`\@=11\relax%
- \gdef\includegraphics{\@ifnextchar[{\Oldincludegraphics}{\Oldincludegraphics[width=\ScaleIfNeeded]}}%
-}%
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
               unicode=false, % unicode breaks when used with xetex
@@ -113,7 +105,7 @@
 }
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\textbf{Date: (Thu) Dec 25, 2014}
+\textbf{Date: (Fri) Dec 26, 2014}
 
 \section{Background:}\label{background}
 
@@ -735,10 +727,18 @@ both numerator \& denominator.
                             \KeywordTok{gsub}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, }\StringTok{""}\NormalTok{, hbar_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{))}
                     \NormalTok{),}
             \DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)}
-    \NormalTok{gp <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(hbar_df, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{reorder}\NormalTok{(Petrinet, value), }\DataTypeTok{y=}\NormalTok{value)) +}\StringTok{       }
-\StringTok{            }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{var_label)) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Petrinet"}\NormalTok{) +}\StringTok{ }
-\StringTok{            }\KeywordTok{facet_grid}\NormalTok{(var_label ~}\StringTok{ }\NormalTok{var_type, }\DataTypeTok{scales=}\StringTok{"free"}\NormalTok{, }\DataTypeTok{space=}\StringTok{"free"}\NormalTok{) +}\StringTok{ }
-\StringTok{            }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{) +}\StringTok{ }\KeywordTok{coord_flip}\NormalTok{()}
+    
+    \NormalTok{if (}\KeywordTok{length}\NormalTok{(metrics) >}\StringTok{ }\DecValTok{1}\NormalTok{) \{}
+        \NormalTok{gp <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(hbar_df, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{reorder}\NormalTok{(Petrinet, value), }\DataTypeTok{y=}\NormalTok{value)) +}\StringTok{       }
+\StringTok{                }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{var_label)) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Petrinet"}\NormalTok{) +}\StringTok{ }
+\StringTok{                }\KeywordTok{facet_grid}\NormalTok{(var_label ~}\StringTok{ }\NormalTok{var_type, }\DataTypeTok{scales=}\StringTok{"free"}\NormalTok{) +}\StringTok{         }
+\StringTok{                }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{) +}\StringTok{ }\KeywordTok{coord_flip}\NormalTok{()}
+    \NormalTok{\} else \{}
+        \NormalTok{gp <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(hbar_df, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{reorder}\NormalTok{(Petrinet, value), }\DataTypeTok{y=}\NormalTok{value)) +}\StringTok{       }
+\StringTok{                }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{var_type)) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Petrinet"}\NormalTok{) +}\StringTok{ }
+\StringTok{                }\KeywordTok{facet_wrap}\NormalTok{(~}\StringTok{ }\NormalTok{var_type, }\DataTypeTok{scales=}\StringTok{"free"}\NormalTok{) +}\StringTok{         }
+\StringTok{                }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{)}
+    \NormalTok{\}}
     \KeywordTok{print}\NormalTok{(gp)}
 
     \NormalTok{if (}\KeywordTok{length}\NormalTok{(metrics) >}\StringTok{ }\DecValTok{1}\NormalTok{) \{}
@@ -797,8 +797,10 @@ both numerator \& denominator.
 \end{verbatim}
 
 Based on Simplicity metrics, Alpha \& ILP have high scores. Let's create
-scores for the other categories. The ``Raw'' vs. ``Scaled'' bar graphs
-should have scaled x-axis but for some reason that is not happening.
+scores for the other categories. The ``Raw'' vs. ``Scaled'' horizontal
+bar graphs should have scaled x-axis but for some reason that is not
+happening, so let's switch to vertical bar graphs when there is only one
+metric element to score.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -918,10 +920,9 @@ should have scaled x-axis but for some reason that is not happening.
 \begin{Highlighting}[]
 \NormalTok{petrinets_SFGP_df$Overall.Score <-}\StringTok{ }\KeywordTok{rowMeans}\NormalTok{(}\KeywordTok{as.matrix}\NormalTok{(petrinets_SFGP_df))}
 \NormalTok{hbar_df <-}\StringTok{ }\NormalTok{petrinets_SFGP_df[, -}\KeywordTok{grep}\NormalTok{(}\StringTok{"Overall."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_SFGP_df), }
-                                     \DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)]}
+                                     \DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)] *}\StringTok{ }\FloatTok{0.25}
 \KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_hbar}\NormalTok{(hbar_df, }\StringTok{".rownames"}\NormalTok{, }\KeywordTok{names}\NormalTok{(hbar_df)) +}\StringTok{ }
-\StringTok{    }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Petrinet"}\NormalTok{) +}\StringTok{ }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Overall.Weighted"}\NormalTok{) +}\StringTok{ }
-\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.ticks.x =} \KeywordTok{element_blank}\NormalTok{(), }\DataTypeTok{axis.text.x=}\KeywordTok{element_blank}\NormalTok{()) +}\StringTok{ }
+\StringTok{    }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Petrinet"}\NormalTok{) +}\StringTok{ }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Overall.Score"}\NormalTok{) +}\StringTok{ }
 \StringTok{    }\KeywordTok{scale_fill_discrete}\NormalTok{(}\StringTok{"Categories"}\NormalTok{, }
                         \DataTypeTok{labels=}\KeywordTok{gsub}\NormalTok{(}\StringTok{".Score"}\NormalTok{, }\StringTok{""}\NormalTok{, }\KeywordTok{names}\NormalTok{(hbar_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)))}
 \end{Highlighting}
@@ -931,21 +932,21 @@ should have scaled x-axis but for some reason that is not happening.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{print}\NormalTok{(petrinets_SFGP_df)}
+\KeywordTok{print}\NormalTok{(}\KeywordTok{orderBy}\NormalTok{(~-Overall.Score, petrinets_SFGP_df))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##            Simplicity.Score Fitness.Score Generalization.Score
-## Alpha              83.41270      91.58259             91.58259
 ## ILP                83.33333      86.44655             86.44655
-## Heuristics         50.72691      78.44696             78.44696
 ## Inductive          54.35944     100.00000            100.00000
+## Heuristics         50.72691      78.44696             78.44696
+## Alpha              83.41270      91.58259             91.58259
 ##            Precision.Score Overall.Score
-## Alpha             19.79910      71.59425
 ## ILP              100.00000      89.05661
-## Heuristics        86.95128      73.64303
 ## Inductive        100.00000      88.58986
+## Heuristics        86.95128      73.64303
+## Alpha             19.79910      71.59425
 \end{verbatim}
 
 Based on this analysis, the ILP discovered Petri net is the best. Based
