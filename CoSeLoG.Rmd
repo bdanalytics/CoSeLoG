@@ -79,6 +79,7 @@ set.seed(12345)
 options(stringsAsFactors=FALSE)
 #source("~/Dropbox/datascience/R/mydsutils.R")
 source("~/Dropbox/datascience/R/myplot.R")
+source("~/Dropbox/datascience/R/mypetrinet.R")
 # Gather all package requirements here
 suppressPackageStartupMessages(require(reshape))
 suppressPackageStartupMessages(require(plyr))
@@ -543,6 +544,43 @@ print(orderBy(~-Overall.Score, petrinets_SFGP_df))
 Based on this analysis, the ILP discovered Petri net is the best. Based on other analysis objective(s) / goal(s) the weights of these criteria may be modified.   
 
 ![](CoSeLoG_Step_05_Filter96_PetriNet_ILP.png)
+
+## Analyze "Best" Petri net
+
+**My analysis**:
+
+```{r Describe_Selected_Petrinet_1, echo=TRUE, fig.height=5.0}
+ILP_pn <- petrinet(name="ILP",
+                      trans_df=data.frame(id=1:9,
+        name=c("T00","T02","T03","T04","T05","T06","T07-1","T10","T11"),
+        x=c(      5,  15,    15,   25,   25,   15,     15,   15,   25),
+        y=c(      0,   5,    10,   10,    5,    0,    -10,   -5,   -5)),
+                      places_df=data.frame(id=1:8,
+        name=c("Start", "ILP1", "ILP2", "ILP3", "ILP4", "ILP5","End_ILP1","End_ILP2"),
+        x=c(         0,     10,     20,     10,     20,     10,        30,        30),
+        y=c(         0,      5,      5,     -5,     -5,    -10,         5,        -5),
+        M0=c(        1,      0,      0,      0,      0,      0,         0,         0)),
+                      arcs_df=data.frame(
+    begin=c("Start",  "T00",  "T00",  "T00"
+, "ILP1",  "T02", "T03","ILP2","ILP2","ILP2", "T04","T05"
+,          "T10",       "ILP3","ILP4","ILP3", "T06","T11"
+, "ILP5","T07-1","ILP5"
+),
+    end  =c("T00"   ,"ILP1","ILP3","ILP5"
+,  "T02", "ILP2","ILP1", "T03", "T05", "T04","ILP2","End_ILP1"
+,         "ILP4",        "T06", "T11", "T10","ILP3","End_ILP2"
+,"T07-1", "ILP5", "T10"
+)))
+ggplot.petrinet(pn=ILP_pn)
+```
+The main traces include:
+```{r Describe_Selected_Petrinet_2, echo=TRUE, fig.height=5.0}
+source("~/Dropbox/datascience/R/mypetrinet.R")
+replay_ILP_lst <- replay.petrisim(ILP_pn, "T00,T02,T05")
+ILP_traces_df <- cbind(data.frame(type="1", trace="T00,T02,T05"),
+                       replay_ILP_lst$pn$M)
+print(ILP_traces_df)                       
+```
 
 The main traces include:  
 **1**. Start -> T00 -> T02 -> T05 -> End01 with 2 tokens remaining in ILP3 (between T00 & T10) and ILP5 (between T00 & T07-1)

@@ -955,6 +955,44 @@ may be modified.
 
 \includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_ILP.png}
 
+\subsection{Analyze ``Best'' Petri net}\label{analyze-best-petri-net}
+
+\textbf{My analysis}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ILP_pn <-}\StringTok{ }\KeywordTok{petrinet}\NormalTok{(}\DataTypeTok{name=}\StringTok{"ILP"}\NormalTok{,}
+                      \DataTypeTok{trans_df=}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{id=}\DecValTok{1}\NormalTok{:}\DecValTok{9}\NormalTok{,}
+        \DataTypeTok{name=}\KeywordTok{c}\NormalTok{(}\StringTok{"T00"}\NormalTok{,}\StringTok{"T02"}\NormalTok{,}\StringTok{"T03"}\NormalTok{,}\StringTok{"T04"}\NormalTok{,}\StringTok{"T05"}\NormalTok{,}\StringTok{"T06"}\NormalTok{,}\StringTok{"T07-1"}\NormalTok{,}\StringTok{"T10"}\NormalTok{,}\StringTok{"T11"}\NormalTok{),}
+        \DataTypeTok{x=}\KeywordTok{c}\NormalTok{(      }\DecValTok{5}\NormalTok{,  }\DecValTok{15}\NormalTok{,    }\DecValTok{15}\NormalTok{,   }\DecValTok{25}\NormalTok{,   }\DecValTok{25}\NormalTok{,   }\DecValTok{15}\NormalTok{,     }\DecValTok{15}\NormalTok{,   }\DecValTok{15}\NormalTok{,   }\DecValTok{25}\NormalTok{),}
+        \DataTypeTok{y=}\KeywordTok{c}\NormalTok{(      }\DecValTok{0}\NormalTok{,   }\DecValTok{5}\NormalTok{,    }\DecValTok{10}\NormalTok{,   }\DecValTok{10}\NormalTok{,    }\DecValTok{5}\NormalTok{,    }\DecValTok{0}\NormalTok{,    -}\DecValTok{10}\NormalTok{,   -}\DecValTok{5}\NormalTok{,   -}\DecValTok{5}\NormalTok{)),}
+                      \DataTypeTok{places_df=}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{id=}\DecValTok{1}\NormalTok{:}\DecValTok{8}\NormalTok{,}
+        \DataTypeTok{name=}\KeywordTok{c}\NormalTok{(}\StringTok{"Start"}\NormalTok{, }\StringTok{"ILP1"}\NormalTok{, }\StringTok{"ILP2"}\NormalTok{, }\StringTok{"ILP3"}\NormalTok{, }\StringTok{"ILP4"}\NormalTok{, }\StringTok{"ILP5"}\NormalTok{,}\StringTok{"End_ILP1"}\NormalTok{,}\StringTok{"End_ILP2"}\NormalTok{),}
+        \DataTypeTok{x=}\KeywordTok{c}\NormalTok{(         }\DecValTok{0}\NormalTok{,     }\DecValTok{10}\NormalTok{,     }\DecValTok{20}\NormalTok{,     }\DecValTok{10}\NormalTok{,     }\DecValTok{20}\NormalTok{,     }\DecValTok{10}\NormalTok{,        }\DecValTok{30}\NormalTok{,        }\DecValTok{30}\NormalTok{),}
+        \DataTypeTok{y=}\KeywordTok{c}\NormalTok{(         }\DecValTok{0}\NormalTok{,      }\DecValTok{5}\NormalTok{,      }\DecValTok{5}\NormalTok{,     -}\DecValTok{5}\NormalTok{,     -}\DecValTok{5}\NormalTok{,    -}\DecValTok{10}\NormalTok{,         }\DecValTok{5}\NormalTok{,        -}\DecValTok{5}\NormalTok{),}
+        \DataTypeTok{M0=}\KeywordTok{c}\NormalTok{(        }\DecValTok{1}\NormalTok{,      }\DecValTok{0}\NormalTok{,      }\DecValTok{0}\NormalTok{,      }\DecValTok{0}\NormalTok{,      }\DecValTok{0}\NormalTok{,      }\DecValTok{0}\NormalTok{,         }\DecValTok{0}\NormalTok{,         }\DecValTok{0}\NormalTok{)),}
+                      \DataTypeTok{arcs_df=}\KeywordTok{data.frame}\NormalTok{(}
+    \DataTypeTok{begin=}\KeywordTok{c}\NormalTok{(}\StringTok{"Start"}\NormalTok{,  }\StringTok{"T00"}\NormalTok{,  }\StringTok{"T00"}\NormalTok{,  }\StringTok{"T00"}
+\NormalTok{, }\StringTok{"ILP1"}\NormalTok{,  }\StringTok{"T02"}\NormalTok{, }\StringTok{"T03"}\NormalTok{,}\StringTok{"ILP2"}\NormalTok{,}\StringTok{"ILP2"}\NormalTok{,}\StringTok{"ILP2"}\NormalTok{, }\StringTok{"T04"}\NormalTok{,}\StringTok{"T05"}
+\NormalTok{,          }\StringTok{"T10"}\NormalTok{,       }\StringTok{"ILP3"}\NormalTok{,}\StringTok{"ILP4"}\NormalTok{,}\StringTok{"ILP3"}\NormalTok{, }\StringTok{"T06"}\NormalTok{,}\StringTok{"T11"}
+\NormalTok{, }\StringTok{"ILP5"}\NormalTok{,}\StringTok{"T07-1"}\NormalTok{,}\StringTok{"ILP5"}
+\NormalTok{),}
+    \DataTypeTok{end  =}\KeywordTok{c}\NormalTok{(}\StringTok{"T00"}   \NormalTok{,}\StringTok{"ILP1"}\NormalTok{,}\StringTok{"ILP3"}\NormalTok{,}\StringTok{"ILP5"}
+\NormalTok{,  }\StringTok{"T02"}\NormalTok{, }\StringTok{"ILP2"}\NormalTok{,}\StringTok{"ILP1"}\NormalTok{, }\StringTok{"T03"}\NormalTok{, }\StringTok{"T05"}\NormalTok{, }\StringTok{"T04"}\NormalTok{,}\StringTok{"ILP2"}\NormalTok{,}\StringTok{"End_ILP1"}
+\NormalTok{,         }\StringTok{"ILP4"}\NormalTok{,        }\StringTok{"T06"}\NormalTok{, }\StringTok{"T11"}\NormalTok{, }\StringTok{"T10"}\NormalTok{,}\StringTok{"ILP3"}\NormalTok{,}\StringTok{"End_ILP2"}
+\NormalTok{,}\StringTok{"T07-1"}\NormalTok{, }\StringTok{"ILP5"}\NormalTok{, }\StringTok{"T10"}
+\NormalTok{)))}
+\KeywordTok{source}\NormalTok{(}\StringTok{"~/Dropbox/datascience/R/mypetrinet.R"}\NormalTok{)}
+\KeywordTok{ggplot.petrinet}\NormalTok{(}\DataTypeTok{pn=}\NormalTok{ILP_pn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: grid
+\end{verbatim}
+
+\includegraphics{CoSeLoG_files/figure-latex/Describe_Selected_Petrinet_1-1.pdf}
+
 The main traces include:\\\textbf{1}. Start -\textgreater{} T00
 -\textgreater{} T02 -\textgreater{} T05 -\textgreater{} End01 with 2
 tokens remaining in ILP3 (between T00 \& T10) and ILP5 (between T00 \&
