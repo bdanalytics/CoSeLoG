@@ -393,10 +393,11 @@ petrinets_df <- subset(petrinets_df, select=-Petrinet)
 print(petrinets_df)
 ```
 
-To consolidate the Simplicity.* metrics into a Simplicity.Score for each Petri net, assign equal weights (as a simple approximation) by scaling the raw metric relative to a "perfect" score of 100 since each metric has different scales. For e.g. the minimum value of Simplicity.Places.Total is 8 which may be considered as the "perfect" score amongst these Petri nets. If the minimum value is 0 we add 1 to both numerator & denominator.
+To consolidate the Simplicity.* metrics into a Simplicity.Score for each Petri net, assign equal weights (as a first approximation) by scaling the raw metric relative to a "perfect" score of 100 since each metric has different scales. For e.g. the minimum value of Simplicity.Places.Total is 8 which may be considered as the "perfect" score amongst these Petri nets. If the minimum value is 0 we add 1 to both numerator & denominator.
 
 ```{r Select_Petrinet_2, echo=TRUE, fig.height=7.5}
 consolidate_scores <- function(pn_df, metrics, consolidated.metric.name, 
+                               perfect_type,
                                metric_weights=NULL) {
     
     if (missing(metric_weights))
@@ -407,15 +408,25 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name,
     
     for (metric in metrics) {
         min_value <- min(pn_df[, metric])
+        max_value <- max(pn_df[, metric])
         
-        if(min_value == 0) {
-            # Add 1 to account for possibility of 0 in denominator
-            pn_df[, paste0(metric, ".Scaled")] <- 
-                ((min_value + 1) * 100.0) / (pn_df[, metric] + 1)
-        } else {
-            pn_df[, paste0(metric, ".Scaled")] <- 
-                ((min_value + 0) * 100.0) / (pn_df[, metric] + 0)
-        }
+                if (perfect_type == "min") {
+            if (min_value == 0) {
+                # Add 1 to account for possibility of 0 in denominator
+                pn_df[, paste0(metric, ".Scaled")] <- 
+                    ((min_value + 1) * 100.0) / (pn_df[, metric] + 1)
+            } else {
+                pn_df[, paste0(metric, ".Scaled")] <- 
+                    ((min_value + 0) * 100.0) / (pn_df[, metric] + 0)
+            }
+        } else if (perfect_type == "max") {
+            if (max_value == 0) {
+                stop("max_value == 0")
+            } else {    
+                pn_df[, paste0(metric, ".Scaled")] <- 
+                    (pn_df[, metric] * 100.0) / max_value
+            }    
+        } else stop(perfect_type, ": invalid argument value")
         
         pn_df[, paste0(metric, ".Weighted")] <- 
             pn_df[, paste0(metric, ".Scaled")] * metric_weights[metric]
@@ -428,14 +439,15 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name,
     }    
 
     ycol_names <- c(metrics, paste0(metrics, ".Scaled"))
+    prefix <- unlist(strsplit(consolidated.metric.name, "[.]"))[1]
     hbar_df <- melt(cbind(data.frame(Petrinet=rownames(pn_df)),
                           pn_df), id="Petrinet", measure=ycol_names)
     hbar_df$variable <- as.character(hbar_df$variable)
     hbar_df$var_type <- sapply(1:nrow(hbar_df), function(row)
             ifelse(length(grep(".Scaled", hbar_df[row, "variable"], fixed=TRUE)) == 0,
-                            "Simplicity.Raw", "Simplicity.Scaled"))
+                            paste0(prefix, ".Raw"), paste0(prefix, ".Scaled")))
     hbar_df$var_label <- 
-        gsub("Simplicity.", "",
+        gsub(paste0(prefix, "."), "",
             sapply(1:nrow(hbar_df), function(row)
             ifelse(length(grep(".Scaled", hbar_df[row, "variable"], fixed=TRUE)) == 0,
                             hbar_df[row, "variable"], 
@@ -444,24 +456,29 @@ consolidate_scores <- function(pn_df, metrics, consolidated.metric.name,
             fixed=TRUE)
     gp <- ggplot(hbar_df, aes(x=reorder(Petrinet, value), y=value)) +       
             geom_bar(stat="identity", aes(fill=var_label)) + xlab("Petrinet") + 
-            facet_grid(var_label ~ var_type, scales="free") + 
+            facet_grid(var_label ~ var_type, scales="free", space="free") + 
             theme(legend.position="none") + coord_flip()
     print(gp)
 
-    radar_inp_df <- cbind( data.frame(instance=rownames(pn_df)),
-                                    pn_df[, paste0(metrics, ".Scaled")],
-                                    data.frame(facet=rep(" ", nrow(pn_df))))
-    print(myplot_radar(radar_inp_df))
+    if (length(metrics) > 1) {
+        radar_inp_df <- cbind( data.frame(instance=rownames(pn_df)),
+                                        pn_df[, paste0(metrics, ".Scaled")],
+                                        data.frame(facet=rep(" ", nrow(pn_df))))
+        print(myplot_radar(radar_inp_df))
 
-    print(myplot_hbar(pn_df, ".rownames", paste0(metrics, ".Weighted")) + 
-        scale_fill_discrete("Metrics", 
-                            labels=gsub("Simplicity.", "", metrics, fixed=TRUE)))
+        print(myplot_hbar(cbind(data.frame("Petrinet"=rownames(pn_df)),
+                                pn_df), 
+                          "Petrinet", paste0(metrics, ".Weighted")) + 
+            scale_fill_discrete("Metrics", 
+                labels=gsub(paste0(prefix, "."), "", metrics, fixed=TRUE)))
+    }
     
     return(pn_df)
 }
 petrinets_Simplicity_df <- consolidate_scores(pn_df=petrinets_df, 
         metrics=grep("Simplicity.", names(petrinets_df), fixed=TRUE, value=TRUE), 
-        consolidated.metric.name="Simplicity.Score"
+        consolidated.metric.name="Simplicity.Score",
+        perfect_type="min"
         #, metric_weights=c(0.2, 0.2, 0.2, 0.25, 0.15)
         )
 petrinets_Simplicity_df <- cbind(petrinets_Simplicity_df[, 
@@ -470,9 +487,53 @@ petrinets_Simplicity_df <- cbind(petrinets_Simplicity_df[,
 print(petrinets_Simplicity_df)
 ```
 
-In my opinion, the ILP discovered Petri net is the best based on the following criteria:
+Based on Simplicity metrics, Alpha & ILP have high scores. Let's create scores for the other categories. The "Raw" vs. "Scaled" bar graphs should have scaled x-axis but for some reason that is not happening.
 
-Since the analysis objective / goal is not known yet, these criteria might be modified when that becomes clear.   
+```{r Select_Petrinet_3, echo=TRUE}
+petrinets_SF_df <- consolidate_scores(pn_df=petrinets_Simplicity_df, 
+        metrics=grep("Fitness.", names(petrinets_df), fixed=TRUE, value=TRUE), 
+        consolidated.metric.name="Fitness.Score",
+        perfect_type="max")
+petrinets_SF_df <- cbind(petrinets_SF_df[, 
+            -grep("Fitness.", names(petrinets_SF_df), fixed=TRUE)],
+            petrinets_SF_df[, "Fitness.Score", FALSE])
+print(petrinets_SF_df)
+
+petrinets_SFG_df <- consolidate_scores(pn_df=petrinets_SF_df, 
+        metrics=grep("Generalization.", names(petrinets_df), fixed=TRUE, value=TRUE), 
+        consolidated.metric.name="Generalization.Score",
+        perfect_type="max")
+petrinets_SFG_df <- cbind(petrinets_SFG_df[, 
+            -grep("Generalization.", names(petrinets_SFG_df), fixed=TRUE)],
+            petrinets_SFG_df[, "Generalization.Score", FALSE])
+print(petrinets_SFG_df)
+
+petrinets_SFGP_df <- consolidate_scores(pn_df=petrinets_SFG_df, 
+        metrics=grep("Precision.", names(petrinets_df), fixed=TRUE, value=TRUE), 
+        consolidated.metric.name="Precision.Score",
+        perfect_type="max")
+petrinets_SFGP_df <- cbind(petrinets_SFGP_df[, 
+            -grep("Precision.", names(petrinets_SFGP_df), fixed=TRUE)],
+            petrinets_SFGP_df[, "Precision.Score", FALSE])
+print(petrinets_SFGP_df)
+
+radar_inp_df <- cbind( data.frame(instance=rownames(petrinets_SFGP_df)),
+                       petrinets_SFGP_df,
+                       data.frame(facet=rep(" ", nrow(petrinets_SFGP_df))))
+print(myplot_radar(radar_inp_df))
+
+petrinets_SFGP_df$Overall.Score <- rowMeans(as.matrix(petrinets_SFGP_df))
+hbar_df <- petrinets_SFGP_df[, -grep("Overall.", names(petrinets_SFGP_df), 
+                                     fixed=TRUE)]
+print(myplot_hbar(hbar_df, ".rownames", names(hbar_df)) + 
+    xlab("Petrinet") + ylab("Overall.Weighted") + 
+    theme(axis.ticks.x = element_blank(), axis.text.x=element_blank()) + 
+    scale_fill_discrete("Categories", 
+                        labels=gsub(".Score", "", names(hbar_df), fixed=TRUE)))
+print(petrinets_SFGP_df)
+```
+
+Based on this analysis, the ILP discovered Petri net is the best. Based on other analysis objective(s) / goal(s) the weights of these criteria may be modified.   
 
 ![](CoSeLoG_Step_05_Filter96_PetriNet_ILP.png)
 
