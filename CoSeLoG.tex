@@ -24,29 +24,6 @@
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
 \usepackage[margin=1in]{geometry}
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{48,48,48}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.94,0.87,0.69}{{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.87,0.87,0.75}{{#1}}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.86,0.86,0.80}{{#1}}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.86,0.64,0.64}{{#1}}}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.75,0.75,0.82}{{#1}}}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.86,0.64,0.64}{{#1}}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.80,0.58,0.58}{{#1}}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.50,0.62,0.50}{{#1}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.94,0.94,0.56}{{#1}}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.81,0.69}{{#1}}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.94,0.94,0.56}{{#1}}}
-\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.80,0.80,0.80}{{#1}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.76,0.75,0.62}{{#1}}}
-\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.80,0.80,0.80}{{#1}}}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -105,7 +82,7 @@
 }
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\textbf{Date: (Fri) Dec 26, 2014}
+\textbf{Date: (Sat) Dec 27, 2014}
 
 \section{Background:}\label{background}
 
@@ -484,11 +461,12 @@ without utilizing those techniques (a lot of work !).
 \includegraphics{CoSeLoG_Step_05_Filter96_PetriNet_ILP.png}
 
 The ILP algorithm has discovered 9 transitions \& 8 places (``P 1'' \&
-``P 2'' are ``End'' places). Additionally, the ILP Petri net handles
-transitions T06, T07-1 \& T10 better by not isolating them from the
-control-flow. Collect Petri net evaluation metrics as listed in the
-Appendix section ``Actions to run ProM plug-in''Replay a Log on Petri
-Net for Conformance Analysis``''.
+``P 2'' are ``End'' places). Therefore, this Petri net has one implicit
+place. Additionally, the ILP Petri net handles transitions T06, T07-1 \&
+T10 better by not isolating them from the control-flow. Collect Petri
+net evaluation metrics as listed in the Appendix section ``Actions to
+run ProM plug-in''Replay a Log on Petri Net for Conformance
+Analysis``''.
 
 \textbf{My analysis}:
 
@@ -496,7 +474,7 @@ Net for Conformance Analysis``''.
 ##  Petrinet Fitness.Traces Simplicity.Places.Total Simplicity.Places.End
 ##       ILP         0.8483                       8                     2
 ##  Simplicity.Places.Implicit Simplicity.Trans.Isolated
-##                           0                         0
+##                           1                         0
 ##  Simplicity.Trans.Silent Simplicity.Arcs Simplicity.MDL
 ##                        0              21              3
 ##  Generalization.Conformance Precision.Behavioral
@@ -644,7 +622,7 @@ The metrics for all the discovered Petri nets:
 ## Inductive          0.9813                      21                     1
 ##            Simplicity.Places.Implicit Simplicity.Trans.Isolated
 ## Alpha                               0                         3
-## ILP                                 0                         0
+## ILP                                 1                         0
 ## Heuristics                          0                         0
 ## Inductive                           0                         0
 ##            Simplicity.Trans.Silent Simplicity.Arcs Simplicity.MDL
@@ -667,121 +645,14 @@ Simplicity.Places.Total is 8 which may be considered as the ``perfect''
 score amongst these Petri nets. If the minimum value is 0 we add 1 to
 both numerator \& denominator.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{consolidate_scores <-}\StringTok{ }\NormalTok{function(pn_df, metrics, consolidated.metric.name, }
-                               \NormalTok{perfect_type,}
-                               \DataTypeTok{metric_weights=}\OtherTok{NULL}\NormalTok{) \{}
-    
-    \NormalTok{if (}\KeywordTok{missing}\NormalTok{(metric_weights))}
-        \NormalTok{metric_weights <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\FloatTok{1.0} \NormalTok{/}\StringTok{ }\KeywordTok{length}\NormalTok{(metrics), }\KeywordTok{length}\NormalTok{(metrics))}
-    
-    \NormalTok{if (}\KeywordTok{is.null}\NormalTok{(}\KeywordTok{names}\NormalTok{(metric_weights)))}
-        \KeywordTok{names}\NormalTok{(metric_weights) <-}\StringTok{ }\NormalTok{metrics}
-    
-    \NormalTok{for (metric in metrics) \{}
-        \NormalTok{min_value <-}\StringTok{ }\KeywordTok{min}\NormalTok{(pn_df[, metric])}
-        \NormalTok{max_value <-}\StringTok{ }\KeywordTok{max}\NormalTok{(pn_df[, metric])}
-        
-                \NormalTok{if (perfect_type ==}\StringTok{ "min"}\NormalTok{) \{}
-            \NormalTok{if (min_value ==}\StringTok{ }\DecValTok{0}\NormalTok{) \{}
-                \CommentTok{# Add 1 to account for possibility of 0 in denominator}
-                \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Scaled"}\NormalTok{)] <-}\StringTok{ }
-\StringTok{                    }\NormalTok{((min_value +}\StringTok{ }\DecValTok{1}\NormalTok{) *}\StringTok{ }\FloatTok{100.0}\NormalTok{) /}\StringTok{ }\NormalTok{(pn_df[, metric] +}\StringTok{ }\DecValTok{1}\NormalTok{)}
-            \NormalTok{\} else \{}
-                \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Scaled"}\NormalTok{)] <-}\StringTok{ }
-\StringTok{                    }\NormalTok{((min_value +}\StringTok{ }\DecValTok{0}\NormalTok{) *}\StringTok{ }\FloatTok{100.0}\NormalTok{) /}\StringTok{ }\NormalTok{(pn_df[, metric] +}\StringTok{ }\DecValTok{0}\NormalTok{)}
-            \NormalTok{\}}
-        \NormalTok{\} else if (perfect_type ==}\StringTok{ "max"}\NormalTok{) \{}
-            \NormalTok{if (max_value ==}\StringTok{ }\DecValTok{0}\NormalTok{) \{}
-                \KeywordTok{stop}\NormalTok{(}\StringTok{"max_value == 0"}\NormalTok{)}
-            \NormalTok{\} else \{    }
-                \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Scaled"}\NormalTok{)] <-}\StringTok{ }
-\StringTok{                    }\NormalTok{(pn_df[, metric] *}\StringTok{ }\FloatTok{100.0}\NormalTok{) /}\StringTok{ }\NormalTok{max_value}
-            \NormalTok{\}    }
-        \NormalTok{\} else }\KeywordTok{stop}\NormalTok{(perfect_type, }\StringTok{": invalid argument value"}\NormalTok{)}
-        
-        \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Weighted"}\NormalTok{)] <-}\StringTok{ }
-\StringTok{            }\NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metric, }\StringTok{".Scaled"}\NormalTok{)] *}\StringTok{ }\NormalTok{metric_weights[metric]}
-    \NormalTok{\}}
-    
-    \NormalTok{for (row in }\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(pn_df)) \{}
-        \NormalTok{pn_df[row, consolidated.metric.name] <-}\StringTok{ }
-\StringTok{            }\KeywordTok{weighted.mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(pn_df[row, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Scaled"}\NormalTok{)]),}
-                          \NormalTok{metric_weights)}
-    \NormalTok{\}    }
-
-    \NormalTok{ycol_names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(metrics, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Scaled"}\NormalTok{))}
-    \NormalTok{prefix <-}\StringTok{ }\KeywordTok{unlist}\NormalTok{(}\KeywordTok{strsplit}\NormalTok{(consolidated.metric.name, }\StringTok{"[.]"}\NormalTok{))[}\DecValTok{1}\NormalTok{]}
-    \NormalTok{hbar_df <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Petrinet=}\KeywordTok{rownames}\NormalTok{(pn_df)),}
-                          \NormalTok{pn_df), }\DataTypeTok{id=}\StringTok{"Petrinet"}\NormalTok{, }\DataTypeTok{measure=}\NormalTok{ycol_names)}
-    \NormalTok{hbar_df$variable <-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(hbar_df$variable)}
-    \NormalTok{hbar_df$var_type <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(hbar_df), function(row)}
-            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, hbar_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
-                            \KeywordTok{paste0}\NormalTok{(prefix, }\StringTok{".Raw"}\NormalTok{), }\KeywordTok{paste0}\NormalTok{(prefix, }\StringTok{".Scaled"}\NormalTok{)))}
-    \NormalTok{hbar_df$var_label <-}\StringTok{ }
-\StringTok{        }\KeywordTok{gsub}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(prefix, }\StringTok{"."}\NormalTok{), }\StringTok{""}\NormalTok{,}
-            \KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(hbar_df), function(row)}
-            \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, hbar_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)) ==}\StringTok{ }\DecValTok{0}\NormalTok{,}
-                            \NormalTok{hbar_df[row, }\StringTok{"variable"}\NormalTok{], }
-                            \KeywordTok{gsub}\NormalTok{(}\StringTok{".Scaled"}\NormalTok{, }\StringTok{""}\NormalTok{, hbar_df[row, }\StringTok{"variable"}\NormalTok{], }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{))}
-                    \NormalTok{),}
-            \DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)}
-    
-    \NormalTok{if (}\KeywordTok{length}\NormalTok{(metrics) >}\StringTok{ }\DecValTok{1}\NormalTok{) \{}
-        \NormalTok{gp <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(hbar_df, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{reorder}\NormalTok{(Petrinet, value), }\DataTypeTok{y=}\NormalTok{value)) +}\StringTok{       }
-\StringTok{                }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{var_label)) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Petrinet"}\NormalTok{) +}\StringTok{ }
-\StringTok{                }\KeywordTok{facet_grid}\NormalTok{(var_label ~}\StringTok{ }\NormalTok{var_type, }\DataTypeTok{scales=}\StringTok{"free"}\NormalTok{) +}\StringTok{         }
-\StringTok{                }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{) +}\StringTok{ }\KeywordTok{coord_flip}\NormalTok{()}
-    \NormalTok{\} else \{}
-        \NormalTok{gp <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(hbar_df, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{reorder}\NormalTok{(Petrinet, value), }\DataTypeTok{y=}\NormalTok{value)) +}\StringTok{       }
-\StringTok{                }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{var_type)) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Petrinet"}\NormalTok{) +}\StringTok{ }
-\StringTok{                }\KeywordTok{facet_wrap}\NormalTok{(~}\StringTok{ }\NormalTok{var_type, }\DataTypeTok{scales=}\StringTok{"free"}\NormalTok{) +}\StringTok{         }
-\StringTok{                }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{)}
-    \NormalTok{\}}
-    \KeywordTok{print}\NormalTok{(gp)}
-
-    \NormalTok{if (}\KeywordTok{length}\NormalTok{(metrics) >}\StringTok{ }\DecValTok{1}\NormalTok{) \{}
-        \NormalTok{radar_inp_df <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{( }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{instance=}\KeywordTok{rownames}\NormalTok{(pn_df)),}
-                                        \NormalTok{pn_df[, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Scaled"}\NormalTok{)],}
-                                        \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{facet=}\KeywordTok{rep}\NormalTok{(}\StringTok{" "}\NormalTok{, }\KeywordTok{nrow}\NormalTok{(pn_df))))}
-        \KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_radar}\NormalTok{(radar_inp_df))}
-
-        \KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_hbar}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\StringTok{"Petrinet"}\NormalTok{=}\KeywordTok{rownames}\NormalTok{(pn_df)),}
-                                \NormalTok{pn_df), }
-                          \StringTok{"Petrinet"}\NormalTok{, }\KeywordTok{paste0}\NormalTok{(metrics, }\StringTok{".Weighted"}\NormalTok{)) +}\StringTok{ }
-\StringTok{            }\KeywordTok{scale_fill_discrete}\NormalTok{(}\StringTok{"Metrics"}\NormalTok{, }
-                \DataTypeTok{labels=}\KeywordTok{gsub}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(prefix, }\StringTok{"."}\NormalTok{), }\StringTok{""}\NormalTok{, metrics, }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)))}
-    \NormalTok{\}}
-    
-    \KeywordTok{return}\NormalTok{(pn_df)}
-\NormalTok{\}}
-\NormalTok{petrinets_Simplicity_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_df, }
-        \DataTypeTok{metrics=}\KeywordTok{grep}\NormalTok{(}\StringTok{"Simplicity."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{value=}\OtherTok{TRUE}\NormalTok{), }
-        \DataTypeTok{consolidated.metric.name=}\StringTok{"Simplicity.Score"}\NormalTok{,}
-        \DataTypeTok{perfect_type=}\StringTok{"min"}
-        \CommentTok{#, metric_weights=c(0.2, 0.2, 0.2, 0.25, 0.15)}
-        \NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_2-1.pdf}
 
 \begin{verbatim}
-## Warning: Removed 18 rows containing missing values (geom_text).
+## Warning: Removed 19 rows containing missing values (geom_text).
 \end{verbatim}
 
 \includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_2-2.pdf}
 \includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_2-3.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{petrinets_Simplicity_df <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(petrinets_Simplicity_df[, }
-            \NormalTok{-}\KeywordTok{grep}\NormalTok{(}\StringTok{"Simplicity."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_Simplicity_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)],}
-            \NormalTok{petrinets_Simplicity_df[, }\StringTok{"Simplicity.Score"}\NormalTok{, }\OtherTok{FALSE}\NormalTok{])}
-\KeywordTok{print}\NormalTok{(petrinets_Simplicity_df)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{verbatim}
 ##            Fitness.Traces Generalization.Conformance Precision.Behavioral
@@ -791,7 +662,7 @@ both numerator \& denominator.
 ## Inductive          0.9813                     0.9813               0.9955
 ##            Simplicity.Score
 ## Alpha              83.41270
-## ILP                83.33333
+## ILP                76.19048
 ## Heuristics         50.72691
 ## Inductive          54.35944
 \end{verbatim}
@@ -802,25 +673,7 @@ bar graphs should have scaled x-axis but for some reason that is not
 happening, so let's switch to vertical bar graphs when there is only one
 metric element to score.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{petrinets_SF_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_Simplicity_df, }
-        \DataTypeTok{metrics=}\KeywordTok{grep}\NormalTok{(}\StringTok{"Fitness."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{value=}\OtherTok{TRUE}\NormalTok{), }
-        \DataTypeTok{consolidated.metric.name=}\StringTok{"Fitness.Score"}\NormalTok{,}
-        \DataTypeTok{perfect_type=}\StringTok{"max"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_3-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{petrinets_SF_df <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(petrinets_SF_df[, }
-            \NormalTok{-}\KeywordTok{grep}\NormalTok{(}\StringTok{"Fitness."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_SF_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)],}
-            \NormalTok{petrinets_SF_df[, }\StringTok{"Fitness.Score"}\NormalTok{, }\OtherTok{FALSE}\NormalTok{])}
-\KeywordTok{print}\NormalTok{(petrinets_SF_df)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{verbatim}
 ##            Generalization.Conformance Precision.Behavioral
@@ -830,35 +683,17 @@ metric element to score.
 ## Inductive                      0.9813               0.9955
 ##            Simplicity.Score Fitness.Score
 ## Alpha              83.41270      91.58259
-## ILP                83.33333      86.44655
+## ILP                76.19048      86.44655
 ## Heuristics         50.72691      78.44696
 ## Inductive          54.35944     100.00000
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{petrinets_SFG_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_SF_df, }
-        \DataTypeTok{metrics=}\KeywordTok{grep}\NormalTok{(}\StringTok{"Generalization."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{value=}\OtherTok{TRUE}\NormalTok{), }
-        \DataTypeTok{consolidated.metric.name=}\StringTok{"Generalization.Score"}\NormalTok{,}
-        \DataTypeTok{perfect_type=}\StringTok{"max"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_3-2.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{petrinets_SFG_df <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(petrinets_SFG_df[, }
-            \NormalTok{-}\KeywordTok{grep}\NormalTok{(}\StringTok{"Generalization."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_SFG_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)],}
-            \NormalTok{petrinets_SFG_df[, }\StringTok{"Generalization.Score"}\NormalTok{, }\OtherTok{FALSE}\NormalTok{])}
-\KeywordTok{print}\NormalTok{(petrinets_SFG_df)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{verbatim}
 ##            Precision.Behavioral Simplicity.Score Fitness.Score
 ## Alpha                    0.1971         83.41270      91.58259
-## ILP                      0.9955         83.33333      86.44655
+## ILP                      0.9955         76.19048      86.44655
 ## Heuristics               0.8656         50.72691      78.44696
 ## Inductive                0.9955         54.35944     100.00000
 ##            Generalization.Score
@@ -868,30 +703,12 @@ metric element to score.
 ## Inductive             100.00000
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{petrinets_SFGP_df <-}\StringTok{ }\KeywordTok{consolidate_scores}\NormalTok{(}\DataTypeTok{pn_df=}\NormalTok{petrinets_SFG_df, }
-        \DataTypeTok{metrics=}\KeywordTok{grep}\NormalTok{(}\StringTok{"Precision."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{value=}\OtherTok{TRUE}\NormalTok{), }
-        \DataTypeTok{consolidated.metric.name=}\StringTok{"Precision.Score"}\NormalTok{,}
-        \DataTypeTok{perfect_type=}\StringTok{"max"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_3-3.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{petrinets_SFGP_df <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(petrinets_SFGP_df[, }
-            \NormalTok{-}\KeywordTok{grep}\NormalTok{(}\StringTok{"Precision."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_SFGP_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)],}
-            \NormalTok{petrinets_SFGP_df[, }\StringTok{"Precision.Score"}\NormalTok{, }\OtherTok{FALSE}\NormalTok{])}
-\KeywordTok{print}\NormalTok{(petrinets_SFGP_df)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{verbatim}
 ##            Simplicity.Score Fitness.Score Generalization.Score
 ## Alpha              83.41270      91.58259             91.58259
-## ILP                83.33333      86.44655             86.44655
+## ILP                76.19048      86.44655             86.44655
 ## Heuristics         50.72691      78.44696             78.44696
 ## Inductive          54.35944     100.00000            100.00000
 ##            Precision.Score
@@ -901,52 +718,24 @@ metric element to score.
 ## Inductive        100.00000
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{radar_inp_df <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{( }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{instance=}\KeywordTok{rownames}\NormalTok{(petrinets_SFGP_df)),}
-                       \NormalTok{petrinets_SFGP_df,}
-                       \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{facet=}\KeywordTok{rep}\NormalTok{(}\StringTok{" "}\NormalTok{, }\KeywordTok{nrow}\NormalTok{(petrinets_SFGP_df))))}
-\KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_radar}\NormalTok{(radar_inp_df))}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{verbatim}
 ## Warning: Removed 15 rows containing missing values (geom_text).
 \end{verbatim}
 
 \includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_3-4.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{petrinets_SFGP_df$Overall.Score <-}\StringTok{ }\KeywordTok{rowMeans}\NormalTok{(}\KeywordTok{as.matrix}\NormalTok{(petrinets_SFGP_df))}
-\NormalTok{hbar_df <-}\StringTok{ }\NormalTok{petrinets_SFGP_df[, -}\KeywordTok{grep}\NormalTok{(}\StringTok{"Overall."}\NormalTok{, }\KeywordTok{names}\NormalTok{(petrinets_SFGP_df), }
-                                     \DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)] *}\StringTok{ }\FloatTok{0.25}
-\KeywordTok{print}\NormalTok{(}\KeywordTok{myplot_hbar}\NormalTok{(hbar_df, }\StringTok{".rownames"}\NormalTok{, }\KeywordTok{names}\NormalTok{(hbar_df)) +}\StringTok{ }
-\StringTok{    }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Petrinet"}\NormalTok{) +}\StringTok{ }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Overall.Score"}\NormalTok{) +}\StringTok{ }
-\StringTok{    }\KeywordTok{scale_fill_discrete}\NormalTok{(}\StringTok{"Categories"}\NormalTok{, }
-                        \DataTypeTok{labels=}\KeywordTok{gsub}\NormalTok{(}\StringTok{".Score"}\NormalTok{, }\StringTok{""}\NormalTok{, }\KeywordTok{names}\NormalTok{(hbar_df), }\DataTypeTok{fixed=}\OtherTok{TRUE}\NormalTok{)))}
-\end{Highlighting}
-\end{Shaded}
-
 \includegraphics{CoSeLoG_files/figure-latex/Select_Petrinet_3-5.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{print}\NormalTok{(}\KeywordTok{orderBy}\NormalTok{(~-Overall.Score, petrinets_SFGP_df))}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{verbatim}
 ##            Simplicity.Score Fitness.Score Generalization.Score
-## ILP                83.33333      86.44655             86.44655
+## ILP                76.19048      86.44655             86.44655
 ## Inductive          54.35944     100.00000            100.00000
 ## Heuristics         50.72691      78.44696             78.44696
 ## Alpha              83.41270      91.58259             91.58259
 ##            Precision.Score Overall.Score
-## ILP              100.00000      89.05661
-## Inductive        100.00000      88.58986
-## Heuristics        86.95128      73.64303
-## Alpha             19.79910      71.59425
+## ILP              100.00000      86.75809
+## Inductive        100.00000      86.30783
+## Heuristics        86.95128      72.25702
+## Alpha             19.79910      71.18575
 \end{verbatim}
 
 Based on this analysis, the ILP discovered Petri net is the best. Based
@@ -959,39 +748,48 @@ may be modified.
 
 \textbf{My analysis}:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ILP_pn <-}\StringTok{ }\KeywordTok{petrinet}\NormalTok{(}\DataTypeTok{name=}\StringTok{"ILP"}\NormalTok{,}
-                      \DataTypeTok{trans_df=}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{id=}\DecValTok{1}\NormalTok{:}\DecValTok{9}\NormalTok{,}
-        \DataTypeTok{name=}\KeywordTok{c}\NormalTok{(}\StringTok{"T00"}\NormalTok{,}\StringTok{"T02"}\NormalTok{,}\StringTok{"T03"}\NormalTok{,}\StringTok{"T04"}\NormalTok{,}\StringTok{"T05"}\NormalTok{,}\StringTok{"T06"}\NormalTok{,}\StringTok{"T07-1"}\NormalTok{,}\StringTok{"T10"}\NormalTok{,}\StringTok{"T11"}\NormalTok{),}
-        \DataTypeTok{x=}\KeywordTok{c}\NormalTok{(      }\DecValTok{5}\NormalTok{,  }\DecValTok{15}\NormalTok{,    }\DecValTok{15}\NormalTok{,   }\DecValTok{25}\NormalTok{,   }\DecValTok{25}\NormalTok{,   }\DecValTok{15}\NormalTok{,     }\DecValTok{15}\NormalTok{,   }\DecValTok{15}\NormalTok{,   }\DecValTok{25}\NormalTok{),}
-        \DataTypeTok{y=}\KeywordTok{c}\NormalTok{(      }\DecValTok{0}\NormalTok{,   }\DecValTok{5}\NormalTok{,    }\DecValTok{10}\NormalTok{,   }\DecValTok{10}\NormalTok{,    }\DecValTok{5}\NormalTok{,    }\DecValTok{0}\NormalTok{,    -}\DecValTok{10}\NormalTok{,   -}\DecValTok{5}\NormalTok{,   -}\DecValTok{5}\NormalTok{)),}
-                      \DataTypeTok{places_df=}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{id=}\DecValTok{1}\NormalTok{:}\DecValTok{8}\NormalTok{,}
-        \DataTypeTok{name=}\KeywordTok{c}\NormalTok{(}\StringTok{"Start"}\NormalTok{, }\StringTok{"ILP1"}\NormalTok{, }\StringTok{"ILP2"}\NormalTok{, }\StringTok{"ILP3"}\NormalTok{, }\StringTok{"ILP4"}\NormalTok{, }\StringTok{"ILP5"}\NormalTok{,}\StringTok{"End_ILP1"}\NormalTok{,}\StringTok{"End_ILP2"}\NormalTok{),}
-        \DataTypeTok{x=}\KeywordTok{c}\NormalTok{(         }\DecValTok{0}\NormalTok{,     }\DecValTok{10}\NormalTok{,     }\DecValTok{20}\NormalTok{,     }\DecValTok{10}\NormalTok{,     }\DecValTok{20}\NormalTok{,     }\DecValTok{10}\NormalTok{,        }\DecValTok{30}\NormalTok{,        }\DecValTok{30}\NormalTok{),}
-        \DataTypeTok{y=}\KeywordTok{c}\NormalTok{(         }\DecValTok{0}\NormalTok{,      }\DecValTok{5}\NormalTok{,      }\DecValTok{5}\NormalTok{,     -}\DecValTok{5}\NormalTok{,     -}\DecValTok{5}\NormalTok{,    -}\DecValTok{10}\NormalTok{,         }\DecValTok{5}\NormalTok{,        -}\DecValTok{5}\NormalTok{),}
-        \DataTypeTok{M0=}\KeywordTok{c}\NormalTok{(        }\DecValTok{1}\NormalTok{,      }\DecValTok{0}\NormalTok{,      }\DecValTok{0}\NormalTok{,      }\DecValTok{0}\NormalTok{,      }\DecValTok{0}\NormalTok{,      }\DecValTok{0}\NormalTok{,         }\DecValTok{0}\NormalTok{,         }\DecValTok{0}\NormalTok{)),}
-                      \DataTypeTok{arcs_df=}\KeywordTok{data.frame}\NormalTok{(}
-    \DataTypeTok{begin=}\KeywordTok{c}\NormalTok{(}\StringTok{"Start"}\NormalTok{,  }\StringTok{"T00"}\NormalTok{,  }\StringTok{"T00"}\NormalTok{,  }\StringTok{"T00"}
-\NormalTok{, }\StringTok{"ILP1"}\NormalTok{,  }\StringTok{"T02"}\NormalTok{, }\StringTok{"T03"}\NormalTok{,}\StringTok{"ILP2"}\NormalTok{,}\StringTok{"ILP2"}\NormalTok{,}\StringTok{"ILP2"}\NormalTok{, }\StringTok{"T04"}\NormalTok{,}\StringTok{"T05"}
-\NormalTok{,          }\StringTok{"T10"}\NormalTok{,       }\StringTok{"ILP3"}\NormalTok{,}\StringTok{"ILP4"}\NormalTok{,}\StringTok{"ILP3"}\NormalTok{, }\StringTok{"T06"}\NormalTok{,}\StringTok{"T11"}
-\NormalTok{, }\StringTok{"ILP5"}\NormalTok{,}\StringTok{"T07-1"}\NormalTok{,}\StringTok{"ILP5"}
-\NormalTok{),}
-    \DataTypeTok{end  =}\KeywordTok{c}\NormalTok{(}\StringTok{"T00"}   \NormalTok{,}\StringTok{"ILP1"}\NormalTok{,}\StringTok{"ILP3"}\NormalTok{,}\StringTok{"ILP5"}
-\NormalTok{,  }\StringTok{"T02"}\NormalTok{, }\StringTok{"ILP2"}\NormalTok{,}\StringTok{"ILP1"}\NormalTok{, }\StringTok{"T03"}\NormalTok{, }\StringTok{"T05"}\NormalTok{, }\StringTok{"T04"}\NormalTok{,}\StringTok{"ILP2"}\NormalTok{,}\StringTok{"End_ILP1"}
-\NormalTok{,         }\StringTok{"ILP4"}\NormalTok{,        }\StringTok{"T06"}\NormalTok{, }\StringTok{"T11"}\NormalTok{, }\StringTok{"T10"}\NormalTok{,}\StringTok{"ILP3"}\NormalTok{,}\StringTok{"End_ILP2"}
-\NormalTok{,}\StringTok{"T07-1"}\NormalTok{, }\StringTok{"ILP5"}\NormalTok{, }\StringTok{"T10"}
-\NormalTok{)))}
-\KeywordTok{source}\NormalTok{(}\StringTok{"~/Dropbox/datascience/R/mypetrinet.R"}\NormalTok{)}
-\KeywordTok{ggplot.petrinet}\NormalTok{(}\DataTypeTok{pn=}\NormalTok{ILP_pn)}
-\end{Highlighting}
-\end{Shaded}
+For easier token conformance analysis, let's consolidate the two ``End''
+places into one.
 
 \begin{verbatim}
 ## Loading required package: grid
 \end{verbatim}
 
 \includegraphics{CoSeLoG_files/figure-latex/Describe_Selected_Petrinet_1-1.pdf}
+The main traces with remaining tokens after reaching ``End'', include:
+
+\begin{verbatim}
+## time trans    "Start " "ILP1 " "ILP2 " "ILP3 " "ILP4 " "ILP5 " "End " 
+## 1.0000    1   0 1 0 1 0 1 0 
+## 1.0000   multiple enabled transitions:  T02 T06 T07-1 T10    firing:  T02 
+## 2.0000    2   0 0 1 1 0 1 0 
+## 2.0000   multiple enabled transitions:  T03 T04 T05 T06 T07-1 T10    firing:  T05 
+## 3.0000    5   0 0 0 1 0 1 1
+\end{verbatim}
+
+\includegraphics{CoSeLoG_files/figure-latex/Describe_Selected_Petrinet_2-1.pdf}
+
+\begin{verbatim}
+##  type       trace Start ILP1 ILP2 ILP3 ILP4 ILP5 End
+##     1 T00,T02,T05     0    0    0    1    0    1   1
+\end{verbatim}
+
+\begin{verbatim}
+## time trans    "Start " "ILP1 " "ILP2 " "ILP3 " "ILP4 " "ILP5 " "End " 
+## 1.0000    1   0 1 0 1 0 1 0 
+## 1.0000   multiple enabled transitions:  T02 T06 T07-1 T10    firing:  T10 
+## 2.0000    8   0 1 0 0 1 0 0 
+## 2.0000   multiple enabled transitions:  T02 T11  firing:  T11 
+## 3.0000    9   0 1 0 0 0 0 1
+\end{verbatim}
+
+\includegraphics{CoSeLoG_files/figure-latex/Describe_Selected_Petrinet_2-2.pdf}
+
+\begin{verbatim}
+##  type       trace Start ILP1 ILP2 ILP3 ILP4 ILP5 End
+##     1 T00,T02,T05     0    0    0    1    0    1   1
+##     2 T00,T10,T11     0    1    0    0    0    0   1
+\end{verbatim}
 
 The main traces include:\\\textbf{1}. Start -\textgreater{} T00
 -\textgreater{} T02 -\textgreater{} T05 -\textgreater{} End01 with 2
