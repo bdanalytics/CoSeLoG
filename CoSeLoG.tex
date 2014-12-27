@@ -751,36 +751,15 @@ may be modified.
 For easier token conformance analysis, let's consolidate the two ``End''
 places into one.
 
-\begin{verbatim}
-## Loading required package: grid
-\end{verbatim}
-
 \includegraphics{CoSeLoG_files/figure-latex/Describe_Selected_Petrinet_1-1.pdf}
-The main traces with remaining tokens after reaching ``End'', include:
 
-\begin{verbatim}
-## time trans    "Start " "ILP1 " "ILP2 " "ILP3 " "ILP4 " "ILP5 " "End " 
-## 1.0000    1   0 1 0 1 0 1 0 
-## 1.0000   multiple enabled transitions:  T02 T06 T07-1 T10    firing:  T02 
-## 2.0000    2   0 0 1 1 0 1 0 
-## 2.0000   multiple enabled transitions:  T03 T04 T05 T06 T07-1 T10    firing:  T05 
-## 3.0000    5   0 0 0 1 0 1 1
-\end{verbatim}
+The main traces with remaining tokens after reaching ``End'', include:
 
 \includegraphics{CoSeLoG_files/figure-latex/Describe_Selected_Petrinet_2-1.pdf}
 
 \begin{verbatim}
 ##  type       trace Start ILP1 ILP2 ILP3 ILP4 ILP5 End
 ##     1 T00,T02,T05     0    0    0    1    0    1   1
-\end{verbatim}
-
-\begin{verbatim}
-## time trans    "Start " "ILP1 " "ILP2 " "ILP3 " "ILP4 " "ILP5 " "End " 
-## 1.0000    1   0 1 0 1 0 1 0 
-## 1.0000   multiple enabled transitions:  T02 T06 T07-1 T10    firing:  T10 
-## 2.0000    8   0 1 0 0 1 0 0 
-## 2.0000   multiple enabled transitions:  T02 T11  firing:  T11 
-## 3.0000    9   0 1 0 0 0 0 1
 \end{verbatim}
 
 \includegraphics{CoSeLoG_files/figure-latex/Describe_Selected_Petrinet_2-2.pdf}
@@ -791,47 +770,80 @@ The main traces with remaining tokens after reaching ``End'', include:
 ##     2 T00,T10,T11     0    1    0    0    0    0   1
 \end{verbatim}
 
-The main traces include:\\\textbf{1}. Start -\textgreater{} T00
--\textgreater{} T02 -\textgreater{} T05 -\textgreater{} End01 with 2
-tokens remaining in ILP3 (between T00 \& T10) and ILP5 (between T00 \&
-T07-1)
+The traces with some loops (depicted as ``{[}transition sequence{]}*"
+where the star symbol denotes zero to infinite repetitions) include:
 
-\textbf{2}. Start -\textgreater{} T00 -\textgreater{} T10
--\textgreater{} T11 -\textgreater{} End02 with 1 token remaining in ILP1
-(between T00 \& T02)
+\begin{verbatim}
+##  type                         trace Start ILP1 ILP2 ILP3 ILP4 ILP5 End
+##     1                   T00,T02,T05     0    0    0    1    0    1   1
+##    1A            T00,T02,[T04]*,T05     0    0    0    1    0    1   1
+##    1B        T00,T02,[T03,T02]*,T05     0    0    0    1    0    1   1
+##   1BA T00,T02,[T03,T02]*,[T04]*,T05     0    0    0    1    0    1   1
+##     2                   T00,T10,T11     0    1    0    0    0    0   1
+##    2A            T00,[T06]*,T10,T11     0    1    0    0    0    0   1
+##    2B          T00,[T07-1]*,T10,T11     0    1    0    0    0    0   1
+##   2BA   T00,[T07-1]*,[T06]*,T10,T11     0    1    0    0    0    0   1
+\end{verbatim}
 
-The traces with some loops include:\\\textbf{1A}. Start -\textgreater{}
-T00 -\textgreater{} T02 -\textgreater{} {[}T04{]}* -\textgreater{} T05
--\textgreater{} End01\\ After T02, there might be any number of T04
-firings
+\includegraphics{CoSeLoG_files/figure-latex/Describe_Selected_Petrinet_3-1.pdf}
 
-\textbf{1B}. Start -\textgreater{} T00 -\textgreater{} T02
--\textgreater{} {[}T03 -\textgreater{} T02{]}* -\textgreater{} T05
--\textgreater{} End01\\ After T02, there might be any number of T03
--\textgreater{} T02 loops
+\begin{verbatim}
+##  type                             trace Start ILP1 ILP2 ILP3 ILP4 ILP5 End
+##  2C1a T00,T10,T02,[T03,T02]*,[T04]*,T05     0    0    0    0    1    0   1
+\end{verbatim}
 
-\textbf{1AB}. Start -\textgreater{} T00 -\textgreater{} T02
--\textgreater{} {[}T04{]}* -\textgreater{} {[}T03 -\textgreater{}
-T02{]}* -\textgreater{} T05 -\textgreater{} End01\\ After T02, there
-might be any number of T04 firings and/or T03 -\textgreater{} T02 loops
+\includegraphics{CoSeLoG_files/figure-latex/Describe_Selected_Petrinet_3-2.pdf}
 
-\textbf{2A}. Start -\textgreater{} T00 -\textgreater{} {[}T06{]}*
--\textgreater{} T10 -\textgreater{} T11 -\textgreater{} End02
+\begin{verbatim}
+##  type                                 trace ILP1 ILP2 ILP3 ILP4 ILP5 End
+##     1                           T00,T02,T05    0    0    1    0    1   1
+##    1A                    T00,T02,[T04]*,T05    0    0    1    0    1   1
+##    1B                T00,T02,[T03,T02]*,T05    0    0    1    0    1   1
+##   1BA         T00,T02,[T03,T02]*,[T04]*,T05    0    0    1    0    1   1
+##     2                           T00,T10,T11    1    0    0    0    0   1
+##    2A                    T00,[T06]*,T10,T11    1    0    0    0    0   1
+##    2B                  T00,[T07-1]*,T10,T11    1    0    0    0    0   1
+##   2BA           T00,[T07-1]*,[T06]*,T10,T11    1    0    0    0    0   1
+##  2C1a     T00,T10,T02,[T03,T02]*,[T04]*,T05    0    0    0    1    0   1
+##  2C1b T00,T10,T11,T02,[T03,T02]*,[T04]*,T05    0    0    0    0    0   2
+\end{verbatim}
 
-\textbf{2B}. Start -\textgreater{} T00 -\textgreater{} {[}T07-1{]}*
--\textgreater{} T10 -\textgreater{} T11 -\textgreater{} End02
-
-\textbf{2AB}. Start -\textgreater{} T00 -\textgreater{} {[}T06{]}*
--\textgreater{} {[}T07-1{]}* -\textgreater{} T10 -\textgreater{} T11
--\textgreater{} End02
-
-\textbf{2C1a}. Start -\textgreater{} T00 -\textgreater{} T10
--\textgreater{} T02 -\textgreater{} {[}T04{]}* -\textgreater{} {[}T03
--\textgreater{} T02{]}* -\textgreater{} T05 -\textgreater{}
-End01\\\textbf{2C1b}. Start -\textgreater{} T00 -\textgreater{} T10
--\textgreater{} T11 -\textgreater{} T02 -\textgreater{} {[}T04{]}*
--\textgreater{} {[}T03 -\textgreater{} T02{]}* -\textgreater{} T05
--\textgreater{} End01
+\begin{verbatim}
+##    type                                                 trace ILP1 ILP2
+##       1                                           T00,T02,T05    0    0
+##      1A                                    T00,T02,[T04]*,T05    0    0
+##      1B                                T00,T02,[T03,T02]*,T05    0    0
+##     1BA                         T00,T02,[T03,T02]*,[T04]*,T05    0    0
+##       2                                           T00,T10,T11    1    0
+##      2A                                    T00,[T06]*,T10,T11    1    0
+##      2B                                  T00,[T07-1]*,T10,T11    1    0
+##     2BA                           T00,[T07-1]*,[T06]*,T10,T11    1    0
+##    2C1a                     T00,T10,T02,[T03,T02]*,[T04]*,T05    0    0
+##    2C1b                 T00,T10,T11,T02,[T03,T02]*,[T04]*,T05    0    0
+##   2CA1a              T00,[T06]*,T10,T02,[T03,T02]*,[T04]*,T05    0    0
+##   2CA1b          T00,[T06]*,T10,T11,T02,[T03,T02]*,[T04]*,T05    0    0
+##   2CB1a            T00,[T07-1]*,T10,T02,[T03,T02]*,[T04]*,T05    0    0
+##   2CB1b        T00,[T07-1]*,T10,T11,T02,[T03,T02]*,[T04]*,T05    0    0
+##  2CBA1a     T00,[T07-1]*,[T06]*,T10,T02,[T03,T02]*,[T04]*,T05    0    0
+##  2CBA1b T00,[T07-1]*,[T06]*,T10,T11,T02,[T03,T02]*,[T04]*,T05    0    0
+##  ILP3 ILP4 ILP5 End
+##     1    0    1   1
+##     1    0    1   1
+##     1    0    1   1
+##     1    0    1   1
+##     0    0    0   1
+##     0    0    0   1
+##     0    0    0   1
+##     0    0    0   1
+##     0    1    0   1
+##     0    0    0   2
+##     0    1    0   1
+##     0    0    0   2
+##     0    1    0   1
+##     0    0    0   2
+##     0    1    0   1
+##     0    0    0   2
+\end{verbatim}
 
 \textbf{2AC1a}. Start -\textgreater{} T00 -\textgreater{} {[}T06{]}*
 -\textgreater{} T10 -\textgreater{} T02 -\textgreater{} {[}T04{]}*
@@ -857,10 +869,6 @@ Start -\textgreater{} T00 -\textgreater{} {[}T06{]}* -\textgreater{}
 {[}T07-1{]}* -\textgreater{} T10 -\textgreater{} T11 -\textgreater{} T02
 -\textgreater{} {[}T04{]}* -\textgreater{} {[}T03 -\textgreater{}
 T02{]}* -\textgreater{} T05 -\textgreater{} End01
-
-All the traces that end in End01 have 2 tokens remaining as described
-for Trace 1.\\All the traces that end in End02 have 1 token remaining as
-described for Trace 2.
 
 These traces should be in a table for better comprehension ?
 

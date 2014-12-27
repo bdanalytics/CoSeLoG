@@ -83,6 +83,7 @@ source("~/Dropbox/datascience/R/mypetrinet.R")
 # Gather all package requirements here
 suppressPackageStartupMessages(require(reshape))
 suppressPackageStartupMessages(require(plyr))
+suppressPackageStartupMessages(require(grid))
 
 #require(sos); findFn("pinv", maxPages=2, sortby="MaxScore")
 ```
@@ -554,6 +555,7 @@ Based on this analysis, the ILP discovered Petri net is the best. Based on other
 **My analysis**:
 
 For easier token conformance analysis, let's consolidate the two "End" places into one. 
+  
 ```{r Describe_Selected_Petrinet_1, echo=FALSE, fig.height=5.0}
 ILP_pn <- petrinet(name="ILP",
                       trans_df=data.frame(id=1:9,
@@ -578,45 +580,81 @@ ILP_pn <- petrinet(name="ILP",
 )))
 ggplot.petrinet(pn=ILP_pn)
 ```
+   
 The main traces with remaining tokens after reaching "End", include:
+  
 ```{r Describe_Selected_Petrinet_2, echo=FALSE, fig.height=5.0}
-#source("~/Dropbox/datascience/R/mypetrinet.R")
-
-replay_ILP_lst <- replay.petrisim(ILP_pn, "T00,T02,T05")
+replay_ILP_lst <- replay.petrisim(ILP_pn, "T00,T02,T05", verbose=FALSE)
 ILP_traces_df <- cbind(data.frame(type="1", trace="T00,T02,T05"),
                        t(data.frame(t1=replay_ILP_lst$pn$M)))
 print(ILP_traces_df, row.names=FALSE)
 
-replay_ILP_lst <- replay.petrisim(ILP_pn, "T00,T10,T11")
+replay_ILP_lst <- replay.petrisim(ILP_pn, "T00,T10,T11", verbose=FALSE)
 ILP_traces_df <- rbind(ILP_traces_df,
                        cbind(data.frame(type="2", trace="T00,T10,T11"),
                             t(data.frame(t2=replay_ILP_lst$pn$M))))
 print(ILP_traces_df, row.names=FALSE)
 ```
 
-The main traces include:  
-**1**. Start -> T00 -> T02 -> T05 -> End01 with 2 tokens remaining in ILP3 (between T00 & T10) and ILP5 (between T00 & T07-1)
+The traces with some loops (depicted as "[transition sequence]*" where the star symbol denotes zero to infinite repetitions) include:
 
-**2**. Start -> T00 -> T10 -> T11 -> End02 with 1 token remaining in ILP1 (between T00 & T02)
+```{r Describe_Selected_Petrinet_3, echo=FALSE, fig.height=5.0}
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+                       cbind(data.frame(type="1A", trace="T00,T02,[T04]*,T05"),
+                             subset(ILP_traces_df, type == "1")[, 3:9])))
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+                       cbind(data.frame(type="1B", trace="T00,T02,[T03,T02]*,T05"),
+                             subset(ILP_traces_df, type == "1")[, 3:9])))
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+            cbind(data.frame(type="1BA", trace="T00,T02,[T03,T02]*,[T04]*,T05"),
+                             subset(ILP_traces_df, type == "1")[, 3:9])))
 
-The traces with some loops include:  
-**1A**. Start -> T00 -> T02 -> [T04]* -> T05 -> End01  
-    After T02, there might be any number of T04 firings
-    
-**1B**. Start -> T00 -> T02 -> [T03 -> T02]* -> T05 -> End01  
-    After T02, there might be any number of T03 -> T02 loops
-    
-**1AB**. Start -> T00 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
-    After T02, there might be any number of T04 firings and/or T03 -> T02 loops
-    
-**2A**. Start -> T00 -> [T06]* -> T10 -> T11 -> End02
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+            cbind(data.frame(type="2A", trace="T00,[T06]*,T10,T11"),
+                             subset(ILP_traces_df, type == "2")[, 3:9])))
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+            cbind(data.frame(type="2B", trace="T00,[T07-1]*,T10,T11"),
+                             subset(ILP_traces_df, type == "2")[, 3:9])))
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+            cbind(data.frame(type="2BA", trace="T00,[T07-1]*,[T06]*,T10,T11"),
+                             subset(ILP_traces_df, type == "2")[, 3:9])))
+print(ILP_traces_df, row.names=FALSE)
 
-**2B**. Start -> T00 -> [T07-1]* -> T10 -> T11 -> End02
+replay_ILP_lst <- replay.petrisim(ILP_pn, "T00,T10,T02,T03,T02,T04,T05", verbose=FALSE)
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+    cbind(data.frame(type="2C1a", trace="T00,T10,T02,[T03,T02]*,[T04]*,T05"),
+                        t(data.frame(t12=replay_ILP_lst$pn$M)))))
+print(subset(ILP_traces_df, type == "2C1a"), row.names=FALSE)
 
-**2AB**. Start -> T00 -> [T06]* -> [T07-1]* -> T10 -> T11 -> End02
+replay_ILP_lst <- replay.petrisim(ILP_pn, "T00,T10,T11,T02,T03,T02,T04,T05", 
+                                  verbose=FALSE)
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+    cbind(data.frame(type="2C1b", trace="T00,T10,T11,T02,[T03,T02]*,[T04]*,T05"),
+                        t(data.frame(t12=replay_ILP_lst$pn$M)))))
+print(subset(ILP_traces_df, select=-c(Start)), row.names=FALSE)
 
-**2C1a**. Start -> T00 -> T10 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
-**2C1b**. Start -> T00 -> T10 -> T11 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+    cbind(data.frame(type="2CA1a", trace="T00,[T06]*,T10,T02,[T03,T02]*,[T04]*,T05"),
+                                subset(ILP_traces_df, type == "2C1a")[, 3:9])))
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+    cbind(data.frame(type="2CA1b", trace="T00,[T06]*,T10,T11,T02,[T03,T02]*,[T04]*,T05"),
+                                subset(ILP_traces_df, type == "2C1b")[, 3:9])))
+
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+    cbind(data.frame(type="2CB1a", trace="T00,[T07-1]*,T10,T02,[T03,T02]*,[T04]*,T05"),
+                                subset(ILP_traces_df, type == "2C1a")[, 3:9])))
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+    cbind(data.frame(type="2CB1b", trace="T00,[T07-1]*,T10,T11,T02,[T03,T02]*,[T04]*,T05"),
+                                subset(ILP_traces_df, type == "2C1b")[, 3:9])))
+
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+    cbind(data.frame(type="2CBA1a", trace="T00,[T07-1]*,[T06]*,T10,T02,[T03,T02]*,[T04]*,T05"),
+                                subset(ILP_traces_df, type == "2C1a")[, 3:9])))
+ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
+    cbind(data.frame(type="2CBA1b", trace="T00,[T07-1]*,[T06]*,T10,T11,T02,[T03,T02]*,[T04]*,T05"),
+                                subset(ILP_traces_df, type == "2C1b")[, 3:9])))
+print(subset(ILP_traces_df, select=-c(Start)), row.names=FALSE)
+```
 
 **2AC1a**. Start -> T00 -> [T06]* -> T10 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
 **2AC1b**. Start -> T00 -> [T06]* -> T10 -> T11 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
@@ -626,9 +664,6 @@ The traces with some loops include:
 
 **2ABC1a**. Start -> T00 -> [T06]* -> [T07-1]* -> T10 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
 **2ABC1b**. Start -> T00 -> [T06]* -> [T07-1]* -> T10 -> T11 -> T02 -> [T04]* -> [T03 -> T02]* -> T05 -> End01  
-
-All the traces that end in End01 have 2 tokens remaining as described for Trace 1.        
-All the traces that end in End02 have 1 token remaining as described for Trace 2.            
 
 These traces should be in a table for better comprehension ?
 
