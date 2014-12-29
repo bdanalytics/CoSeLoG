@@ -682,28 +682,13 @@ print(subset(ILP_traces_df, select=-c(Start)))
 
 **Approach I used**: 
 
-1. Click on "Workspace" icon.  
-2. Click on "import..." button.  
-3. Select the normative model file.  
-4. Select the 'PNML Petri net files' importer.  
-5. Click on "Actions" icon.  
-6. Search for "Replay" plug-in.  
-7. Select ‘Replay a Log on Petri Net for Conformance Analysis’ (not the variant with performance!) plug-in.
-8. Add original event log to "Input".  
-9. Click on "Start" button.  
-10. Click 'yes' in the 'No Final Marking' pop-up.
-11. Select the 'sink' place on the left (note: do not select '0-sink' etc.) and click the button 'Add Place >>' to add the place 'sink' to the candidate final marking list. 
-12. Click 'Finish' in the mapping wizard.  
-13. Click 'Finish' .  
-14. Click 'No, I've mapped all necessary event classes' to indicate that some events are not present in the normative model.  
-15. Click 'Next'.  
-16. Click 'Finish'.  
+Please refer to section titled "Actions to run ProM plug-in "Replay a Log on Petri Net for Conformance Analysis" in the Appendix (Section 10.2).   
 
 **What I saw**: 
 
 ![](CoSeLoG_Step_06_PetriNet_Normative_Conformance.png)
 
-*Transitions*: Most of the traces pass through very few "labeled" (tau are "silent") transitions: T00 -> T06 -> T10 & T00 -> T04 -> T05. The color darkness or "fill" of the transition boxes is based on the number of traces in the event log that fire them. The numbers underneath the label in the transition boxes refer to the number of synchronous moves vs. "move on model". T13 & T18 are never fired in this event log.  
+*Transitions*: Most of the traces pass through very few "labeled" (tau are "silent") transitions: T00 -> T06 -> T10 & T00 -> T04 -> T05. The model appears to expect all cases to traverse these paths although the sequence might vary. The color darkness or "fill" of the transition boxes is based on the number of traces in the event log that fire them. The numbers underneath the label in the transition boxes refer to the number of synchronous moves vs. "move on model". T13 & T18 are duplicated but the second instances of these transitions are never fired in this event log. Transitions T02, T09-1 through T09-4 & T11 are absent in this model.  
 
 *Places*: Place size displays "move on log" frequency. Places where move log occured are colored yellow. However, size of "source" & "sink" are not adjusted. Clicking on the place displays the underlying label. Size of places going to silent transitions are not adjusted with frequency but are colored yellow when there are move(s) on log.  
 
@@ -711,9 +696,13 @@ print(subset(ILP_traces_df, select=-c(Start)))
 
 **My analysis**:  
 
-The replay fitness (the 'trace fitness' statistic) of the event log on the normative process model is 0.8425. T10 has the maximum deviations (151). T06 has the minimum (125). 
+![](CoSeLoG_Step_06_PetriNet_Normative_Conformance_Zoom.png)
 
-The transition 'T06 Determine necessity of stop advice+complete' (on the top left of the model) was tested with 1,434 traces in the event log. Out of those 1,309 (91%) were synchronous moves in both the model & log. Amongst those 1,309 traces, T06 was fired synchronously for 1,327 times (i.e. some traces fired T06 fired multiple times). For 125 traces, T06 was fired in the model only. 
+The replay fitness (the 'trace fitness' statistic) of the event log on the normative process model is 0.8425 (similar to 0.8483 of the ILP model). T10 has the maximum deviations (151). T06 has the minimum (125) amongst the frequent trace variants. 
+
+![](CoSeLoG_Step_06_PetriNet_Normative_Conformance_T06.png)
+
+The transition 'T06 Determine necessity of stop advice+complete' (on the top left of the model) was tested with 1,434 traces in the event log. Out of those 1,309 (91%) were synchronous moves in both the model & log. Amongst those 1,309 traces, T06 was fired synchronously for 1,327 times (i.e. some traces fired T06 fired multiple times). For 125 traces, T06 was fired in the model only i.e. T06 was not fired in the event log 125 times when it was supposed to. 
 
 # Analyze resource utilization in ProM
 
@@ -887,12 +876,3 @@ Based on the analysis objective(s), these metrics may be assigned appropriate we
         10.2.3. Click on "Finish" button.  
         10.2.4. Click on "Global Statistics (non-filtered traces)".  
         10.2.5. "Behavioral Appropriateness" Property displays behavioral appropriateness metric (referenced as 4.1 in the "Petri net evaluation criteria" Appendix section).  
-
-Delete ?:
-10. Click 'yes' in the 'No Final Marking' pop-up.
-11. Select the 'sink' place on the left (note: do not select '0-sink' etc.) and click the button 'Add Place >>' to add the place 'sink' to the candidate final marking list. 
-12. Click 'Finish' in the mapping wizard.  
-13. Click 'Finish' .  
-14. Click 'No, I've mapped all necessary event classes' to indicate that some events are not present in the normative model.  
-15. Click 'Next'.  
-16. Click 'Finish'.  
