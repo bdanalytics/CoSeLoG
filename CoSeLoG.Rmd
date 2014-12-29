@@ -639,7 +639,8 @@ replay_ILP_lst <- replay.petrisim(ILP_pn, "T00,T10,T11,T02,T03,T02,T04,T05",
 ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
     cbind(data.frame(type="2C1b", trace="T00,T10,T11,T02,[T03,T02]*,[T04]*,T05"),
                         t(data.frame(t12=replay_ILP_lst$pn$M)))))
-print(subset(ILP_traces_df, select=-c(Start)), row.names=FALSE)
+#print(subset(ILP_traces_df, select=-c(Start)), row.names=FALSE)
+print(subset(ILP_traces_df, type == "2C1b", select=-c(Start)), row.names=FALSE)
 
 #replay.petrisim(ILP_pn, "T00,T06,T10,T02,T03,T02,T04,T05", verbose=FALSE)
 ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
@@ -663,11 +664,18 @@ ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
 ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
     cbind(data.frame(type="2CBA1a", trace="T00,[T07-1]*,[T06]*,T10,T02,[T03,T02]*,[T04]*,T05"),
                                 subset(ILP_traces_df, type == "2C1a")[, 3:9])))
+```
+
+There are 16 trace variants allowed by this model. The type labelled as "2CBA1b" fires all the transitions. 
+
+```{r Describe_Selected_Petrinet_4, echo=FALSE, fig.height=5.0}
 replay.petrisim(ILP_pn, "T00,T07-1,T06,T10,T11,T02,T03,T02,T04,T05", verbose=FALSE)
 ILP_traces_df <- orderBy(~type, rbind(ILP_traces_df,
     cbind(data.frame(type="2CBA1b", trace="T00,[T07-1]*,[T06]*,T10,T11,T02,[T03,T02]*,[T04]*,T05"),
                                 subset(ILP_traces_df, type == "2C1b")[, 3:9])))
-print(subset(ILP_traces_df, select=-c(Start)), row.names=FALSE)
+
+row.names(ILP_traces_df) <- 1:nrow(ILP_traces_df)
+print(subset(ILP_traces_df, select=-c(Start)))
 ```
 
 # Analyze conformance with normative model in ProM
