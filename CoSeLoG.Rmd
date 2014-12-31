@@ -59,19 +59,12 @@ Based on analysis utilizing process mining techniques, the CoSeLoG process may b
 ## Potential next steps include:
 
 1. Utilize "training" vs. "test" or cross-validation technique(s) to discover different Petri nets and collect the generalization conformance fitness metric. 
-2. Compute additional Petri net evaluation metrics e.g. "Simplicity.Entropy"  
-
-1. Discover Petri net in ProM:
-    1.1 Add Fitness/Simplicity/Precision/Generalization to Petri net selection criteria.            
-    1.2 Add place names to discovered Petri nets.
-    1.3 Radar plot of model evaluations.
-    1.4 Display remaining tokens in selected Petri net.
-
-X.1 Review questions in Peer Assignment to ensure that all have been answered  
-X.2 Re-do listed steps to ensure reproduceability  
-X.3 Convert text to tables where appropriate  
-X.4 Clean formats to make it more readable
-X.5 Scan Peer Assignment Forum for enhancement ideas
+2. Compute additional Petri net evaluation metrics e.g. "Simplicity.Entropy".
+3. Add interactive animation of Petri net replays (shiny apps). 
+4. Auto generate all model allowed traces (depth / breadth first search; handle infinite loops)
+5. Investigate other ProM plug-ins to improve the answers.
+6. Move tool(s) used to "Approach". Replace "What I saw" with "Key Observations". Replace "My analysis" with "Analysis". Change "I / me" to "We".
+7. Add annotations to screen captures.
 
 ```{r set_global_options, echo=FALSE}
 rm(list=ls())
@@ -110,7 +103,9 @@ There are 6 events on average per case. This information can be gathered by hove
 
 By clicking on "Variants" button on top of the table, we can see that there are only 116 variants amongst the 1,434 cases.
 
-The main observation from the 'Events over time' graph is that the maximum number of events (77) occured on Apr 27, 2011 across cases.  
+The main observations from the 'Events over time' graph include:  
+1. The maximum number of events (77) occured on Apr 27, 2011 across cases.  
+2. Cases arrive on weekdays only.
 
 # Analyze process map in Disco
 **Approach I used**:  
@@ -170,7 +165,7 @@ Analysis of other metrics (median, mean & max duration) highlighted arcs with ve
 
 **Approach I used**:
    
-1. Click on "import..." icon on the upper right hand side of the "Workspace" pane.  
+1. Click on "import..." icon on the upper right hand side of the "Workspace" pane. 
 2. Click on eye icon (the one associated with the log in the middle; NOT the top one). 
 3. Click on "Create new..." droplist in the top center of the window. 
 4. Select "XDotted Chart" by scrolling down the list.
@@ -187,7 +182,7 @@ Events for each case are plotted across time and color-coded. Zooming in does no
 **My analysis**:  
 The arrival of the new cases is fairly constant evidenced by the -45 degree slope of the (approx) line of blue dots. There are some minor fluctuations which is difficult to quantify (clicking on the dots does not display any additional information). 
 
-For the more recent cases there are a lot less events / activities occuring close to case initiation compared to the earlier cases. 
+For the more recent cases there are a lot less events / activities occuring close to case initiation compared to the earlier cases - did the process change around July 2011 ?
 
 # Discover Petri net in ProM
 
@@ -237,7 +232,7 @@ Repeat actions numbered 1-5 listed earlier in this section utilizing the "CoSeLo
 
 ![](CoSeLoG_Step_05_Filter96_PetriNet_Alpha.png)  
   
-The Alpha algorithm has discovered 9 transitions & 9 places. However, transitions T06, T07-1 & T10 are not integrated well into the rest of the control-flow. Collect Petri net evaluation metrics as listed in the Appendix section "Actions to run ProM plug-in "Replay a Log on Petri Net for Conformance Analysis"".  
+The Alpha algorithm has discovered 9 transitions & 9 places. However, transitions T06, T07-1 & T10 are not integrated well into the rest of the control-flow. Collect Petri net evaluation metrics as listed in the Appendix sections.  
 
 **My analysis**:  
 ```{r alpha_metrics, echo=FALSE}
@@ -274,7 +269,7 @@ Strictly speaking, the "Generalization.Conformance" metric would typically be lo
 
 ![](CoSeLoG_Step_05_Filter96_PetriNet_ILP.png)
 
-The ILP algorithm has discovered 9 transitions & 8 places ("P 1" & "P 2" are "End" places). Therefore, this Petri net has one implicit place. Additionally, the ILP Petri net handles transitions T06, T07-1 & T10 better by not isolating them from the control-flow. Collect Petri net evaluation metrics as listed in the Appendix section "Actions to run ProM plug-in "Replay a Log on Petri Net for Conformance Analysis"".  
+The ILP algorithm has discovered 9 transitions & 8 places ("P 1" & "P 2" are "End" places). Therefore, this Petri net has one implicit place. Additionally, the ILP Petri net handles transitions T06, T07-1 & T10 better by not isolating them from the control-flow. Collect Petri net evaluation metrics as listed in the Appendix sections.  
 
 **My analysis**:  
 ```{r ILP_metrics, echo=FALSE}
@@ -682,7 +677,7 @@ print(subset(ILP_traces_df, select=-c(Start)))
 
 **Approach I used**: 
 
-Please refer to section titled "Actions to run ProM plug-in "Replay a Log on Petri Net for Conformance Analysis" in the Appendix (Section 10.2).   
+Please refer to section titled Actions to run ProM plug-in "Replay a Log on Petri Net for Conformance Analysis" in the Appendix (Section 10.2).   
 
 **What I saw**: 
 
@@ -711,8 +706,8 @@ The transition 'T06 Determine necessity of stop advice+complete' (on the top lef
 2. Select event log resource.  
 3. Click on "Actions" icon for this resource.  
 4. Search for "Mine for a Subcontracting Social Network" & select it.  
-5. Keep selected default options & click on "Continue" button.   
-6. Click "Start" button.  
+5. Click "Start" button.  
+6. Keep selected default options & click on "Continue" button.   
 7. Select the following in the Social Network view options:   
     Layout: ISOMLayout   
     Ranking: Betweenness   
@@ -742,12 +737,12 @@ Let's see if we can get any more granularity regarding the sub-groups in "Genera
 
 **Approach I used**: 
 
-11. Click on "Import" icon in Disco.  
-12. Select the event log.  
-13. Click on "Filter" icon in the bottom left.  
-14. Click in the left pane to add filter.  
-15. Select "Attribute - Removes events by attribute".  
-16. Select "Resource" in the "Filter by:" option.  
+11. Click on "Import" icon in Disco. 
+12. Select the event log. 
+13. Click on "Filter" icon in the bottom left. 
+14. Click in the left pane to add filter. 
+15. Select "Attribute - Removes events by attribute". 
+16. Select "Resource" in the "Filter by:" option. 
 17. Select "Mandatory" in the "Filtering mode:" option.
 18. Select "Resource31" only in "Event values:" pane.
 19. Click on "Apply filter" button.
@@ -762,7 +757,7 @@ Let's see if we can get any more granularity regarding the sub-groups in "Genera
 
 The "Singletons" worked on 4 cases (10918 for Resource 42; 4328 for Resource 36 & [8012, 8014] for Resource 31) only. Moreover, in each of these cases, all the tasks were conducted by one resource. Similarly, I also found resources {"test" & "TEST"} who each had one case 8061 & 8047. I excluded these cases by applying a filter & exported the filtered event log. 
 
-Re-did tasks 1-8 as listed above for "Step 07: inspect resource utilization in ProM". The clustering in ProM suggested expanding & splitting the "Singletons" group into "Exclusive One-timers" and "Occasional Helpers:" as listed further below. 
+Re-did tasks 1-8 as listed above in this section. The clustering in ProM suggested expanding & splitting the "Singletons" group into "Exclusive One-timers" and "Occasional Helpers:" as listed further below. 
 
 After filtering the event log to delete cases that utilize these resources, I re-did the social networking analysis in ProM.
 
@@ -773,7 +768,7 @@ After filtering the event log to delete cases that utilize these resources, I re
 **My analysis**:  
 
 The resources may be grouped into the following categories:  
-1. *Exclusive One-timers*: Resources {31, 36, 42, test, TEST} have worked on their cases exclusively (Total 6 cases).  
+1. *Exclusive or One-timers*: Resources {31, 36, 42, test, TEST} have worked on their cases exclusively or just a few times (Total 6 cases). 
 
 2. *Occasional Helpers*: Resources {33, 35, 37, 38, 39, 40, 41, 43, admin3}  
     2.1 Resources {40, 41, 43} have helped with one activity on one case each.   
@@ -798,7 +793,7 @@ For, are all users executing activities from the start of the event log, or are 
 
 **Approach I used**:  
 21. Click on "Workspace" icon.  
-22. Select event log excluding cases that involve *Exclusive One-timers* or *Occasional Helpers*.  
+22. Select event log excluding cases that involve *Exclusive or One-timers* or *Occasional Helpers*.  
 23. Click on "Visualize" icon for the selected resource.  
 24. Select "XDottedChart" by clicking on "Create new..." drop-box.  
 25. Select "Dotted Chart" tab.  
@@ -829,13 +824,13 @@ Given a Petri net and an event log, the following evaluation criteria (not exhau
     1.1 Alignment conformance of event log: ProM plug-in Replay a Log on Petri Net for Conformance Analysis w/ option Measuring fitness
             
 2. Simplicity metrics:  
-    2.1 # total places
-    2.2 # end places 
-    2.3 # implicit places
-    2.4 # isolated transitions
+    2.1 # total places 
+    2.2 # end places  
+    2.3 # implicit places 
+    2.4 # isolated transitions 
     2.5 # silent transitions  
     2.6 # arcs  
-    2.7 Minimal Description Length (MDL): ProM plug-in ?
+    2.7 Minimal Description Length (MDL): ProM plug-in ? 
     2.8 Entropy: ProM plug-in ?  
 
 3. Generalization metrics:  
